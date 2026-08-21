@@ -1,8 +1,12 @@
+import { LESSON_PLAN } from '@/features/lessons';
+import type { Lesson } from '@/features/lessons';
 import {
   COMMON_MAJOR_ROOTS,
   COMMON_MINOR_ROOTS,
   SCALE_TYPES,
   buildScaleFrom,
+  dedupeBy,
+  parseNote,
   pitchClassName,
   toPitchClass,
 } from '@/features/music-theory';
@@ -83,7 +87,31 @@ const BLACK_NOTES: TrainerPreset = {
     })),
 };
 
+/**
+ * Each rung of the lesson ladder is also an ordinary preset, so choosing one
+ * from the dropdown, deep-linking to it, and recording it in History all work
+ * through the machinery that already existed.
+ */
+function lessonPreset(lesson: Lesson): TrainerPreset {
+  return {
+    id: lesson.id,
+    label: `${String(lesson.order).padStart(2, '0')}. ${lesson.title}`,
+    group: 'Lesson ladder',
+    build: () =>
+      dedupeBy(
+        lesson.notes.flatMap((token) => {
+          const note = parseNote(token);
+          return note ? [noteToItem(note)] : [];
+        }),
+        (item) => item.id,
+      ),
+  };
+}
+
+const LESSON_PRESETS = LESSON_PLAN.map(lessonPreset);
+
 export const NOTE_PRESETS: readonly TrainerPreset[] = [
+  ...LESSON_PRESETS,
   WHITE_NOTES,
   BLACK_NOTES,
   ALL_NOTES,

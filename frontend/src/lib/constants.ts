@@ -24,6 +24,7 @@ export const STORAGE_KEYS = {
   settings: 'prt.settings.v1',
   statistics: 'prt.statistics.v1',
   sessionSetup: 'prt.session-setup.v1',
+  lessons: 'prt.lessons.v1',
 } as const;
 
 export const MAX_STORED_SESSIONS = 50;

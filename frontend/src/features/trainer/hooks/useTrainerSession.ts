@@ -15,7 +15,7 @@ export interface TrainerSessionOptions {
   strategyId: string;
   mode: PracticeMode;
   /** Describes the run for History; only read when a session finishes. */
-  meta: { moduleId: string; moduleTitle: string; setLabel: string };
+  meta: { moduleId: string; moduleTitle: string; setLabel: string; presetId?: string };
   onSessionEnd?: (session: SessionRecord) => void;
 }
 
@@ -156,6 +156,7 @@ export function useTrainerSession({
         moduleId: metaRef.current.moduleId,
         moduleTitle: metaRef.current.moduleTitle,
         setLabel: metaRef.current.setLabel,
+        presetId: metaRef.current.presetId,
         mode,
         startedAt: new Date(snapshot.startedAt).toISOString(),
         endedAt: new Date(endedAt).toISOString(),

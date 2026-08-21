@@ -1,6 +1,8 @@
-import { useEffect, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { AppShell } from '@/components/layout';
+import { Button, Chip } from '@/components/ui';
+import { LESSON_PLAN, LESSON_SPEEDS, getLesson, requiredItemsFor, useLessons } from '@/features/lessons';
 import {
   PianoKeyboard,
   buildHighlightMap,
@@ -22,6 +24,8 @@ import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { instrument } from '@/lib/audio';
 import { getModuleOrDefault } from '@/modules/registry';
 import type { TrainerItem } from '@/features/trainer';
+import type { SessionRecord } from '@/features/statistics';
+import lessonStyles from './lessons.module.css';
 import styles from './pages.module.css';
 import trainerStyles from '@/features/trainer/components/trainer.module.css';
 
@@ -36,14 +40,55 @@ export function TrainerPage() {
   const { moduleId } = useParams();
   const module = getModuleOrDefault(moduleId);
 
+  const navigate = useNavigate();
   const { settings, update } = useSettings();
   const { record } = useStatistics();
+  const { registerSession, progressFor } = useLessons();
 
   const setup = useTrainerSetup(module);
 
+  /* ---- lesson deep links: /train/notes?preset=lesson:03&interval=1.5 ---- */
+  const [params, setParams] = useSearchParams();
+  const appliedRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    const key = params.toString();
+    // Cleared params mean the last drill was consumed; re-arm for the next one.
+    if (!key) {
+      appliedRef.current = null;
+      return;
+    }
+    if (appliedRef.current === key) return;
+    appliedRef.current = key;
+
+    const presetId = params.get('preset');
+    const rawInterval = params.get('interval');
+    const interval = rawInterval === null ? null : Number(rawInterval);
+
+    if (presetId) setup.selectPreset(presetId);
+    if (interval !== null && Number.isFinite(interval) && interval > 0) {
+      update('intervalSeconds', interval);
+    }
+    // Consume them so a refresh does not re-apply an old drill.
+    setParams({}, { replace: true });
+  }, [params, setParams, setup, update]);
+
   const meta = useMemo(
-    () => ({ moduleId: module.id, moduleTitle: module.title, setLabel: setup.setLabel }),
-    [module.id, module.title, setup.setLabel],
+    () => ({
+      moduleId: module.id,
+      moduleTitle: module.title,
+      setLabel: setup.setLabel,
+      presetId: setup.presetId,
+    }),
+    [module.id, module.title, setup.presetId, setup.setLabel],
+  );
+
+  const handleSessionEnd = useCallback(
+    (session: SessionRecord) => {
+      record(session);
+      registerSession(session);
+    },
+    [record, registerSession],
   );
 
   const session = useTrainerSession({
@@ -53,8 +98,15 @@ export function TrainerPage() {
     strategyId: settings.strategyId,
     mode: settings.mode,
     meta,
-    onSessionEnd: record,
+    onSessionEnd: handleSessionEnd,
   });
+
+  /* ---- the drill this page is currently serving, if any ---- */
+  const lesson = getLesson(setup.presetId);
+  const drillTarget = lesson ? requiredItemsFor(lesson) : 0;
+  const drill = lesson ? progressFor(lesson.id, settings.intervalSeconds) : null;
+  const onLadderSpeed = LESSON_SPEEDS.includes(settings.intervalSeconds);
+  const drillReps = Math.max(session.itemsShown, drill?.bestItems ?? 0);
 
   const isTest = settings.mode === 'test';
   // Chord pools voice a single position; note pools light every octave.
@@ -126,6 +178,35 @@ export function TrainerPage() {
       subtitle={`${setup.setLabel} · ${setup.items.length} in pool · ${settings.mode === 'test' ? 'Test mode' : 'Practice mode'}`}
       activeModuleId={module.id}
     >
+      {lesson && (
+        <section className={lessonStyles.banner}>
+          <div className={lessonStyles.bannerBody}>
+            <span className={lessonStyles.bannerLabel}>
+              Lesson {lesson.order} of {LESSON_PLAN.length}
+              {onLadderSpeed
+                ? ` · ${settings.intervalSeconds.toFixed(1)}s drill`
+                : ' · off-ladder speed (does not count)'}
+            </span>
+            <h2 className={lessonStyles.bannerTitle}>{lesson.title}</h2>
+            <p className={lessonStyles.bannerFocus}>{lesson.focus}</p>
+          </div>
+          <div className={lessonStyles.bannerRight}>
+            {drill?.done ? (
+              <Chip tone="accent">Cleared</Chip>
+            ) : (
+              onLadderSpeed && (
+                <Chip>
+                  {Math.min(drillReps, drillTarget)} / {drillTarget} reps
+                </Chip>
+              )
+            )}
+            <Button variant="ghost" icon="crown" onClick={() => navigate('/lessons')}>
+              All lessons
+            </Button>
+          </div>
+        </section>
+      )}
+
       <TrainerControls
         module={module}
         setup={setup}

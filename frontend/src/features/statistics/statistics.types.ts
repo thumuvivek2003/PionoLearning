@@ -16,6 +16,8 @@ export interface SessionRecord {
   moduleId: string;
   moduleTitle: string;
   setLabel: string;
+  /** Preset the pool came from; absent for custom pools and pre-lessons records. */
+  presetId?: string;
   mode: PracticeMode;
   startedAt: Timestamp;
   endedAt: Timestamp;

@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { DEFAULT_MODULE_ID } from '@/modules/registry';
 import { AboutPage } from '@/pages/AboutPage';
 import { HistoryPage } from '@/pages/HistoryPage';
+import { LessonsPage } from '@/pages/LessonsPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { SettingsPage } from '@/pages/SettingsPage';
 import { StatisticsPage } from '@/pages/StatisticsPage';
@@ -16,6 +17,7 @@ export function AppRoutes() {
     <Routes>
       <Route path="/" element={<Navigate to={`/train/${DEFAULT_MODULE_ID}`} replace />} />
       <Route path="/train/:moduleId" element={<TrainerPage />} />
+      <Route path="/lessons" element={<LessonsPage />} />
       <Route path="/history" element={<HistoryPage />} />
       <Route path="/statistics" element={<StatisticsPage />} />
       <Route path="/settings" element={<SettingsPage />} />

@@ -12,6 +12,7 @@ interface SidebarProps {
 }
 
 const PROGRESS_LINKS = [
+  { to: '/lessons', label: 'Lessons', icon: 'crown' },
   { to: '/history', label: 'History', icon: 'history' },
   { to: '/statistics', label: 'Statistics', icon: 'stats' },
 ] as const;
