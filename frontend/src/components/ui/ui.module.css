@@ -1,0 +1,442 @@
+/* ---------------- Card ---------------- */
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.cardPadded {
+  padding: var(--sp-5);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
+  border-bottom: 1px solid var(--border);
+}
+
+.cardTitle {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.cardBody {
+  padding: var(--sp-5);
+}
+
+/* ---------------- Field ---------------- */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.fieldLabel {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.fieldHint {
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+}
+
+.fieldError {
+  font-size: var(--fs-xs);
+  color: var(--danger);
+}
+
+/* ---------------- Control base ---------------- */
+.control {
+  width: 100%;
+  height: 46px;
+  padding: 0 var(--sp-4);
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  color: var(--text);
+  font-size: var(--fs-md);
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    box-shadow var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease);
+}
+
+.control::placeholder {
+  color: var(--text-faint);
+}
+
+.control:hover:not(:disabled) {
+  border-color: var(--border-strong);
+}
+
+.control:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.control:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.controlInvalid,
+.controlInvalid:focus {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-soft);
+}
+
+.controlMono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+  letter-spacing: 0.02em;
+}
+
+/* ---------------- Select ---------------- */
+.selectWrap {
+  position: relative;
+  display: block;
+}
+
+.select {
+  appearance: none;
+  padding-right: var(--sp-10);
+  cursor: pointer;
+}
+
+.selectWrap .leadingIcon {
+  position: absolute;
+  left: var(--sp-4);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent);
+  pointer-events: none;
+}
+
+.selectWrap .leadingIcon ~ .select {
+  padding-left: var(--sp-10);
+}
+
+.selectArrow {
+  position: absolute;
+  right: var(--sp-3);
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-faint);
+  pointer-events: none;
+}
+
+/* ---------------- Button ---------------- */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  height: 44px;
+  padding: 0 var(--sp-5);
+  border-radius: var(--r-md);
+  border: 1px solid transparent;
+  font-size: var(--fs-md);
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    transform var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    box-shadow var(--dur-fast) var(--ease);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.buttonBlock {
+  width: 100%;
+}
+
+.buttonLg {
+  height: 52px;
+  font-size: var(--fs-lg);
+}
+
+.buttonSm {
+  height: 34px;
+  padding: 0 var(--sp-3);
+  font-size: var(--fs-sm);
+}
+
+.primary {
+  background: linear-gradient(180deg, var(--accent-strong), var(--accent));
+  color: var(--accent-contrast);
+  box-shadow: 0 6px 18px -6px var(--accent-glow);
+}
+.primary:hover:not(:disabled) {
+  box-shadow: 0 10px 26px -8px var(--accent-glow);
+}
+
+.secondary {
+  background: var(--bg-elevated);
+  border-color: var(--border);
+  color: var(--text);
+}
+.secondary:hover:not(:disabled) {
+  border-color: var(--border-strong);
+  background: var(--bg-surface-2);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--text-muted);
+}
+.ghost:hover:not(:disabled) {
+  background: var(--bg-surface-2);
+  color: var(--text);
+}
+
+.danger {
+  background: var(--danger-soft);
+  border-color: color-mix(in srgb, var(--danger) 45%, transparent);
+  color: var(--danger);
+}
+.danger:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--danger) 22%, transparent);
+}
+
+.success {
+  background: var(--success-soft);
+  border-color: color-mix(in srgb, var(--success) 45%, transparent);
+  color: var(--success);
+}
+.success:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--success) 22%, transparent);
+}
+
+/* ---------------- IconButton ---------------- */
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r-full);
+  border: 1px solid var(--border);
+  background: var(--bg-surface-2);
+  color: var(--text-muted);
+  transition:
+    color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease);
+}
+
+.iconButton:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+.iconButtonActive {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+  background: var(--accent-soft);
+}
+
+/* ---------------- SegmentedControl ---------------- */
+.segmented {
+  display: inline-flex;
+  padding: 4px;
+  gap: 4px;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+
+.segment {
+  flex: 1;
+  height: 38px;
+  padding: 0 var(--sp-5);
+  border-radius: var(--r-sm);
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--text-muted);
+  transition:
+    background var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.segment:hover {
+  color: var(--text);
+}
+
+.segmentActive,
+.segmentActive:hover {
+  background: linear-gradient(180deg, var(--accent-strong), var(--accent));
+  color: var(--accent-contrast);
+  box-shadow: 0 4px 14px -6px var(--accent-glow);
+}
+
+.segmentedBlock {
+  display: flex;
+  width: 100%;
+}
+
+/* ---------------- Toggle ---------------- */
+.toggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: var(--sp-3) 0;
+}
+
+.toggleLabel {
+  display: block;
+  font-size: var(--fs-md);
+  color: var(--text);
+}
+
+.toggleDescription {
+  display: block;
+  max-width: 34ch;
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+  margin-top: 2px;
+}
+
+.toggle {
+  position: relative;
+  flex: none;
+  width: 46px;
+  height: 26px;
+  border-radius: var(--r-full);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  transition: background var(--dur-base) var(--ease);
+}
+
+.toggleOn {
+  background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+  border-color: transparent;
+}
+
+.toggleKnob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--r-full);
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--dur-base) var(--ease);
+}
+
+.toggleOn .toggleKnob {
+  transform: translateX(20px);
+}
+
+/* ---------------- Chip ---------------- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  height: 26px;
+  padding: 0 var(--sp-3);
+  border-radius: var(--r-full);
+  border: 1px solid var(--border);
+  background: var(--bg-surface-2);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.chipAccent {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.chipNext {
+  border-color: color-mix(in srgb, var(--next) 45%, transparent);
+  background: var(--next-soft);
+  color: var(--next);
+}
+
+.chipDanger {
+  border-color: color-mix(in srgb, var(--danger) 45%, transparent);
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+/* ---------------- ProgressRing ---------------- */
+.ring {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+}
+
+.ringSvg {
+  transform: rotate(-90deg);
+}
+
+.ringTrack {
+  stroke: var(--border);
+}
+
+.ringIndicator {
+  stroke: var(--accent);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 60ms linear;
+  filter: drop-shadow(0 0 6px var(--accent-glow));
+}
+
+.ringContent {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  line-height: 1.1;
+}
+
+.ringValue {
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.ringUnit {
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+}
+
+/* ---------------- EmptyState ---------------- */
+.empty {
+  display: grid;
+  place-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-12) var(--sp-5);
+  text-align: center;
+  color: var(--text-faint);
+}
+
+.emptyTitle {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  color: var(--text-muted);
+}
