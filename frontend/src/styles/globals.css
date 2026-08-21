@@ -38,6 +38,20 @@ textarea {
   color: inherit;
 }
 
+body {
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
+}
+
+/* iOS zooms a focused field below 16px; the viewport is locked, so size up. */
+@media (max-width: 600px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
 button {
   background: none;
   border: none;

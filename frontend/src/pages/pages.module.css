@@ -8,14 +8,14 @@
 /* ---------------- generic grids ---------------- */
 .grid2 {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: var(--sp-4);
   align-items: start;
 }
 
 .grid4 {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
   gap: var(--sp-4);
 }
 
@@ -154,7 +154,7 @@
 /* ---------------- settings ---------------- */
 .settingsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
   gap: var(--sp-4);
   align-items: start;
 }
@@ -251,4 +251,18 @@
   height: 6px;
   border-radius: var(--r-full);
   background: var(--accent);
+}
+
+@media (max-width: 600px) {
+  .tile {
+    padding: var(--sp-4);
+  }
+
+  .rows {
+    overflow-x: auto;
+  }
+
+  .exampleList {
+    font-size: var(--fs-xs);
+  }
 }

@@ -79,6 +79,14 @@
 
 /* ---------- keyboard ---------- */
 
+.keyboardScroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  border-radius: var(--r-sm);
+}
+
 .keyboard {
   position: relative;
   width: 100%;
@@ -231,4 +239,53 @@
 .hiddenNotice {
   color: var(--next);
   font-weight: 600;
+}
+
+.scrollHint {
+  display: none;
+  color: var(--accent-strong);
+}
+
+/* Below this width the 61-key board would render ~9px keys, so give each white
+   key a floor and let the strip scroll instead of shrinking. */
+@media (max-width: 860px) {
+  .keyboard {
+    min-width: calc(var(--white-keys, 36) * 22px);
+    height: 128px;
+  }
+
+  .key {
+    font-size: 9px;
+  }
+
+  .black {
+    font-size: 8px;
+  }
+
+  .scrollHint {
+    display: inline;
+  }
+
+  .scrollHint::before {
+    content: '·';
+    margin-right: var(--sp-2);
+    color: var(--text-faint);
+  }
+}
+
+@media (max-width: 600px) {
+  .panel {
+    padding: var(--sp-3) var(--sp-3) var(--sp-2);
+  }
+
+  .legend {
+    gap: var(--sp-3);
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .header {
+    flex-wrap: wrap;
+    gap: var(--sp-2);
+  }
 }

@@ -231,3 +231,56 @@
   align-items: center;
   gap: var(--sp-3);
 }
+
+@media (max-width: 600px) {
+  .summary,
+  .lesson {
+    padding: var(--sp-3);
+  }
+
+  .summaryHead {
+    align-items: flex-start;
+    gap: var(--sp-3);
+  }
+
+  .lesson {
+    gap: var(--sp-2);
+  }
+
+  .order {
+    width: 26px;
+    height: 26px;
+  }
+
+  .lessonTitle {
+    font-size: var(--fs-md);
+  }
+
+  /* Four speeds share the row rather than wrapping unevenly. */
+  .drills {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+
+  .drill {
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 4px;
+    gap: 3px;
+  }
+
+  .drillProgress {
+    display: none;
+  }
+
+  .banner {
+    gap: var(--sp-3);
+    padding: var(--sp-3);
+  }
+
+  .bannerRight {
+    width: 100%;
+    justify-content: space-between;
+  }
+}

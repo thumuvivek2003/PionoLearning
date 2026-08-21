@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import type { CSSProperties } from 'react';
 import { cn } from '@/lib/cn';
 import type { HighlightChannel, HighlightMap, KeyboardLayout } from '../types/piano.types';
 import { EMPTY_HIGHLIGHTS, highlightFor } from '../utils/getKeyHighlight';
@@ -83,30 +84,38 @@ export function PianoKeyboard({
         </header>
       )}
 
-      <div className={styles.keyboard}>
-        <div className={styles.keyLayer}>
-          {whiteKeys.map((key) => (
-            <WhiteKey
-              key={key.midi}
-              pianoKey={key}
-              whiteKeyCount={layout.whiteKeyCount}
-              highlight={resolve(key)}
-              showName={showNoteNames}
-            />
-          ))}
-          {blackKeys.map((key) => (
-            <BlackKey
-              key={key.midi}
-              pianoKey={key}
-              whiteKeyCount={layout.whiteKeyCount}
-              highlight={resolve(key)}
-              showName={showNoteNames}
-            />
-          ))}
+      <div className={styles.keyboardScroll}>
+        <div
+          className={styles.keyboard}
+          style={{ '--white-keys': layout.whiteKeyCount } as CSSProperties}
+        >
+          <div className={styles.keyLayer}>
+            {whiteKeys.map((key) => (
+              <WhiteKey
+                key={key.midi}
+                pianoKey={key}
+                whiteKeyCount={layout.whiteKeyCount}
+                highlight={resolve(key)}
+                showName={showNoteNames}
+              />
+            ))}
+            {blackKeys.map((key) => (
+              <BlackKey
+                key={key.midi}
+                pianoKey={key}
+                whiteKeyCount={layout.whiteKeyCount}
+                highlight={resolve(key)}
+                showName={showNoteNames}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
-      <footer className={styles.footer}>{layout.name}</footer>
+      <footer className={styles.footer}>
+        <span>{layout.name}</span>
+        <span className={styles.scrollHint}>Swipe the keys sideways</span>
+      </footer>
     </section>
   );
 }

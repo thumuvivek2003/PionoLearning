@@ -9,6 +9,8 @@
 @media (max-width: 960px) {
   .shell {
     grid-template-columns: minmax(0, 1fr);
+    /* Keep the nav bar at its content height; only the main column grows. */
+    grid-template-rows: auto minmax(0, 1fr);
     height: auto;
     min-height: 100%;
   }
@@ -236,4 +238,50 @@
   flex-direction: column;
   gap: var(--sp-4);
   padding-bottom: var(--sp-4);
+}
+
+/* ---------------- Phones ---------------- */
+@media (max-width: 600px) {
+  .shell {
+    gap: var(--sp-3);
+    padding: var(--sp-2);
+  }
+
+  .sidebar {
+    gap: var(--sp-3);
+    padding: var(--sp-2) var(--sp-3);
+    border-radius: var(--r-lg);
+  }
+
+  .brandText {
+    display: none;
+  }
+
+  .brandMark {
+    width: 32px;
+    height: 32px;
+  }
+
+  .navItem {
+    height: 40px;
+    padding: 0 var(--sp-2);
+    font-size: var(--fs-sm);
+  }
+
+  .main {
+    overflow-y: visible;
+  }
+
+  .header {
+    align-items: flex-start;
+    gap: var(--sp-2);
+  }
+
+  .avatar {
+    display: none;
+  }
+
+  .headerSubtitle {
+    font-size: var(--fs-xs);
+  }
 }

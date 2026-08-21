@@ -171,3 +171,15 @@
   --shadow-md: 0 8px 24px rgba(20, 24, 50, 0.1);
   --shadow-lg: 0 24px 60px rgba(20, 24, 50, 0.14);
 }
+
+/* Phones: scale the display type and spacing down at the token level so every
+   component that reads them shrinks together. */
+@media (max-width: 600px) {
+  :root {
+    --fs-display: clamp(52px, 17vw, 84px);
+    --fs-3xl: 30px;
+    --fs-2xl: 24px;
+    --sp-6: 16px;
+    --sp-5: 14px;
+  }
+}
