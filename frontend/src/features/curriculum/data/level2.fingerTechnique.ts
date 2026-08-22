@@ -1,0 +1,163 @@
+import { defineLevel } from './defineLevel';
+
+/** L2 — fingers 1–5 under control: independence, shifts, thumb crossings. */
+export const level2 = defineLevel({
+  order: 2,
+  emoji: '🖐️',
+  title: 'Finger Technique',
+  summary:
+    'Fingers 1–5 under control — independence, five-finger positions, shifts, thumb crossings and muscle memory.',
+  buckets: [
+    {
+      title: 'Finger Awareness',
+      practices: [
+        'Finger numbering — RH',
+        'Finger numbering — LH',
+        'Finger tapping',
+        'Finger lift control',
+        'Finger relaxation',
+        'Finger-to-key awareness',
+      ],
+    },
+    {
+      title: 'Five-Finger Position',
+      practices: [
+        'RH 1-2-3-4-5',
+        'RH reverse',
+        'LH 5-4-3-2-1',
+        'LH reverse',
+        'RH alternating',
+        'RH odd fingers',
+        'RH even/odd',
+        'LH combinations',
+        'Both hands together',
+        'Opposite directions',
+      ],
+    },
+    {
+      title: 'Finger Independence',
+      practices: [
+        '1-3-2-4-3-5',
+        '5-3-4-2-1',
+        '1-2-4-3-5',
+        '1-3-5-2-4',
+        '2-4-1-5-3',
+        'Repeated fingers',
+        'Hold + move',
+        'Accent control',
+      ],
+    },
+    {
+      title: 'Finger Skips & Intervals',
+      practices: [
+        '1→3',
+        '1→4',
+        '1→5',
+        '1→3→5',
+        '5→3→1',
+        'Random 2-note jumps',
+        'Random 3-note jumps',
+        'Same fingers, different keys',
+      ],
+    },
+    {
+      title: 'Position Shifting',
+      practices: [
+        'Shift right by 1',
+        'Shift right by 2',
+        'Shift left by 1',
+        'Shift after 5',
+        'Shift after 3',
+        'Random starting position',
+        'Position recognition',
+        'Silent repositioning',
+      ],
+    },
+    {
+      title: 'Thumb Movement',
+      practices: [
+        'Thumb under',
+        'Thumb beside hand',
+        '1→2→3→1',
+        '1→2→3→4→1',
+        'Reverse crossing',
+        'Slow crossing',
+      ],
+    },
+    {
+      title: 'Finger Crossing',
+      practices: [
+        '1-2-3-1',
+        '3-2-1-3',
+        '1-2-3-4-5-1',
+        'Scale fragments',
+        'Crossing after different fingers',
+        'Slow → medium → fast',
+      ],
+    },
+    {
+      title: 'Stretch vs Shift vs Cross',
+      practices: [
+        'Nearby note',
+        'Comfortable reach',
+        'Large jump',
+        'Continuous ascending notes',
+        'Continuous descending notes',
+        'Random isolated note',
+        'Long sequence',
+      ],
+    },
+    {
+      title: 'Black-Key Geography',
+      practices: [
+        'Black-key recognition',
+        'C♯ / D♭',
+        'D♯ / E♭',
+        'F♯ / G♭',
+        'G♯ / A♭',
+        'A♯ / B♭',
+        'Natural + black combinations',
+        'Random black keys',
+      ],
+    },
+    {
+      title: 'Random Finger Decisions',
+      practices: [
+        'Random natural notes',
+        'Random 2-note patterns',
+        'Random 3-note patterns',
+        'Random 4-note patterns',
+        'Random 5-note patterns',
+        'Random starting position',
+        'Random direction',
+        'Random black + white keys',
+        'Timed random notes',
+        'Accuracy-first random practice',
+      ],
+    },
+    {
+      title: 'Rhythm + Finger Technique',
+      practices: [
+        'Quarter notes',
+        'Eighth notes',
+        'Metronome slow',
+        'Metronome increase',
+        'Same pattern different rhythms',
+        'Accent patterns',
+      ],
+    },
+    {
+      title: 'Muscle-Memory Validation',
+      practices: [
+        'Extremely slow practice',
+        'Eyes-open accuracy',
+        'Eyes-off practice',
+        'Randomized patterns',
+        'Change starting notes',
+        'Change fingers when appropriate',
+        'Record yourself',
+        'Stop on repeated errors',
+      ],
+    },
+  ],
+});

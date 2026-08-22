@@ -1,0 +1,162 @@
+import { defineLevel } from './defineLevel';
+
+/** L4 — the whole/half-step formula turned into every major and minor scale. */
+export const level4 = defineLevel({
+  order: 4,
+  emoji: '🎼',
+  title: 'Scales & Keyboard Patterns',
+  summary:
+    'One formula, twelve keys — build and play every major and minor scale, then recall them from a random key.',
+  buckets: [
+    {
+      title: 'Major Scale Formula',
+      practices: [
+        'Whole Step',
+        'Half Step',
+        'W-W-H-W-W-W-H Formula',
+        'Formula Starting From Any Note',
+        'Formula on Keyboard',
+        'Scale Construction Drill',
+      ],
+    },
+    {
+      title: 'C Major Scale',
+      practices: [
+        'C Major Notes',
+        'C Major Formula',
+        'RH C Major',
+        'LH C Major',
+        'Hands Together',
+        'Slow Scale Practice',
+        'Random Start Practice',
+      ],
+    },
+    {
+      title: 'G Major Scale',
+      practices: [
+        'G Major Notes',
+        'F# Recognition',
+        'G Major Formula',
+        'RH G Major',
+        'LH G Major',
+        'Hands Together',
+        'C → G Comparison',
+      ],
+    },
+    {
+      title: 'F Major Scale',
+      practices: [
+        'F Major Notes',
+        'Bb Recognition',
+        'F Major Formula',
+        'RH F Major',
+        'LH F Major',
+        'Hands Together',
+        'C → G → F Comparison',
+      ],
+    },
+    {
+      title: 'Major Scale Family',
+      practices: [
+        'C Major',
+        'G Major',
+        'D Major',
+        'A Major',
+        'E Major',
+        'B Major',
+        'F Major',
+        'Bb Major',
+        'Eb Major',
+        'Ab Major',
+        'Db Major',
+        'Sharp-Key Order',
+        'Flat-Key Order',
+        'Random Major Scale',
+      ],
+    },
+    {
+      title: 'Minor Scale Foundation',
+      practices: [
+        'Major vs Minor Sound',
+        'Natural Minor Formula',
+        'Relative Minor Concept',
+        'Relative Minor From Major',
+        'Minor Scale Construction',
+      ],
+    },
+    {
+      title: 'A Minor Scale',
+      practices: [
+        'A Minor Notes',
+        'A Minor Formula',
+        'A Minor vs C Major',
+        'RH A Minor',
+        'LH A Minor',
+        'Hands Together',
+      ],
+    },
+    {
+      title: 'E Minor Scale',
+      practices: [
+        'E Minor Notes',
+        'E Minor Formula',
+        'E Minor vs G Major',
+        'RH E Minor',
+        'LH E Minor',
+        'Hands Together',
+      ],
+    },
+    {
+      title: 'D Minor Scale',
+      practices: [
+        'D Minor Notes',
+        'D Minor Formula',
+        'D Minor vs F Major',
+        'RH D Minor',
+        'LH D Minor',
+        'Hands Together',
+      ],
+    },
+    {
+      title: 'Scale Pattern Recognition',
+      practices: [
+        'Identify Starting Note',
+        'Identify Accidentals',
+        'Missing Note Drill',
+        'Ascending Pattern',
+        'Descending Pattern',
+        'Random Key → Scale',
+        'Scale → Key',
+        'Major vs Minor',
+      ],
+    },
+    {
+      title: 'Scale Playing Technique',
+      practices: [
+        'Finger Numbering',
+        'Thumb Tuck',
+        'Finger Crossing',
+        'Even Notes',
+        'Slow → Fast',
+        'Metronome Practice',
+        'Accent-Free Playing',
+        'Ascending + Descending',
+      ],
+    },
+    {
+      title: 'Scale Recall & Random-Key Practice',
+      practices: [
+        'Random Key Recognition',
+        'Name the Scale Notes',
+        'Find Notes on Keyboard',
+        'Play Without Looking',
+        'Ascending Challenge',
+        'Descending Challenge',
+        'Major/Minor Challenge',
+        'Timed Scale Challenge',
+        'Mistake Correction',
+        'Contest Simulation',
+      ],
+    },
+  ],
+});

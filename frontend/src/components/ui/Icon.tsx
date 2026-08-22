@@ -32,6 +32,11 @@ const PATHS = {
   crown: 'M3 7l4.5 4L12 4l4.5 7L21 7l-1.8 11H4.8L3 7Z',
   trash: 'M4 7h16M9 7V4h6v3m-8 0 1 13h8l1-13',
   keyboard: 'M3 6h18v12H3z M7 6v7M11 6v7M15 6v7M19 6v7',
+  layers: 'M12 3 2 8l10 5 10-5-10-5ZM2 13l10 5 10-5M2 18l10 5 10-5',
+  lock: 'M6 11h12v10H6V11ZM9 11V7a3 3 0 0 1 6 0v4',
+  target: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Zm0-5a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0-4a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z',
+  'sidebar-collapse': 'M4 4h16v16H4zM10 4v16M15 9l-2 3 2 3',
+  'sidebar-expand': 'M4 4h16v16H4zM10 4v16M13 9l2 3-2 3',
 } as const;
 
 export type IconName = keyof typeof PATHS;

@@ -36,6 +36,8 @@ export interface AppSettings {
    */
   sessionSeconds: number;
   mode: PracticeMode;
+  /** Sidebar shows icons only. Ignored on narrow screens, where it is a bar. */
+  sidebarCollapsed: boolean;
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -53,4 +55,5 @@ export const DEFAULT_SETTINGS: AppSettings = {
   intervalSeconds: 2,
   sessionSeconds: 0,
   mode: 'practice',
+  sidebarCollapsed: false,
 };

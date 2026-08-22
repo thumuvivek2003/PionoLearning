@@ -1,0 +1,121 @@
+import { defineLevel } from './defineLevel';
+
+/** L8 — recall at speed: everything earlier, randomised and performed. */
+export const level8 = defineLevel({
+  order: 8,
+  emoji: '🏆',
+  title: 'Performance Fluency',
+  summary:
+    'Everything at random and at speed — notes, scales, chords, progressions, reading, ear, and a full performance.',
+  buckets: [
+    {
+      title: 'Random Notes',
+      practices: [
+        'Random White Keys',
+        'Random Black Keys',
+        'Note → Keyboard',
+        'Keyboard → Note',
+        'Octave Identification',
+        'Random Note Drill',
+        'Eyes-Closed Note Drill',
+        'Speed Note Challenge',
+      ],
+    },
+    {
+      title: 'Random Scales',
+      practices: [
+        'C Major Random Start',
+        'G Major',
+        'D Major',
+        'F Major',
+        'A Major',
+        'E Major',
+        'Major Scale Randomizer',
+        'Ascending + Descending',
+        'Hands Separately',
+        'Scale Speed Drill',
+      ],
+    },
+    {
+      title: 'Random Chords',
+      practices: [
+        'Major Triad Recall',
+        'Minor Triad Recall',
+        'Diminished Triads',
+        'Chord → Notes',
+        'Notes → Chord',
+        'Random Chord Drill',
+        'Chord Inversions',
+        'Chord Speed Drill',
+      ],
+    },
+    {
+      title: 'Random Progressions',
+      practices: [
+        'I–IV–V',
+        'I–V–vi–IV',
+        'I–vi–IV–V',
+        'ii–V–I',
+        'Random Key Progression',
+        'Random Chord Sequence',
+        'Smooth Transitions',
+        'Progression + Rhythm',
+      ],
+    },
+    {
+      title: 'Sight Reading',
+      practices: [
+        'Note Recognition',
+        'Simple Melodies',
+        'RH Sight Reading',
+        'LH Sight Reading',
+        'Hands Together',
+        'Rhythm Reading',
+        'No-Stopping Drill',
+        'First-Play Challenge',
+      ],
+    },
+    {
+      title: 'Ear → Keyboard',
+      practices: [
+        'Single Note Recognition',
+        'Note → Keyboard',
+        'Two-Note Recognition',
+        'Three-Note Recognition',
+        'Major vs Minor',
+        'Major Chord Identification',
+        'Minor Chord Identification',
+        'Chord → Keyboard',
+        'Melody → Keyboard',
+      ],
+    },
+    {
+      title: 'Rhythm → Keyboard',
+      practices: [
+        'Steady Beat',
+        'Quarter Notes',
+        'Eighth Notes',
+        'Rests',
+        'Rhythm Imitation',
+        'Melody Rhythm',
+        'Metronome Challenge',
+        'Random Rhythm Drill',
+      ],
+    },
+    {
+      title: 'Performance',
+      practices: [
+        'Complete Piece',
+        'No-Stopping Practice',
+        'Metronome Performance',
+        'Memory Performance',
+        'Random Start',
+        'Recovery Drill',
+        'Full-Speed Performance',
+        'One-Take Performance',
+        'Pressure Simulation',
+        'Final Contest Simulation',
+      ],
+    },
+  ],
+});

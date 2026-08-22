@@ -1,3 +1,4 @@
+export { AsyncImage } from './AsyncImage';
 export { Button } from './Button';
 export type { ButtonSize, ButtonVariant } from './Button';
 export { Card } from './Card';
