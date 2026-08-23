@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getStrategy } from '@/features/randomizer';
 import type { Identifiable } from '@/features/randomizer';
+import { useOptionalPracticeClock } from '../PracticeClockContext';
 
 /** How long a verdict stays on screen before the next prompt. */
 const CORRECT_HOLD_MS = 450;
@@ -51,6 +52,7 @@ export function useQuizDrill<Q extends Identifiable, A>({
   strategyId = 'no-repeat',
 }: QuizDrillOptions<Q, A>) {
   const strategy = useMemo(() => getStrategy(strategyId), [strategyId]);
+  const clock = useOptionalPracticeClock();
 
   // Held in a ref so an inline `answerOf` cannot re-create `answer` every
   // render — the drills bind it to key handlers, which would resubscribe.
@@ -103,6 +105,9 @@ export function useQuizDrill<Q extends Identifiable, A>({
       // Ignore input while a verdict is showing, so a double tap cannot skip one.
       if (verdict !== 'waiting') return;
 
+      // The first answer is the moment practice really began.
+      clock?.markActivity();
+
       const elapsed = performance.now() - shownAt.current;
       const isCorrect = value === readAnswer.current(question);
       setGiven(value);
@@ -141,7 +146,7 @@ export function useQuizDrill<Q extends Identifiable, A>({
         isCorrect ? CORRECT_HOLD_MS : WRONG_HOLD_MS,
       );
     },
-    [advance, question, verdict],
+    [advance, clock, question, verdict],
   );
 
   const reset = useCallback(() => {

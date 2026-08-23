@@ -296,3 +296,113 @@
     height: 32px;
   }
 }
+
+/* ---------------- practice clock ---------------- */
+
+.clock {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.clockDone {
+  border-color: var(--warning);
+  background: color-mix(in srgb, var(--warning) 10%, var(--bg-surface));
+}
+
+.clockMain {
+  display: grid;
+  gap: 2px;
+  min-width: 96px;
+}
+
+.clockLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.clockValue {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xl);
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.clockElapsed {
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+}
+
+.clockChoices {
+  display: grid;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.clockChoicesLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.clockActions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex: none;
+}
+
+.clockMeter {
+  grid-column: 1 / -1;
+  position: relative;
+  height: 6px;
+  border-radius: var(--r-full);
+  background: var(--bg-inset);
+  overflow: hidden;
+}
+
+.clockMeterFill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: var(--r-full);
+  background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+  transition: width 240ms linear;
+}
+
+.clockMeterFillDone {
+  background: linear-gradient(90deg, var(--warning), var(--danger));
+}
+
+/* ---------------- frame with the clock on top ---------------- */
+
+.frame {
+  display: grid;
+  gap: var(--sp-4);
+}
+
+@media (max-width: 720px) {
+  .clock {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .clockActions {
+    grid-column: 1 / -1;
+  }
+}

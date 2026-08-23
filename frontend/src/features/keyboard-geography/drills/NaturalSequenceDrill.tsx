@@ -9,6 +9,7 @@ import {
   DrillPrompt,
   DrillShell,
   StepStrip,
+  useOptionalPracticeClock,
 } from '@/features/practice-kit';
 import { useSettings } from '@/features/settings';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
@@ -47,6 +48,7 @@ export function NaturalSequenceDrill() {
   const [startMode, setStartMode] = useState<StartMode>('c');
   const [showNames, setShowNames] = useState(true);
   const { settings } = useSettings();
+  const clock = useOptionalPracticeClock();
 
   const [start, setStart] = useState<Letter>('C');
   const [index, setIndex] = useState(0);
@@ -91,6 +93,7 @@ export function NaturalSequenceDrill() {
   const answer = useCallback(
     (letter: Letter) => {
       if (complete) return;
+      clock?.markActivity();
 
       if (letter !== expected) {
         setWrong(letter);
@@ -114,7 +117,7 @@ export function NaturalSequenceDrill() {
       if (seconds !== null) setBestSeconds((best) => (best === null ? seconds : Math.min(best, seconds)));
       restartTimer.current = window.setTimeout(newRun, 1100);
     },
-    [complete, expected, index, newRun, settings.soundEnabled],
+    [clock, complete, expected, index, newRun, settings.soundEnabled],
   );
 
   const answerLetters = useMemo(
@@ -207,7 +210,7 @@ export function NaturalSequenceDrill() {
       <div className={styles.keyboard}>
         <GeographyKeyboard
           layoutId="25"
-          pitchClass={played === null ? null : LETTER_PITCH_CLASS[played]}
+          litPitchClasses={played === null ? undefined : [LETTER_PITCH_CLASS[played]]}
           showNames={showNames}
           onKeyPress={(key: PianoKey) => {
             if (!key.isBlack) answer(key.sharpName as Letter);

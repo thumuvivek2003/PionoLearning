@@ -37,21 +37,49 @@ export const level1 = defineLevel({
       ],
     },
     {
+      // Built: see the landmark → locate the key → know the note.
       title: 'Black-Key Geography',
       practices: [
-        '2-Black-Key Pattern',
-        '3-Black-Key Pattern',
-        'C from 2-Black Pattern',
-        'D from 2-Black Pattern',
-        'E from 2-Black Pattern',
-        'F from 3-Black Pattern',
-        'G from 3-Black Pattern',
-        'A from 3-Black Pattern',
-        'B from 3-Black Pattern',
-        'Black-Key Random Recognition',
-        'Sharp Names',
-        'Flat Names',
-        'Sharp ↔ Flat Equivalents',
+        { title: '2-Black-Key Pattern', activity: { kind: 'drill', drillId: 'geo.group-two' } },
+        { title: '3-Black-Key Pattern', activity: { kind: 'drill', drillId: 'geo.group-three' } },
+        {
+          title: 'C from 2-Black Pattern',
+          activity: { kind: 'drill', drillId: 'geo.landmark-c' },
+        },
+        {
+          title: 'D from 2-Black Pattern',
+          activity: { kind: 'drill', drillId: 'geo.landmark-d' },
+        },
+        {
+          title: 'E from 2-Black Pattern',
+          activity: { kind: 'drill', drillId: 'geo.landmark-e' },
+        },
+        {
+          title: 'F from 3-Black Pattern',
+          activity: { kind: 'drill', drillId: 'geo.landmark-f' },
+        },
+        {
+          title: 'G from 3-Black Pattern',
+          activity: { kind: 'drill', drillId: 'geo.landmark-g' },
+        },
+        {
+          title: 'A from 3-Black Pattern',
+          activity: { kind: 'drill', drillId: 'geo.landmark-a' },
+        },
+        {
+          title: 'B from 3-Black Pattern',
+          activity: { kind: 'drill', drillId: 'geo.landmark-b' },
+        },
+        {
+          title: 'Black-Key Random Recognition',
+          activity: { kind: 'drill', drillId: 'geo.black-position' },
+        },
+        { title: 'Sharp Names', activity: { kind: 'drill', drillId: 'geo.black-sharps' } },
+        { title: 'Flat Names', activity: { kind: 'drill', drillId: 'geo.black-flats' } },
+        {
+          title: 'Sharp ↔ Flat Equivalents',
+          activity: { kind: 'drill', drillId: 'geo.enharmonics' },
+        },
       ],
     },
     {

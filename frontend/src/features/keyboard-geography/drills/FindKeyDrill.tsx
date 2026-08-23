@@ -140,9 +140,10 @@ export function FindKeyDrill() {
         <GeographyKeyboard
           layoutId={layoutId}
           // On a right answer the board shows where it was; a wrong press stays cool-coloured.
-          midi={settled && verdict === 'correct' ? lastPressed : null}
-          pitchClass={null}
-          secondaryMidi={verdict === 'wrong' ? lastPressed : null}
+          litMidis={
+            settled && verdict === 'correct' && lastPressed !== null ? [lastPressed] : undefined
+          }
+          secondaryMidis={verdict === 'wrong' && lastPressed !== null ? [lastPressed] : undefined}
           showNames={showNames || settled}
           onKeyPress={press}
           footerNote="Press the key you were asked for"

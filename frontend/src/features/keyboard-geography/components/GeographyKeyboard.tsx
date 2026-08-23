@@ -5,12 +5,12 @@ import type { PitchClass } from '@/features/music-theory';
 
 interface GeographyKeyboardProps {
   layoutId: string;
-  /** Lights one exact key — used when the drill asks about a specific octave. */
-  midi?: number | null;
-  /** Lights a note in every octave — used when only the letter matters. */
-  pitchClass?: PitchClass | null;
+  /** Lights exact keys — one key, or a whole black-key group. */
+  litMidis?: readonly number[];
+  /** Lights notes in every octave, when only the letter matters. */
+  litPitchClasses?: readonly PitchClass[];
   /** A second, cooler highlight: the answer that was given, or a hint. */
-  secondaryMidi?: number | null;
+  secondaryMidis?: readonly number[];
   showNames: boolean;
   onKeyPress?: (key: PianoKey) => void;
   footerNote?: string;
@@ -25,28 +25,30 @@ interface GeographyKeyboardProps {
  */
 export function GeographyKeyboard({
   layoutId,
-  midi = null,
-  pitchClass = null,
-  secondaryMidi = null,
+  litMidis,
+  litPitchClasses,
+  secondaryMidis,
   showNames,
   onKeyPress,
   footerNote,
 }: GeographyKeyboardProps) {
   const layout = getKeyboardLayout(layoutId);
 
-  const highlights = useMemo(
-    () =>
-      buildHighlightMap({
-        current:
-          midi !== null
-            ? { midis: [midi] }
-            : pitchClass !== null
-              ? { pitchClasses: [pitchClass] }
-              : undefined,
-        next: secondaryMidi !== null ? { midis: [secondaryMidi] } : undefined,
-      }),
-    [midi, pitchClass, secondaryMidi],
-  );
+  const highlights = useMemo(() => {
+    // Exact keys win over pitch classes: "this D#" is more specific than "every D#".
+    const current =
+      litMidis && litMidis.length > 0
+        ? { midis: [...litMidis] }
+        : litPitchClasses && litPitchClasses.length > 0
+          ? { pitchClasses: [...litPitchClasses] }
+          : undefined;
+
+    return buildHighlightMap({
+      current,
+      next:
+        secondaryMidis && secondaryMidis.length > 0 ? { midis: [...secondaryMidis] } : undefined,
+    });
+  }, [litMidis, litPitchClasses, secondaryMidis]);
 
   return (
     <PianoKeyboard

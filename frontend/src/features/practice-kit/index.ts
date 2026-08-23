@@ -7,6 +7,13 @@
  * diagram, a keyboard — which keeps the buckets independent of each other.
  */
 export { Choice, ChoicePills, ChoiceRow } from './components/Choices';
+export { PracticeClock } from './components/PracticeClock';
+export {
+  PracticeClockProvider,
+  useOptionalPracticeClock,
+  usePracticeClock,
+} from './PracticeClockContext';
+export type { ClockStatus } from './PracticeClockContext';
 export { Counter, CounterRow, ScoreBoard, formatMs } from './components/Counters';
 export { DrillPrompt, DrillShell, StageRow } from './components/DrillShell';
 export { StepStrip } from './components/StepStrip';

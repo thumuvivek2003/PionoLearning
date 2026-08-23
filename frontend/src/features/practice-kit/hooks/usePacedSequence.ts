@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useInterval } from '@/hooks/useInterval';
 import { TICK_MS } from '@/lib/constants';
+import { useOptionalPracticeClock } from '../PracticeClockContext';
 
 export interface PacedStep<T> {
   value: T;
@@ -32,6 +33,7 @@ export function usePacedSequence<T>(
   const [elapsedMs, setElapsedMs] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [cycles, setCycles] = useState(0);
+  const clock = useOptionalPracticeClock();
 
   // Callbacks are read at fire time so a new closure never restarts the timer.
   const callbacks = useRef({ onCycle, onStep });
@@ -49,12 +51,14 @@ export function usePacedSequence<T>(
   }, []);
 
   const start = useCallback(() => {
+    // Pressing play on a drill starts the session clock too.
+    clock?.markActivity();
     setIndex(0);
     setElapsedMs(0);
     setCycles(0);
     setIsRunning(true);
     callbacks.current.onStep?.(0);
-  }, []);
+  }, [clock]);
 
   const toggle = useCallback(() => {
     if (isRunning) stop();

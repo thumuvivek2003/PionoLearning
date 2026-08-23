@@ -7,10 +7,16 @@ import {
   RelaxationDrill,
 } from '@/features/finger-training';
 import {
+  BlackGroupDrill,
+  BlackKeyNameDrill,
+  EnharmonicDrill,
   FindKeyDrill,
   KeyNameDrill,
+  LandmarkNoteDrill,
   NaturalSequenceDrill,
   RelationDrill,
+  getGroupDrill,
+  getLandmarkDrill,
   getRelationDrill,
 } from '@/features/keyboard-geography';
 
@@ -68,6 +74,69 @@ const REGISTERED_DRILLS: readonly Drill[] = [
   },
   { id: 'geo.key-to-name', title: 'White-key random recognition', render: KeyNameDrill },
   { id: 'geo.name-to-key', title: 'White key → location', render: FindKeyDrill },
+
+  /* ---- L1 · B1.2 — Black-Key Geography ---- */
+  {
+    id: 'geo.group-two',
+    title: '2-black-key pattern',
+    render: () => <BlackGroupDrill config={getGroupDrill('two')} />,
+  },
+  {
+    id: 'geo.group-three',
+    title: '2 vs 3 black keys',
+    render: () => <BlackGroupDrill config={getGroupDrill('both')} />,
+  },
+  {
+    id: 'geo.landmark-c',
+    title: 'C from the group of 2',
+    render: () => <LandmarkNoteDrill config={getLandmarkDrill('C')} />,
+  },
+  {
+    id: 'geo.landmark-d',
+    title: 'D from the group of 2',
+    render: () => <LandmarkNoteDrill config={getLandmarkDrill('D')} />,
+  },
+  {
+    id: 'geo.landmark-e',
+    title: 'E from the group of 2',
+    render: () => <LandmarkNoteDrill config={getLandmarkDrill('E')} />,
+  },
+  {
+    id: 'geo.landmark-f',
+    title: 'F from the group of 3',
+    render: () => <LandmarkNoteDrill config={getLandmarkDrill('F')} />,
+  },
+  {
+    id: 'geo.landmark-g',
+    title: 'G from the group of 3',
+    render: () => <LandmarkNoteDrill config={getLandmarkDrill('G')} />,
+  },
+  {
+    id: 'geo.landmark-a',
+    title: 'A from the group of 3',
+    render: () => <LandmarkNoteDrill config={getLandmarkDrill('A')} />,
+  },
+  {
+    id: 'geo.landmark-b',
+    title: 'B from the group of 3',
+    render: () => <LandmarkNoteDrill config={getLandmarkDrill('B')} />,
+  },
+  {
+    id: 'geo.black-position',
+    title: 'Black-key random recognition',
+    render: () => <BlackKeyNameDrill naming="position" />,
+  },
+  {
+    id: 'geo.black-sharps',
+    title: 'Sharp names',
+    render: () => <BlackKeyNameDrill naming="sharp" />,
+  },
+  {
+    id: 'geo.black-flats',
+    title: 'Flat names',
+    render: () => <BlackKeyNameDrill naming="flat" />,
+  },
+  { id: 'geo.enharmonics', title: 'Sharp ↔ flat equivalents', render: EnharmonicDrill },
 
   /* ---- L2 · B2.1 — Finger Awareness ---- */
   {

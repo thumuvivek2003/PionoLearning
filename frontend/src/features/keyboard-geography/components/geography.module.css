@@ -2,16 +2,19 @@
 
 .notes {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  /* auto-fit so the same component holds seven letters or five names */
+  grid-template-columns: repeat(auto-fit, minmax(62px, 1fr));
   gap: var(--sp-2);
   width: 100%;
   min-width: 0;
-  max-width: 520px;
+  max-width: 560px;
 }
 
 .note {
   display: grid;
   place-items: center;
+  gap: 2px;
+  padding: var(--sp-2) 4px;
   min-height: 52px;
   border-radius: var(--r-md);
   border: 1px solid var(--border);
@@ -39,6 +42,13 @@
 .note:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.noteSub {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  opacity: 0.65;
 }
 
 .noteCorrect {

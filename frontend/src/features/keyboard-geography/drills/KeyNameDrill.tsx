@@ -116,7 +116,7 @@ export function KeyNameDrill() {
       <div className={styles.keyboard}>
         <GeographyKeyboard
           layoutId={layoutId}
-          midi={question.midi}
+          litMidis={[question.midi]}
           showNames={showNames || settled}
           footerNote="Name the lit key"
         />

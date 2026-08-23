@@ -129,7 +129,6 @@ export function RelationDrill({ config }: { config: RelationDrillConfig }) {
       <div className={styles.keyboard}>
         <GeographyKeyboard
           layoutId="25"
-          pitchClass={null}
           showNames={showNames}
           onKeyPress={(key: PianoKey) => {
             // Black keys are not answers here — the map is white keys only.

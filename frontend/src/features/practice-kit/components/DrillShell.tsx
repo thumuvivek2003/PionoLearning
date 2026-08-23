@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Icon } from '@/components/ui';
 import { cn } from '@/lib/cn';
+import { PracticeClock } from './PracticeClock';
 import styles from './kit.module.css';
 
 interface DrillShellProps {
@@ -17,35 +18,40 @@ interface DrillShellProps {
 }
 
 /**
- * The frame every practice screen shares: stage on the left, controls on the
- * right, guidance underneath.
+ * The frame every practice screen shares: session clock on top, stage on the
+ * left, controls on the right, guidance underneath.
  *
  * Uniform on purpose — a bucket of drills should feel like one thing, and a
- * learner should never have to work out where the Start button went.
+ * learner should never have to work out where the Start button went. The clock
+ * lives here rather than in each drill so every practice is timed the same way.
  */
 export function DrillShell({ goal, steps, watchFor, children, aside }: DrillShellProps) {
   return (
-    <div className={styles.drill}>
-      <section className={styles.stage}>{children}</section>
+    <div className={styles.frame}>
+      <PracticeClock />
 
-      <aside className={styles.aside}>{aside}</aside>
+      <div className={styles.drill}>
+        <section className={styles.stage}>{children}</section>
 
-      <section className={styles.guide}>
-        <p className={styles.goal}>
-          <Icon name="target" size={15} />
-          {goal}
-        </p>
-        <ol className={styles.steps}>
-          {steps.map((step) => (
-            <li key={step}>{step}</li>
-          ))}
-        </ol>
-        {watchFor && (
-          <p className={styles.watch}>
-            <strong>Watch for:</strong> {watchFor}
+        <aside className={styles.aside}>{aside}</aside>
+
+        <section className={styles.guide}>
+          <p className={styles.goal}>
+            <Icon name="target" size={15} />
+            {goal}
           </p>
-        )}
-      </section>
+          <ol className={styles.steps}>
+            {steps.map((step) => (
+              <li key={step}>{step}</li>
+            ))}
+          </ol>
+          {watchFor && (
+            <p className={styles.watch}>
+              <strong>Watch for:</strong> {watchFor}
+            </p>
+          )}
+        </section>
+      </div>
     </div>
   );
 }
