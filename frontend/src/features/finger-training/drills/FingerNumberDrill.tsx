@@ -1,13 +1,11 @@
 import { useMemo, useState } from 'react';
 import { Chip, Field, SegmentedControl, Toggle } from '@/components/ui';
+import { DrillPrompt, DrillShell, ScoreBoard, useQuizDrill } from '@/features/practice-kit';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { cn } from '@/lib/cn';
 import { FINGERS, FINGER_NUMBERS, fingerName, handLabel, handShort } from '../data/fingers';
 import type { FingerNumber, Hand, QuizDirection } from '../finger.types';
-import { useQuizDrill } from '../hooks/useQuizDrill';
-import { DrillShell } from '../components/DrillShell';
 import { HandDiagram } from '../components/HandDiagram';
-import { ScoreBoard } from '../components/ScoreBoard';
 import styles from '../components/finger.module.css';
 
 /** A prompt is one finger asked in one of the two directions. */
@@ -44,7 +42,7 @@ function buildPool(direction: QuizDirection): readonly Prompt[] {
  * 2.1.1 — finger numbers, both directions.
  *
  * The same component serves the right and left hand because the numbering is
- * the same: 1 is the thumb on both, and the only difference is which side of
+ * the same: 1 is always the thumb, and the only difference is which side of
  * the diagram it sits on.
  */
 export function FingerNumberDrill({ hand }: { hand: Hand }) {
@@ -52,10 +50,8 @@ export function FingerNumberDrill({ hand }: { hand: Hand }) {
   const [assist, setAssist] = useState(true);
 
   const pool = useMemo(() => buildPool(direction), [direction]);
-  const drill = useQuizDrill<Prompt, FingerNumber>({
-    pool,
-    answerOf: (prompt) => prompt.finger,
-  });
+  const answerOf = useMemo(() => (prompt: Prompt) => prompt.finger, []);
+  const drill = useQuizDrill<Prompt, FingerNumber>({ pool, answerOf });
 
   const { question, verdict, given, stats } = drill;
   const settled = verdict !== 'waiting';
@@ -105,22 +101,22 @@ export function FingerNumberDrill({ hand }: { hand: Hand }) {
         </>
       }
     >
-      <div className={styles.promptRow}>
-        <span className={styles.promptLabel}>
-          {handShort(hand)} · {askingForNumber ? 'Which number?' : 'Which finger?'}
-        </span>
-        <p className={cn(styles.prompt, styles.promptWide)}>
-          {askingForNumber ? fingerName(question.finger) : question.finger}
-        </p>
-        <span className={styles.verdictLine}>
-          {verdict === 'correct' && <Chip tone="accent">Correct</Chip>}
-          {verdict === 'wrong' && (
-            <Chip tone="danger">
-              {given} is {fingerName(given as FingerNumber)} — try again
-            </Chip>
-          )}
-        </span>
-      </div>
+      <DrillPrompt
+        label={`${handShort(hand)} · ${askingForNumber ? 'Which number?' : 'Which finger?'}`}
+        wide={askingForNumber}
+        footer={
+          <>
+            {verdict === 'correct' && <Chip tone="accent">Correct</Chip>}
+            {verdict === 'wrong' && given !== null && (
+              <Chip tone="danger">
+                {given} is {fingerName(given)} — try again
+              </Chip>
+            )}
+          </>
+        }
+      >
+        {askingForNumber ? fingerName(question.finger) : question.finger}
+      </DrillPrompt>
 
       <HandDiagram
         hand={hand}

@@ -1,14 +1,22 @@
 import { useMemo, useState } from 'react';
 import { Button, Chip, Field, ProgressRing, SegmentedControl } from '@/components/ui';
+import {
+  Choice,
+  ChoicePills,
+  ChoiceRow,
+  Counter,
+  CounterRow,
+  DrillPrompt,
+  DrillShell,
+  StageRow,
+  StepStrip,
+  usePacedSequence,
+} from '@/features/practice-kit';
+import type { PacedStep } from '@/features/practice-kit';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
-import { cn } from '@/lib/cn';
 import { TAPPING_PATTERNS, fingerName, handShort, resolvePattern } from '../data/fingers';
 import type { FingerNumber, Hand } from '../finger.types';
-import { usePacedSequence } from '../hooks/usePacedSequence';
-import type { PacedStep } from '../hooks/usePacedSequence';
-import { DrillShell } from '../components/DrillShell';
 import { HandDiagram } from '../components/HandDiagram';
-import styles from '../components/finger.module.css';
 
 const HANDS = [
   { value: 'right', label: 'Right hand' },
@@ -82,8 +90,6 @@ export function FingerTappingDrill() {
     ),
   );
 
-  const done = paced.isRunning ? sequence.slice(0, paced.index) : [];
-
   return (
     <DrillShell
       goal="Command one finger at a time — the other four stay put and stay soft."
@@ -101,79 +107,61 @@ export function FingerTappingDrill() {
           </Field>
 
           <Field label="Pattern">
-            <div className={styles.chipRow}>
+            <ChoiceRow>
               {TAPPING_PATTERNS.map((entry) => (
-                <button
+                <Choice
                   key={entry.id}
-                  type="button"
-                  className={cn(styles.choice, entry.id === patternId && styles.choiceActive)}
+                  active={entry.id === patternId}
                   onClick={() => setPatternId(entry.id)}
                 >
                   {entry.label}
-                </button>
+                </Choice>
               ))}
-            </div>
+            </ChoiceRow>
           </Field>
 
           <Field label="Tempo" hint="One tap per beat.">
-            <div className={styles.chipRow}>
-              {TEMPOS.map((tempo) => (
-                <button
-                  key={tempo}
-                  type="button"
-                  className={cn(styles.choice, tempo === bpm && styles.choiceActive)}
-                  onClick={() => setBpm(tempo)}
-                >
-                  {tempo}
-                </button>
-              ))}
-            </div>
+            <ChoicePills options={TEMPOS} value={bpm} onChange={setBpm} />
           </Field>
 
-          <div className={styles.transport}>
-            <Button
-              variant={paced.isRunning ? 'danger' : 'primary'}
-              icon={paced.isRunning ? 'stop' : 'play'}
-              onClick={paced.isRunning ? paced.stop : start}
-              block
-            >
-              {paced.isRunning ? 'Stop' : 'Start'}
-            </Button>
-          </div>
+          <Button
+            variant={paced.isRunning ? 'danger' : 'primary'}
+            icon={paced.isRunning ? 'stop' : 'play'}
+            onClick={paced.isRunning ? paced.stop : start}
+            block
+          >
+            {paced.isRunning ? 'Stop' : 'Start'}
+          </Button>
 
-          <div className={styles.scores}>
-            <span className={styles.stat}>
-              <span className={styles.statLabel}>Passes</span>
-              <span className={styles.statValue}>{paced.cycles}</span>
-            </span>
-            <span className={styles.stat}>
-              <span className={styles.statLabel}>Confirmed</span>
-              <span className={styles.statValue}>{hits}</span>
-              <span className={styles.statHint}>{misses} wrong finger</span>
-            </span>
-          </div>
+          <CounterRow>
+            <Counter label="Passes" value={String(paced.cycles)} />
+            <Counter
+              label="Confirmed"
+              value={String(hits)}
+              hint={`${misses} wrong finger`}
+            />
+          </CounterRow>
         </>
       }
     >
-      <div className={styles.promptRow}>
-        <span className={styles.promptLabel}>
-          {handShort(hand)} · {pattern?.label}
-        </span>
-        <p className={styles.prompt}>{currentFinger ?? '—'}</p>
-        <span className={styles.verdictLine}>
-          {currentFinger ? (
+      <DrillPrompt
+        label={`${handShort(hand)} · ${pattern?.label ?? ''}`}
+        footer={
+          currentFinger ? (
             <Chip tone="accent">{fingerName(currentFinger)}</Chip>
           ) : (
             <Chip>Press start</Chip>
-          )}
-        </span>
-      </div>
+          )
+        }
+      >
+        {currentFinger ?? '·'}
+      </DrillPrompt>
 
-      <div className={styles.stageRow}>
+      <StageRow>
         <HandDiagram
           hand={hand}
           highlight={currentFinger}
-          done={done}
+          done={paced.isRunning ? sequence.slice(0, paced.index) : []}
           showNumbers
           size={220}
         />
@@ -183,22 +171,14 @@ export function FingerTappingDrill() {
           unit={`${bpm} BPM`}
           size={104}
         />
-      </div>
+      </StageRow>
 
-      <ol className={styles.sequence} aria-label="Tapping order">
-        {sequence.map((finger, index) => (
-          <li
-            key={`${finger}-${index}`}
-            className={cn(
-              styles.sequenceStep,
-              paced.isRunning && index === paced.index && styles.sequenceStepCurrent,
-              paced.isRunning && index < paced.index && styles.sequenceStepDone,
-            )}
-          >
-            {finger}
-          </li>
-        ))}
-      </ol>
+      <StepStrip
+        items={sequence}
+        index={paced.index}
+        showProgress={paced.isRunning}
+        label="Tapping order"
+      />
     </DrillShell>
   );
 }

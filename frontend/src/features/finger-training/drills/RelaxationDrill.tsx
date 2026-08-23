@@ -1,16 +1,21 @@
 import { useCallback, useMemo, useState } from 'react';
 import { Button, Chip, Field, ProgressRing, SegmentedControl } from '@/components/ui';
+import {
+  ChoicePills,
+  Counter,
+  CounterRow,
+  DrillPrompt,
+  DrillShell,
+  StageRow,
+  usePacedSequence,
+} from '@/features/practice-kit';
+import type { PacedStep } from '@/features/practice-kit';
 import { useSettings } from '@/features/settings';
 import { instrument } from '@/lib/audio';
-import { cn } from '@/lib/cn';
-import { FINGERS, fingerName, handShort, positionFor } from '../data/fingers';
+import { FINGER_NUMBERS, fingerName, handShort, positionFor } from '../data/fingers';
 import type { FingerNumber, Hand } from '../finger.types';
-import { usePacedSequence } from '../hooks/usePacedSequence';
-import type { PacedStep } from '../hooks/usePacedSequence';
-import { DrillShell } from '../components/DrillShell';
 import { HandDiagram } from '../components/HandDiagram';
 import { PositionStrip } from '../components/PositionStrip';
-import styles from '../components/finger.module.css';
 
 const HANDS = [
   { value: 'right', label: 'Right hand' },
@@ -78,70 +83,46 @@ export function RelaxationDrill() {
           </Field>
 
           <Field label="Finger" hint={slot ? `Plays ${slot.letter} in the C position.` : undefined}>
-            <div className={styles.chipRow}>
-              {FINGERS.map((entry) => (
-                <button
-                  key={entry.number}
-                  type="button"
-                  className={cn(styles.choice, entry.number === finger && styles.choiceActive)}
-                  onClick={() => setFinger(entry.number)}
-                >
-                  {entry.number}
-                </button>
-              ))}
-            </div>
+            <ChoicePills options={FINGER_NUMBERS} value={finger} onChange={setFinger} />
           </Field>
 
           <Field label="Phase length">
-            <div className={styles.chipRow}>
-              {SECONDS.map((seconds) => (
-                <button
-                  key={seconds}
-                  type="button"
-                  className={cn(styles.choice, seconds === phaseSeconds && styles.choiceActive)}
-                  onClick={() => setPhaseSeconds(seconds)}
-                >
-                  {seconds}s
-                </button>
-              ))}
-            </div>
+            <ChoicePills
+              options={SECONDS}
+              value={phaseSeconds}
+              onChange={setPhaseSeconds}
+              format={(seconds) => `${seconds}s`}
+            />
           </Field>
 
-          <div className={styles.transport}>
-            <Button
-              variant={paced.isRunning ? 'danger' : 'primary'}
-              icon={paced.isRunning ? 'stop' : 'play'}
-              onClick={paced.isRunning ? paced.stop : paced.start}
-              block
-            >
-              {paced.isRunning ? 'Stop' : 'Start'}
-            </Button>
-          </div>
+          <Button
+            variant={paced.isRunning ? 'danger' : 'primary'}
+            icon={paced.isRunning ? 'stop' : 'play'}
+            onClick={paced.isRunning ? paced.stop : paced.start}
+            block
+          >
+            {paced.isRunning ? 'Stop' : 'Start'}
+          </Button>
 
-          <div className={styles.scores}>
-            <span className={styles.stat}>
-              <span className={styles.statLabel}>Cycles</span>
-              <span className={styles.statValue}>{paced.cycles}</span>
-            </span>
-          </div>
+          <CounterRow>
+            <Counter label="Cycles" value={String(paced.cycles)} />
+          </CounterRow>
         </>
       }
     >
-      <div className={styles.promptRow}>
-        <span className={styles.promptLabel}>
-          {handShort(hand)} {finger} · {fingerName(finger)} on {slot?.letter}
-        </span>
-        <p className={cn(styles.prompt, styles.promptWide)}>
-          {active ? active.label : 'Ready'}
-        </p>
-        <span className={styles.verdictLine}>
+      <DrillPrompt
+        label={`${handShort(hand)} ${finger} · ${fingerName(finger)} on ${slot?.letter ?? 'C'}`}
+        wide
+        footer={
           <Chip tone={active?.phase === 'relax' ? 'next' : 'accent'}>
             {active ? active.instruction : 'One key, four phases, no rush.'}
           </Chip>
-        </span>
-      </div>
+        }
+      >
+        {active ? active.label : 'Ready'}
+      </DrillPrompt>
 
-      <div className={styles.stageRow}>
+      <StageRow>
         <HandDiagram
           hand={hand}
           highlight={pressing ? finger : null}
@@ -155,14 +136,9 @@ export function RelaxationDrill() {
           unit={active?.label.toLowerCase() ?? 'idle'}
           size={104}
         />
-      </div>
+      </StageRow>
 
-      <PositionStrip
-        hand={hand}
-        highlight={pressing ? slotIndex : null}
-        tone="accent"
-        showFingers
-      />
+      <PositionStrip hand={hand} highlight={pressing ? slotIndex : null} tone="accent" showFingers />
     </DrillShell>
   );
 }

@@ -1,13 +1,20 @@
 import { useMemo, useState } from 'react';
 import { Button, Chip, Field, ProgressRing, SegmentedControl } from '@/components/ui';
-import { cn } from '@/lib/cn';
+import {
+  Choice,
+  ChoicePills,
+  ChoiceRow,
+  Counter,
+  CounterRow,
+  DrillPrompt,
+  DrillShell,
+  StageRow,
+  usePacedSequence,
+} from '@/features/practice-kit';
+import type { PacedStep } from '@/features/practice-kit';
 import { LIFT_ORDERS, fingerName, handShort, resolvePattern } from '../data/fingers';
 import type { FingerNumber, Hand } from '../finger.types';
-import { usePacedSequence } from '../hooks/usePacedSequence';
-import type { PacedStep } from '../hooks/usePacedSequence';
-import { DrillShell } from '../components/DrillShell';
 import { HandDiagram } from '../components/HandDiagram';
-import styles from '../components/finger.module.css';
 
 const HANDS = [
   { value: 'right', label: 'Right hand' },
@@ -52,7 +59,7 @@ export function FingerLiftDrill() {
   );
 
   const paced = usePacedSequence(steps, { loop: true });
-  const current = paced.current;
+  const current = paced.isRunning ? paced.current : undefined;
   const lifting = current?.phase === 'lift';
 
   const start = () => {
@@ -79,83 +86,57 @@ export function FingerLiftDrill() {
           </Field>
 
           <Field label="Order">
-            <div className={styles.chipRow}>
+            <ChoiceRow>
               {LIFT_ORDERS.map((entry) => (
-                <button
+                <Choice
                   key={entry.id}
-                  type="button"
-                  className={cn(styles.choice, entry.id === orderId && styles.choiceActive)}
+                  active={entry.id === orderId}
                   onClick={() => setOrderId(entry.id)}
                 >
                   {entry.label}
-                </button>
+                </Choice>
               ))}
-            </div>
+            </ChoiceRow>
           </Field>
 
           <Field label="Hold" hint="Seconds the finger stays up.">
-            <div className={styles.chipRow}>
-              {SECONDS.map((seconds) => (
-                <button
-                  key={seconds}
-                  type="button"
-                  className={cn(styles.choice, seconds === holdSeconds && styles.choiceActive)}
-                  onClick={() => setHoldSeconds(seconds)}
-                >
-                  {seconds}s
-                </button>
-              ))}
-            </div>
+            <ChoicePills
+              options={SECONDS}
+              value={holdSeconds}
+              onChange={setHoldSeconds}
+              format={(seconds) => `${seconds}s`}
+            />
           </Field>
 
           <Field label="Relax" hint="Seconds between lifts.">
-            <div className={styles.chipRow}>
-              {SECONDS.map((seconds) => (
-                <button
-                  key={seconds}
-                  type="button"
-                  className={cn(styles.choice, seconds === relaxSeconds && styles.choiceActive)}
-                  onClick={() => setRelaxSeconds(seconds)}
-                >
-                  {seconds}s
-                </button>
-              ))}
-            </div>
+            <ChoicePills
+              options={SECONDS}
+              value={relaxSeconds}
+              onChange={setRelaxSeconds}
+              format={(seconds) => `${seconds}s`}
+            />
           </Field>
 
-          <div className={styles.transport}>
-            <Button
-              variant={paced.isRunning ? 'danger' : 'primary'}
-              icon={paced.isRunning ? 'stop' : 'play'}
-              onClick={paced.isRunning ? paced.stop : start}
-              block
-            >
-              {paced.isRunning ? 'Stop' : 'Start'}
-            </Button>
-          </div>
+          <Button
+            variant={paced.isRunning ? 'danger' : 'primary'}
+            icon={paced.isRunning ? 'stop' : 'play'}
+            onClick={paced.isRunning ? paced.stop : start}
+            block
+          >
+            {paced.isRunning ? 'Stop' : 'Start'}
+          </Button>
 
-          <div className={styles.scores}>
-            <span className={styles.stat}>
-              <span className={styles.statLabel}>Lifts</span>
-              <span className={styles.statValue}>{liftsDone}</span>
-            </span>
-            <span className={styles.stat}>
-              <span className={styles.statLabel}>Passes</span>
-              <span className={styles.statValue}>{paced.cycles}</span>
-            </span>
-          </div>
+          <CounterRow>
+            <Counter label="Lifts" value={String(liftsDone)} />
+            <Counter label="Passes" value={String(paced.cycles)} />
+          </CounterRow>
         </>
       }
     >
-      <div className={styles.promptRow}>
-        <span className={styles.promptLabel}>
-          {handShort(hand)} · {paced.isRunning ? (lifting ? 'Lift' : 'Relax') : 'Ready'}
-        </span>
-        <p className={styles.prompt}>
-          {paced.isRunning ? (lifting ? current?.finger : '—') : '·'}
-        </p>
-        <span className={styles.verdictLine}>
-          {paced.isRunning ? (
+      <DrillPrompt
+        label={`${handShort(hand)} · ${paced.isRunning ? (lifting ? 'Lift' : 'Relax') : 'Ready'}`}
+        footer={
+          paced.isRunning ? (
             lifting && current ? (
               <Chip tone="accent">{fingerName(current.finger)} up</Chip>
             ) : (
@@ -163,14 +144,16 @@ export function FingerLiftDrill() {
             )
           ) : (
             <Chip>Press start</Chip>
-          )}
-        </span>
-      </div>
+          )
+        }
+      >
+        {paced.isRunning ? (lifting ? current?.finger : '·') : '·'}
+      </DrillPrompt>
 
-      <div className={styles.stageRow}>
+      <StageRow>
         <HandDiagram
           hand={hand}
-          highlight={paced.isRunning && lifting ? current?.finger ?? null : null}
+          highlight={lifting ? current?.finger ?? null : null}
           tone="accent"
           showNumbers
           size={220}
@@ -181,7 +164,7 @@ export function FingerLiftDrill() {
           unit={lifting ? 'hold' : 'relax'}
           size={104}
         />
-      </div>
+      </StageRow>
     </DrillShell>
   );
 }

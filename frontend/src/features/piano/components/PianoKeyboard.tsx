@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import type { CSSProperties } from 'react';
 import { cn } from '@/lib/cn';
-import type { HighlightChannel, HighlightMap, KeyboardLayout } from '../types/piano.types';
+import type { HighlightChannel, HighlightMap, KeyboardLayout, PianoKey } from '../types/piano.types';
 import { EMPTY_HIGHLIGHTS, highlightFor } from '../utils/getKeyHighlight';
 import { BlackKey } from './BlackKey';
 import { WhiteKey } from './WhiteKey';
@@ -17,6 +17,14 @@ interface PianoKeyboardProps {
   /** Which colours are on. Supply it with onChannelChange to make the legend interactive. */
   channels?: Readonly<Record<HighlightChannel, boolean>>;
   onChannelChange?: (channel: HighlightChannel, enabled: boolean) => void;
+  /**
+   * Turns the keys into buttons — the geography drills answer "where is F?" by
+   * pressing one. Left out, the keyboard stays the read-only display the
+   * trainers use, so no existing screen changes behaviour.
+   */
+  onKeyPress?: (key: PianoKey) => void;
+  /** Replaces the layout name in the footer, e.g. "Naturals only". */
+  footerNote?: string;
 }
 
 const LEGEND: readonly { channel: HighlightChannel; label: string; swatch?: string }[] = [
@@ -38,6 +46,8 @@ export function PianoKeyboard({
   showLegend = true,
   channels,
   onChannelChange,
+  onKeyPress,
+  footerNote,
 }: PianoKeyboardProps) {
   // Blacks render after whites so they always stack on top without z-index games.
   const [whiteKeys, blackKeys] = useMemo(
@@ -97,6 +107,7 @@ export function PianoKeyboard({
                 whiteKeyCount={layout.whiteKeyCount}
                 highlight={resolve(key)}
                 showName={showNoteNames}
+                onPress={onKeyPress ? () => onKeyPress(key) : undefined}
               />
             ))}
             {blackKeys.map((key) => (
@@ -106,6 +117,7 @@ export function PianoKeyboard({
                 whiteKeyCount={layout.whiteKeyCount}
                 highlight={resolve(key)}
                 showName={showNoteNames}
+                onPress={onKeyPress ? () => onKeyPress(key) : undefined}
               />
             ))}
           </div>
@@ -113,8 +125,10 @@ export function PianoKeyboard({
       </div>
 
       <footer className={styles.footer}>
-        <span>{layout.name}</span>
-        <span className={styles.scrollHint}>Swipe the keys sideways</span>
+        <span>{footerNote ?? layout.name}</span>
+        <span className={styles.scrollHint}>
+          {onKeyPress ? 'Tap a key to answer' : 'Swipe the keys sideways'}
+        </span>
       </footer>
     </section>
   );

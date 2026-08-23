@@ -9,15 +9,31 @@ export const level1 = defineLevel({
     'Name and find every key by sight — the 2–3 black-key landmarks, octaves, distances and blind reach.',
   buckets: [
     {
+      // Built: note name → visual pattern → physical key → instant recognition.
       title: 'White Key Geography',
       practices: [
-        'Learn C D E F G A B',
-        'Ascending Note Sequence',
-        'Descending Note Sequence',
-        'Adjacent White Keys',
-        'Skip-One Recognition',
-        'White-Key Random Recognition',
-        'White-Key → Location',
+        {
+          title: 'Learn C D E F G A B',
+          activity: { kind: 'drill', drillId: 'geo.natural-sequence' },
+        },
+        {
+          title: 'Ascending Note Sequence',
+          activity: { kind: 'drill', drillId: 'geo.ascending' },
+        },
+        {
+          title: 'Descending Note Sequence',
+          activity: { kind: 'drill', drillId: 'geo.descending' },
+        },
+        { title: 'Adjacent White Keys', activity: { kind: 'drill', drillId: 'geo.adjacent' } },
+        { title: 'Skip-One Recognition', activity: { kind: 'drill', drillId: 'geo.skip-one' } },
+        {
+          title: 'White-Key Random Recognition',
+          activity: { kind: 'drill', drillId: 'geo.key-to-name' },
+        },
+        {
+          title: 'White-Key → Location',
+          activity: { kind: 'drill', drillId: 'geo.name-to-key' },
+        },
       ],
     },
     {

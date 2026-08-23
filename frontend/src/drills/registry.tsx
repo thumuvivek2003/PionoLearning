@@ -6,6 +6,13 @@ import {
   NoteFingerDrill,
   RelaxationDrill,
 } from '@/features/finger-training';
+import {
+  FindKeyDrill,
+  KeyNameDrill,
+  NaturalSequenceDrill,
+  RelationDrill,
+  getRelationDrill,
+} from '@/features/keyboard-geography';
 
 /**
  * A practice screen that a curriculum practice can point at.
@@ -33,6 +40,36 @@ export interface Drill {
  * statement over drill kinds.
  */
 const REGISTERED_DRILLS: readonly Drill[] = [
+  /* ---- L1 · B1.1 — White Key Geography ---- */
+  {
+    id: 'geo.natural-sequence',
+    title: 'C D E F G A B',
+    render: NaturalSequenceDrill,
+  },
+  {
+    id: 'geo.ascending',
+    title: 'Ascending note sequence',
+    render: () => <RelationDrill config={getRelationDrill('ascending')} />,
+  },
+  {
+    id: 'geo.descending',
+    title: 'Descending note sequence',
+    render: () => <RelationDrill config={getRelationDrill('descending')} />,
+  },
+  {
+    id: 'geo.adjacent',
+    title: 'Adjacent white keys',
+    render: () => <RelationDrill config={getRelationDrill('adjacent')} />,
+  },
+  {
+    id: 'geo.skip-one',
+    title: 'Skip-one recognition',
+    render: () => <RelationDrill config={getRelationDrill('skip')} />,
+  },
+  { id: 'geo.key-to-name', title: 'White-key random recognition', render: KeyNameDrill },
+  { id: 'geo.name-to-key', title: 'White key → location', render: FindKeyDrill },
+
+  /* ---- L2 · B2.1 — Finger Awareness ---- */
   {
     id: 'finger.numbers.rh',
     title: 'Finger numbers — right hand',

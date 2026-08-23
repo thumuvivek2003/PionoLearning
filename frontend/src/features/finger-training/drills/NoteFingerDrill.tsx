@@ -1,17 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Chip, Field, SegmentedControl, Toggle } from '@/components/ui';
+import { DrillPrompt, DrillShell, ScoreBoard, StageRow, useQuizDrill } from '@/features/practice-kit';
 import { useSettings } from '@/features/settings';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { instrument } from '@/lib/audio';
-import { cn } from '@/lib/cn';
 import { handShort, positionFor } from '../data/fingers';
 import type { FingerNumber, Hand } from '../finger.types';
-import { useQuizDrill } from '../hooks/useQuizDrill';
-import { DrillShell } from '../components/DrillShell';
 import { HandDiagram } from '../components/HandDiagram';
 import { PositionStrip } from '../components/PositionStrip';
-import { ScoreBoard } from '../components/ScoreBoard';
-import styles from '../components/finger.module.css';
 
 /** One key of the position, asked in one of the two directions. */
 interface Prompt {
@@ -67,8 +63,9 @@ export function NoteFingerDrill() {
 
   const slots = useMemo(() => positionFor(hand), [hand]);
   const pool = useMemo(() => buildPool(direction, slots.length), [direction, slots.length]);
+  const answerOf = useMemo(() => (prompt: Prompt) => prompt.slot, []);
 
-  const drill = useQuizDrill<Prompt, number>({ pool, answerOf: (prompt) => prompt.slot });
+  const drill = useQuizDrill<Prompt, number>({ pool, answerOf });
   const { question, verdict, given, stats } = drill;
   const settled = verdict !== 'waiting';
   const asked = slots[question.slot];
@@ -103,7 +100,7 @@ export function NoteFingerDrill() {
   }, [verdict, question.id]);
 
   const askingForFinger = question.direction === 'noteToFinger';
-  const expectedSlot = slots[question.slot];
+  const tone = verdict === 'wrong' ? 'danger' : verdict === 'correct' ? 'success' : 'accent';
 
   return (
     <DrillShell
@@ -139,45 +136,46 @@ export function NoteFingerDrill() {
         </>
       }
     >
-      <div className={styles.promptRow}>
-        <span className={styles.promptLabel}>
-          {handShort(hand)} · {askingForFinger ? 'Which finger?' : 'Which note?'}
-        </span>
-        <p className={styles.prompt}>
-          {askingForFinger ? asked?.letter : expectedSlot?.finger}
-        </p>
-        <span className={styles.verdictLine}>
-          {verdict === 'correct' && (
-            <Chip tone="accent">
-              {expectedSlot?.letter} = {handShort(hand)} {expectedSlot?.finger}
-            </Chip>
-          )}
-          {verdict === 'wrong' && given !== null && (
-            <Chip tone="danger">
-              That is {slots[given]?.letter} / {slots[given]?.finger} — try again
-            </Chip>
-          )}
-        </span>
-      </div>
+      <DrillPrompt
+        label={`${handShort(hand)} · ${askingForFinger ? 'Which finger?' : 'Which note?'}`}
+        footer={
+          <>
+            {verdict === 'correct' && asked && (
+              <Chip tone="accent">
+                {asked.letter} = {handShort(hand)} {asked.finger}
+              </Chip>
+            )}
+            {verdict === 'wrong' && given !== null && (
+              <Chip tone="danger">
+                That is {slots[given]?.letter} / {slots[given]?.finger} — try again
+              </Chip>
+            )}
+          </>
+        }
+      >
+        {askingForFinger ? asked?.letter : asked?.finger}
+      </DrillPrompt>
 
       <PositionStrip
         hand={hand}
         highlight={settled ? question.slot : given}
-        tone={verdict === 'wrong' ? 'danger' : verdict === 'correct' ? 'success' : 'accent'}
+        tone={tone}
         onSelect={drill.answer}
         showFingers={assist || settled}
       />
 
-      <div className={cn(styles.handRow)}>
+      <StageRow>
         <HandDiagram
           hand={hand}
-          highlight={settled ? expectedSlot?.finger ?? null : given === null ? null : slots[given]?.finger ?? null}
-          tone={verdict === 'wrong' ? 'danger' : verdict === 'correct' ? 'success' : 'accent'}
+          highlight={
+            settled ? asked?.finger ?? null : given === null ? null : slots[given]?.finger ?? null
+          }
+          tone={tone}
           onSelect={answerFinger}
           showNumbers={assist || settled}
           size={210}
         />
-      </div>
+      </StageRow>
     </DrillShell>
   );
 }

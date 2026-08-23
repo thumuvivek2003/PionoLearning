@@ -8,25 +8,49 @@ interface BlackKeyProps {
   whiteKeyCount: number;
   highlight: KeyHighlight;
   showName: boolean;
+  /** Given only when the keyboard is being used as an input. */
+  onPress?: () => void;
 }
 
-function BlackKeyComponent({ pianoKey, whiteKeyCount, highlight, showName }: BlackKeyProps) {
+function BlackKeyComponent({
+  pianoKey,
+  whiteKeyCount,
+  highlight,
+  showName,
+  onPress,
+}: BlackKeyProps) {
   const { left, width } = getKeyGeometry(pianoKey, whiteKeyCount);
+  const className = [styles.key, styles.black, highlight !== 'none' ? styles[highlight] : '']
+    .filter(Boolean)
+    .join(' ');
+  const label = (
+    <span className={showName ? styles.label : styles.labelHidden}>
+      {pianoKey.sharpName}
+      <span className={styles.flatLabel}>{pianoKey.flatName}</span>
+    </span>
+  );
 
-  return (
+  return onPress ? (
+    <button
+      type="button"
+      className={[className, styles.pressable].join(' ')}
+      style={{ left, width }}
+      data-midi={pianoKey.midi}
+      data-highlight={highlight}
+      aria-label={`${pianoKey.sharpName}${pianoKey.octave}`}
+      onClick={onPress}
+    >
+      {label}
+    </button>
+  ) : (
     <div
-      className={[styles.key, styles.black, highlight !== 'none' ? styles[highlight] : '']
-        .filter(Boolean)
-        .join(' ')}
+      className={className}
       style={{ left, width }}
       data-midi={pianoKey.midi}
       data-highlight={highlight}
       aria-hidden="true"
     >
-      <span className={showName ? styles.label : styles.labelHidden}>
-        {pianoKey.sharpName}
-        <span className={styles.flatLabel}>{pianoKey.flatName}</span>
-      </span>
+      {label}
     </div>
   );
 }

@@ -289,3 +289,26 @@
     gap: var(--sp-2);
   }
 }
+
+/* ---------- answerable keys ---------- */
+/* The drills reuse this keyboard as an input; a pressable key needs to feel
+   like a control without changing how the display version looks. */
+.pressable {
+  padding: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pressable:hover {
+  filter: brightness(1.06);
+}
+
+.pressable:active {
+  transform: translateY(1px);
+}
+
+.pressable:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  z-index: var(--z-popover);
+}

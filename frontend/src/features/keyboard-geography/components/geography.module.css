@@ -1,0 +1,100 @@
+/* ---------------- note answer keys ---------------- */
+
+.notes {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--sp-2);
+  width: 100%;
+  min-width: 0;
+  max-width: 520px;
+}
+
+.note {
+  display: grid;
+  place-items: center;
+  min-height: 52px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--bg-inset);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xl);
+  font-weight: 800;
+  color: var(--text);
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.note:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--bg-surface-2);
+}
+
+.note:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.note:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.noteCorrect {
+  border-color: var(--success);
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.noteWrong {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+/* ---------------- keyboard block ---------------- */
+
+.keyboard {
+  width: 100%;
+  min-width: 0;
+}
+
+/* ---------------- landmark reminder ---------------- */
+
+.landmark {
+  margin: 0;
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+  color: var(--text-faint);
+  text-align: center;
+}
+
+/* ---------------- sequence run ---------------- */
+
+.runHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.runNote {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  color: var(--accent-strong);
+}
+
+@media (max-width: 600px) {
+  .notes {
+    gap: 4px;
+  }
+
+  .note {
+    min-height: 44px;
+    font-size: var(--fs-lg);
+  }
+}
