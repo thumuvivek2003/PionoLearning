@@ -1,4 +1,11 @@
-import type { BucketBlueprint, CurriculumBucket, CurriculumLevel, LevelBlueprint } from '../curriculum.types';
+import type {
+  BucketBlueprint,
+  CurriculumBucket,
+  CurriculumLevel,
+  CurriculumPractice,
+  LevelBlueprint,
+  PracticeBlueprint,
+} from '../curriculum.types';
 
 /**
  * Factory that turns a blueprint into a level.
@@ -36,9 +43,15 @@ function defineBucket(
     id: bucketId,
     levelId,
     title: blueprint.title,
-    practices: blueprint.practices.map((title, index) => ({
-      id: `${bucketId}.${index + 1}`,
-      title,
-    })),
+    practices: blueprint.practices.map((practice, index) =>
+      definePractice(practice, `${bucketId}.${index + 1}`),
+    ),
   };
+}
+
+/** A bare string is a practice with nothing behind it yet. */
+function definePractice(blueprint: PracticeBlueprint, id: string): CurriculumPractice {
+  return typeof blueprint === 'string'
+    ? { id, title: blueprint }
+    : { id, title: blueprint.title, activity: blueprint.activity };
 }

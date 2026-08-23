@@ -11,7 +11,13 @@ import {
   resolvePath,
   trainerHref,
 } from '@/features/curriculum';
-import type { CurriculumPractice, PracticeActivity, PracticeLocation } from '@/features/curriculum';
+import type {
+  CurriculumPractice,
+  PracticeActivity,
+  PracticeLocation,
+  TrainerActivity,
+} from '@/features/curriculum';
+import { getDrill } from '@/drills/registry';
 import { cn } from '@/lib/cn';
 import { DEFAULT_MODULE_ID } from '@/modules/registry';
 import { CurriculumMissing } from './CurriculumMissing';
@@ -65,7 +71,7 @@ export function CurriculumPracticePage() {
       </section>
 
       {practice.activity ? (
-        <ReadyPanel activity={practice.activity} backHref={backHref} />
+        <PracticeRunner activity={practice.activity} backHref={backHref} />
       ) : (
         <ComingSoonPanel bucketTitle={bucket.title} backHref={backHref} />
       )}
@@ -80,7 +86,35 @@ function stepNumber(practice: CurriculumPractice): string {
   return practice.id.split('.').pop() ?? '1';
 }
 
-function ReadyPanel({ activity, backHref }: { activity: PracticeActivity; backHref: string }) {
+/**
+ * Mounts whatever runs this practice.
+ *
+ * The two activity kinds are the only place the page branches: a drill has its
+ * own screen and renders in place, a trainer practice hands off to the trainer.
+ */
+function PracticeRunner({ activity, backHref }: { activity: PracticeActivity; backHref: string }) {
+  if (activity.kind === 'trainer') return <ReadyPanel activity={activity} backHref={backHref} />;
+
+  const drill = getDrill(activity.drillId);
+  if (!drill) {
+    return (
+      <section className={styles.soon}>
+        <span className={styles.soonMark}>
+          <Icon name="lock" size={22} />
+        </span>
+        <h3 className={styles.soonTitle}>Screen not registered</h3>
+        <p className={styles.soonText}>
+          This practice points at the drill <code>{activity.drillId}</code>, which is not in the
+          drill registry. Register it in <code>src/drills/registry.tsx</code>.
+        </p>
+      </section>
+    );
+  }
+
+  return <drill.render />;
+}
+
+function ReadyPanel({ activity, backHref }: { activity: TrainerActivity; backHref: string }) {
   const navigate = useNavigate();
 
   return (

@@ -3,8 +3,8 @@ import type {
   CurriculumLevel,
   CurriculumPath,
   CurriculumPractice,
-  PracticeActivity,
   ReadinessCount,
+  TrainerActivity,
 } from './curriculum.types';
 import { getBucket, getLevel, getPractice, listLevels, sameId } from './curriculumRegistry';
 
@@ -92,10 +92,10 @@ export function practiceHref(bucket: CurriculumBucket, practice: CurriculumPract
 }
 
 /**
- * Where a ready practice sends you: the shared trainer deep link the lesson
- * ladder already uses, so both entry points stay identical.
+ * The trainer deep link for a trainer-backed practice — the same shape the
+ * lesson ladder uses, so both entry points behave identically.
  */
-export function trainerHref(activity: PracticeActivity): string {
+export function trainerHref(activity: TrainerActivity): string {
   const params = new URLSearchParams();
   if (activity.presetId) params.set('preset', activity.presetId);
   if (activity.intervalSeconds !== undefined) params.set('interval', String(activity.intervalSeconds));

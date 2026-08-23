@@ -4,9 +4,12 @@ export type {
   CurriculumLevel,
   CurriculumPath,
   CurriculumPractice,
+  DrillActivity,
   LevelBlueprint,
   PracticeActivity,
+  PracticeBlueprint,
   ReadinessCount,
+  TrainerActivity,
 } from './curriculum.types';
 export { getBucket, getLevel, getPractice, listLevels, sameId } from './curriculumRegistry';
 export type { PracticeLocation } from './curriculumService';

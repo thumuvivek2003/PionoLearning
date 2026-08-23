@@ -1,0 +1,547 @@
+/* ---------------- drill frame ---------------- */
+
+.drill {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(260px, 0.9fr);
+  grid-template-areas:
+    'stage aside'
+    'guide aside';
+  gap: var(--sp-4);
+  align-items: start;
+}
+
+/* Every panel needs min-width: 0 — a grid item defaults to min-width: auto and
+   would push past a minmax(0, 1fr) track rather than letting its content wrap. */
+.stage {
+  grid-area: stage;
+  display: grid;
+  justify-items: center;
+  min-width: 0;
+  gap: var(--sp-4);
+  padding: var(--sp-5);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.aside {
+  grid-area: aside;
+  display: grid;
+  min-width: 0;
+  gap: var(--sp-4);
+  padding: var(--sp-4);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  align-content: start;
+}
+
+.guide {
+  grid-area: guide;
+  display: grid;
+  min-width: 0;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+}
+
+.goal {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.goal svg {
+  flex: none;
+  color: var(--accent-strong);
+}
+
+.steps {
+  display: grid;
+  gap: var(--sp-2);
+  margin: 0;
+  padding-left: var(--sp-5);
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.steps li::marker {
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+
+.watch {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+  color: var(--text-faint);
+}
+
+.watch strong {
+  color: var(--warning);
+}
+
+/* ---------------- prompt ---------------- */
+
+.promptRow {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-2);
+  width: 100%;
+  min-width: 0;
+}
+
+.promptLabel {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.prompt {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-display);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+/* Words need to fit where a single glyph did. */
+.promptWide {
+  font-family: var(--font-sans);
+  font-size: clamp(40px, 8vw, 72px);
+  letter-spacing: -0.01em;
+  text-align: center;
+}
+
+.verdictLine {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  text-align: center;
+}
+
+.stageRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-5);
+  flex-wrap: wrap;
+}
+
+.handRow {
+  display: flex;
+  justify-content: center;
+}
+
+/* ---------------- hand ---------------- */
+
+.hand {
+  max-width: 100%;
+}
+
+.handSvg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.palm {
+  fill: var(--bg-surface-2);
+  stroke: var(--border-strong);
+  stroke-width: 1.5;
+}
+
+.finger .fingerBody {
+  fill: var(--bg-surface-2);
+  stroke: var(--border-strong);
+  stroke-width: 1.5;
+  transition:
+    fill var(--dur-fast) var(--ease),
+    stroke var(--dur-fast) var(--ease);
+}
+
+.fingerInteractive {
+  cursor: pointer;
+}
+
+.fingerInteractive:hover .fingerBody {
+  fill: var(--bg-elevated);
+  stroke: var(--accent);
+}
+
+.fingerInteractive:focus-visible {
+  outline: none;
+}
+
+.fingerInteractive:focus-visible .fingerBody {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+
+.fingerDone .fingerBody {
+  fill: color-mix(in srgb, var(--accent) 12%, var(--bg-surface-2));
+}
+
+.fingerLit .fingerBody {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+  stroke-width: 2.5;
+}
+
+.fingerSuccess .fingerBody {
+  fill: var(--success-soft);
+  stroke: var(--success);
+}
+
+.fingerDanger .fingerBody {
+  fill: var(--danger-soft);
+  stroke: var(--danger);
+}
+
+.fingerLabel {
+  fill: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.fingerLabelLit {
+  fill: var(--text);
+}
+
+/* ---------------- legend ---------------- */
+
+.legend {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legendRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 6px var(--sp-2);
+  border-radius: var(--r-sm);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.legendRowLit {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.legendNumber {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--r-full);
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+}
+
+/* ---------------- answers ---------------- */
+
+.answers {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--sp-2);
+  width: 100%;
+  min-width: 0;
+}
+
+.answer {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: var(--sp-3) var(--sp-2);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--bg-inset);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.answer:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.answer:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.answerNumber {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xl);
+  font-weight: 800;
+  color: var(--text);
+}
+
+.answerCorrect {
+  border-color: var(--success);
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.answerCorrect .answerNumber {
+  color: var(--success);
+}
+
+.answerWrong {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.answerWrong .answerNumber {
+  color: var(--danger);
+}
+
+/* ---------------- five-key strip ---------------- */
+
+.strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--sp-2);
+  width: 100%;
+  max-width: 420px;
+}
+
+.stripKey {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: var(--sp-3) var(--sp-2) var(--sp-2);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border-strong);
+  /* Reads as a key: white face in both themes. */
+  background: var(--key-white);
+  color: var(--key-white-text);
+  transition:
+    box-shadow var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
+}
+
+button.stripKey {
+  cursor: pointer;
+}
+
+button.stripKey:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+button.stripKey:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.stripKeyLit {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.stripKeySuccess {
+  border-color: var(--success);
+  box-shadow: 0 0 0 3px var(--success-soft);
+}
+
+.stripKeyDanger {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-soft);
+}
+
+.stripLetter {
+  font-family: var(--font-mono);
+  font-size: var(--fs-lg);
+  font-weight: 800;
+}
+
+.stripFinger {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+/* ---------------- sequence strip ---------------- */
+
+.sequence {
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sequenceStep {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-inset);
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+  font-weight: 700;
+  color: var(--text-faint);
+}
+
+.sequenceStepDone {
+  color: var(--accent-strong);
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.sequenceStepCurrent {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--text);
+  transform: scale(1.08);
+}
+
+/* ---------------- controls ---------------- */
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.choice {
+  padding: 8px 12px;
+  border-radius: var(--r-full);
+  border: 1px solid var(--border);
+  background: var(--bg-inset);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.choice:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.choice:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.choiceActive {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.transport {
+  display: grid;
+}
+
+/* ---------------- counters ---------------- */
+
+.scores {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--border);
+}
+
+.stat {
+  display: grid;
+  gap: 2px;
+}
+
+.statLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.statValue {
+  font-size: var(--fs-lg);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.statHint {
+  font-size: 10px;
+  color: var(--text-faint);
+}
+
+/* ---------------- narrow screens ---------------- */
+
+@media (max-width: 900px) {
+  .drill {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'stage'
+      'aside'
+      'guide';
+  }
+}
+
+@media (max-width: 600px) {
+  .stage,
+  .aside,
+  .guide {
+    padding: var(--sp-3);
+  }
+
+  .answers {
+    gap: 6px;
+  }
+
+  .answer {
+    padding: var(--sp-2) 4px;
+    font-size: 10px;
+  }
+
+  .stageRow {
+    gap: var(--sp-3);
+  }
+
+  .sequenceStep {
+    width: 32px;
+    height: 32px;
+  }
+}

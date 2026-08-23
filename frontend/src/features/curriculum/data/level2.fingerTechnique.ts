@@ -9,14 +9,24 @@ export const level2 = defineLevel({
     'Fingers 1–5 under control — independence, five-finger positions, shifts, thumb crossings and muscle memory.',
   buckets: [
     {
+      // Built: brain → finger → key → relax, before any playing.
       title: 'Finger Awareness',
       practices: [
-        'Finger numbering — RH',
-        'Finger numbering — LH',
-        'Finger tapping',
-        'Finger lift control',
-        'Finger relaxation',
-        'Finger-to-key awareness',
+        {
+          title: 'Finger numbering — RH',
+          activity: { kind: 'drill', drillId: 'finger.numbers.rh' },
+        },
+        {
+          title: 'Finger numbering — LH',
+          activity: { kind: 'drill', drillId: 'finger.numbers.lh' },
+        },
+        { title: 'Finger tapping', activity: { kind: 'drill', drillId: 'finger.tapping' } },
+        { title: 'Finger lift control', activity: { kind: 'drill', drillId: 'finger.lift' } },
+        { title: 'Finger relaxation', activity: { kind: 'drill', drillId: 'finger.relaxation' } },
+        {
+          title: 'Finger-to-key awareness',
+          activity: { kind: 'drill', drillId: 'finger.note-to-finger' },
+        },
       ],
     },
     {

@@ -9,17 +9,28 @@
 /**
  * Where a practice sends you once it is built.
  *
- * It is deliberately just a trainer deep link: the trainer page already reads
- * `?preset=…&interval=…`, so wiring a practice up later is a data change, not
- * a code change (Open/Closed).
+ * Two shapes, because practices divide in two: most are a random-item run the
+ * existing trainers already do, and the rest need a screen of their own (a hand
+ * diagram, a paced cycle). Both are referenced by id, so the data stays pure —
+ * wiring a practice up is a data change, not a code change (Open/Closed).
  */
-export interface PracticeActivity {
+export type PracticeActivity = TrainerActivity | DrillActivity;
+
+/** Runs in a trainer module via its deep link, e.g. /train/notes?preset=… */
+export interface TrainerActivity {
+  kind: 'trainer';
   /** Trainer module that runs it, e.g. "notes" or "chords". */
   moduleId: string;
   /** Preset id inside that module, e.g. "lesson:01". */
   presetId?: string;
   /** Seconds per item to start the drill at. */
   intervalSeconds?: number;
+}
+
+/** Runs a purpose-built screen registered in src/drills. */
+export interface DrillActivity {
+  kind: 'drill';
+  drillId: string;
 }
 
 /** A single drill — the leaf of the tree. */
@@ -80,10 +91,16 @@ export interface ReadinessCount {
  * What a data file writes. Ids are derived from position by `defineLevel`, so
  * the codes in the app can never drift out of step with the tree.
  */
+/**
+ * One practice as written in a data file: a bare title while it is unbuilt,
+ * or a title with the activity that runs it.
+ */
+export type PracticeBlueprint = string | { title: string; activity: PracticeActivity };
+
 export interface BucketBlueprint {
   title: string;
-  /** Practice titles in order — one string per leaf. */
-  practices: readonly string[];
+  /** Practices in order — the order fixes their codes. */
+  practices: readonly PracticeBlueprint[];
 }
 
 export interface LevelBlueprint {
