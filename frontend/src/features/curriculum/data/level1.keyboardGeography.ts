@@ -158,25 +158,48 @@ export const level1 = defineLevel({
       ],
     },
     {
+      // Built: how far is that from here — answered by landing on it.
       title: 'Distance & Spatial Awareness',
       practices: [
-        'Same Note Distance',
-        'Neighbor Distance',
-        '2-Key Jump',
-        '3-Key Jump',
-        'White-Key Interval Awareness',
-        'Random Distance Drill',
+        {
+          title: 'Same Note Distance',
+          activity: { kind: 'drill', drillId: 'geo.distance-same-note' },
+        },
+        {
+          title: 'Neighbor Distance',
+          activity: { kind: 'drill', drillId: 'geo.distance-neighbour' },
+        },
+        { title: '2-Key Jump', activity: { kind: 'drill', drillId: 'geo.distance-two' } },
+        { title: '3-Key Jump', activity: { kind: 'drill', drillId: 'geo.distance-three' } },
+        {
+          title: 'White-Key Interval Awareness',
+          activity: { kind: 'drill', drillId: 'geo.distance-intervals' },
+        },
+        {
+          title: 'Random Distance Drill',
+          activity: { kind: 'drill', drillId: 'geo.distance-random' },
+        },
       ],
     },
     {
+      // Built: the board covers itself, and the misses get named and repaired.
       title: 'Blind / Reduced-Visual Recognition',
       practices: [
-        'Look → Touch',
-        'Touch → Identify',
-        'Look Away → Reach',
-        'Landmark → Reach',
-        'Random Blind Reach',
-        'Blind Accuracy Check',
+        { title: 'Look → Touch', activity: { kind: 'drill', drillId: 'geo.reach-look-touch' } },
+        { title: 'Touch → Identify', activity: { kind: 'drill', drillId: 'geo.reach-identify' } },
+        {
+          title: 'Look Away → Reach',
+          activity: { kind: 'drill', drillId: 'geo.reach-look-away' },
+        },
+        { title: 'Landmark → Reach', activity: { kind: 'drill', drillId: 'geo.reach-landmark' } },
+        {
+          title: 'Random Blind Reach',
+          activity: { kind: 'drill', drillId: 'geo.reach-random' },
+        },
+        {
+          title: 'Blind Accuracy Check',
+          activity: { kind: 'drill', drillId: 'geo.reach-accuracy' },
+        },
       ],
     },
   ],

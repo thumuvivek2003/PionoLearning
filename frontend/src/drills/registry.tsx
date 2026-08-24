@@ -9,6 +9,9 @@ import {
 import {
   BlackGroupDrill,
   BlackKeyNameDrill,
+  BlindIdentifyDrill,
+  BlindReachDrill,
+  DistanceDrill,
   EnharmonicDrill,
   FindKeyDrill,
   KeyNameDrill,
@@ -24,9 +27,11 @@ import {
   RegisterCompareDrill,
   RelationDrill,
   getChainDrill,
+  getDistanceDrill,
   getGroupDrill,
   getJumpDrill,
   getLandmarkDrill,
+  getReachDrill,
   getRecognitionDrill,
   getRelationDrill,
   getSprintDrill,
@@ -263,6 +268,66 @@ const REGISTERED_DRILLS: readonly Drill[] = [
     id: 'geo.speed-recognition',
     title: 'Speed recognition',
     render: () => <NoteRecognitionDrill config={getRecognitionDrill('speed')} />,
+  },
+
+  /* ---- L1 · B1.6 — Distance & Spatial Awareness ---- */
+  {
+    id: 'geo.distance-same-note',
+    title: 'Same-note distance',
+    render: () => <DistanceDrill config={getDistanceDrill('same-note')} />,
+  },
+  {
+    id: 'geo.distance-neighbour',
+    title: 'Neighbour distance',
+    render: () => <DistanceDrill config={getDistanceDrill('neighbour')} />,
+  },
+  {
+    id: 'geo.distance-two',
+    title: '2-key jump',
+    render: () => <DistanceDrill config={getDistanceDrill('jump-2')} />,
+  },
+  {
+    id: 'geo.distance-three',
+    title: '3-key jump',
+    render: () => <DistanceDrill config={getDistanceDrill('jump-3')} />,
+  },
+  {
+    id: 'geo.distance-intervals',
+    title: 'White-key interval awareness',
+    render: () => <DistanceDrill config={getDistanceDrill('intervals')} />,
+  },
+  {
+    id: 'geo.distance-random',
+    title: 'Random distance drill',
+    render: () => <DistanceDrill config={getDistanceDrill('random')} />,
+  },
+
+  /* ---- L1 · B1.7 — Blind / Reduced-Visual Recognition ---- */
+  {
+    id: 'geo.reach-look-touch',
+    title: 'Look → touch',
+    render: () => <BlindReachDrill config={getReachDrill('look-touch')} />,
+  },
+  { id: 'geo.reach-identify', title: 'Touch → identify', render: BlindIdentifyDrill },
+  {
+    id: 'geo.reach-look-away',
+    title: 'Look away → reach',
+    render: () => <BlindReachDrill config={getReachDrill('look-away')} />,
+  },
+  {
+    id: 'geo.reach-landmark',
+    title: 'Landmark → reach',
+    render: () => <BlindReachDrill config={getReachDrill('landmark')} />,
+  },
+  {
+    id: 'geo.reach-random',
+    title: 'Random blind reach',
+    render: () => <BlindReachDrill config={getReachDrill('random-blind')} />,
+  },
+  {
+    id: 'geo.reach-accuracy',
+    title: 'Blind accuracy check',
+    render: () => <BlindReachDrill config={getReachDrill('accuracy')} />,
   },
 
   /* ---- L2 · B2.1 — Finger Awareness ---- */

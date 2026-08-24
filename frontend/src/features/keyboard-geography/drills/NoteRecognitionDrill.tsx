@@ -4,6 +4,7 @@ import type { PitchClass } from '@/features/music-theory';
 import { getKeyboardLayout } from '@/features/piano';
 import type { KeyboardLayout, PianoKey } from '@/features/piano';
 import {
+  ALLOWANCE_OPTIONS,
   Counter,
   CounterRow,
   DrillPrompt,
@@ -24,13 +25,6 @@ import type { AskDirection, RecognitionDrillConfig } from '../data/recognitionDr
 import { GeographyKeyboard } from '../components/GeographyKeyboard';
 import { LabelButtons } from '../components/LabelButtons';
 import styles from '../components/geography.module.css';
-
-/** Allowances for the no-counting drill — 3s is comfortable, 1.5s is not. */
-const LIMITS = [
-  { value: '3000', label: '3s' },
-  { value: '2000', label: '2s' },
-  { value: '1500', label: '1.5s' },
-];
 
 const SPRINT_SECONDS = 60;
 
@@ -96,7 +90,7 @@ function buildPool(
 export function NoteRecognitionDrill({ config }: { config: RecognitionDrillConfig }) {
   const [layoutId, setLayoutId] = useState(SMALL_LAYOUT_ID);
   const [direction, setDirection] = useState<string>(config.directions[0] ?? MIXED);
-  const [limit, setLimit] = useState(LIMITS[0]?.value ?? '3000');
+  const [limit, setLimit] = useState(ALLOWANCE_OPTIONS[0]?.value ?? '3000');
   const [focusWeak, setFocusWeak] = useState(true);
   const [showNames, setShowNames] = useState(false);
   const { settings } = useSettings();
@@ -212,7 +206,7 @@ export function NoteRecognitionDrill({ config }: { config: RecognitionDrillConfi
             <Field label="Allowance" hint="Drop a step once accuracy holds above 90%.">
               <SegmentedControl
                 value={limit}
-                options={LIMITS}
+                options={ALLOWANCE_OPTIONS}
                 onChange={setLimit}
                 block
                 ariaLabel="Answer allowance"

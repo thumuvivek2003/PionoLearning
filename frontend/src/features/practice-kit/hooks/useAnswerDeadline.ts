@@ -2,6 +2,18 @@ import { useEffect, useRef, useState } from 'react';
 import { useInterval } from '@/hooks/useInterval';
 import { TICK_MS } from '@/lib/constants';
 
+/**
+ * Allowances a deadline drill offers, easiest first.
+ *
+ * Three seconds is enough to think; one and a half is not enough to count,
+ * which is the whole ladder in two numbers.
+ */
+export const ALLOWANCE_OPTIONS: readonly { value: string; label: string }[] = [
+  { value: '3000', label: '3s' },
+  { value: '2000', label: '2s' },
+  { value: '1500', label: '1.5s' },
+];
+
 interface DeadlineOptions {
   /** How long an answer may take, in ms. 0 turns the deadline off. */
   ms: number;

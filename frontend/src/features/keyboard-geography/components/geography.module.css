@@ -158,3 +158,45 @@
   background: var(--accent-soft);
   color: var(--accent-strong);
 }
+
+/* ---------------- blind cover ---------------- */
+
+.blind {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+/*
+ * Sits over the board but never takes a press: the keys stay reachable, so an
+ * aim can be compared with what was actually under it.
+ */
+.cover {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  border-radius: var(--r-lg);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+
+.coverOn {
+  opacity: 1;
+}
+
+.coverNote {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--r-md);
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  text-align: center;
+}

@@ -105,3 +105,29 @@ export function drawWeights<T extends { id: string }>(
 ): ReadonlyMap<string, number> {
   return new Map(pool.map((item) => [item.id, weaknessWeight(book.get(keyOf(item)), targetMs)]));
 }
+
+/** A prompt pinned for repair, and how many clean answers it still owes. */
+export interface Repair {
+  id: string;
+  remaining: number;
+}
+
+/**
+ * The repair debt after one attempt.
+ *
+ * A miss pins the prompt for `reps` clean answers; each clean answer pays one
+ * off; clearing it releases the prompt. With `reps` of 1 nothing is ever pinned,
+ * which is the ordinary "answer it right and move on" loop.
+ */
+export function nextRepair(
+  current: Repair | null,
+  questionId: string,
+  isCorrect: boolean,
+  reps: number,
+): Repair | null {
+  if (!isCorrect) return reps > 1 ? { id: questionId, remaining: reps } : null;
+  if (current?.id !== questionId) return current;
+
+  const remaining = current.remaining - 1;
+  return remaining > 0 ? { id: questionId, remaining } : null;
+}

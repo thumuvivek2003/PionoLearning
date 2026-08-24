@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getStrategy } from '@/features/randomizer';
 import type { Identifiable } from '@/features/randomizer';
 import { useOptionalPracticeClock } from '../PracticeClockContext';
-import { drawWeights } from '../scoring';
+import { drawWeights, nextRepair } from '../scoring';
+import type { Repair } from '../scoring';
 import { useScoreBook } from './useScoreBook';
 
 /** How long a verdict stays on screen before the next prompt. */
@@ -45,6 +46,13 @@ interface QuizDrillOptions<Q extends Identifiable, A> {
    * i.e. one score per prompt.
    */
   scoreKeyOf?: (question: Q) => string;
+  /**
+   * Clean answers demanded of a prompt that has just been missed, before the
+   * drill moves on. 1 (the default) is the usual behaviour: answer it right
+   * once and continue. Higher pins the prompt until it has been repaired —
+   * a miss then costs repetitions rather than a note in the margin.
+   */
+  repairReps?: number;
 }
 
 /**
@@ -60,6 +68,7 @@ export function useQuizDrill<Q extends Identifiable, A>({
   answerOf,
   strategyId = 'no-repeat',
   scoreKeyOf,
+  repairReps = 1,
 }: QuizDrillOptions<Q, A>) {
   const strategy = useMemo(() => getStrategy(strategyId), [strategyId]);
   const clock = useOptionalPracticeClock();
@@ -103,6 +112,9 @@ export function useQuizDrill<Q extends Identifiable, A>({
   /** A miss means the time to the eventual correct answer no longer counts. */
   const missed = useRef(false);
   const advanceTimer = useRef<number | null>(null);
+  /** The prompt being repaired, and how many clean answers it still owes. */
+  const repair = useRef<Repair | null>(null);
+  const [repairsLeft, setRepairsLeft] = useState(0);
 
   const clearTimer = () => {
     if (advanceTimer.current !== null) window.clearTimeout(advanceTimer.current);
@@ -123,8 +135,19 @@ export function useQuizDrill<Q extends Identifiable, A>({
 
   const advance = useCallback(() => {
     clearTimer();
+    repair.current = null;
+    setRepairsLeft(0);
     present(draw(history.current));
   }, [draw, present]);
+
+  /** Same prompt, fresh attempt — a repair rep, timed like any first try. */
+  const repeatPrompt = useCallback(() => {
+    clearTimer();
+    setVerdict('waiting');
+    setGiven(null);
+    missed.current = false;
+    shownAt.current = performance.now();
+  }, []);
 
   /**
    * Grades one attempt: the tallies, the ledger and the verdict hold.
@@ -169,14 +192,21 @@ export function useQuizDrill<Q extends Identifiable, A>({
         };
       });
 
+      // A miss pins the prompt; a clean answer pays one rep off it. The prompt
+      // is only released once the debt is clear, so mistakes are repaired
+      // rather than noted and left behind.
+      repair.current = nextRepair(repair.current, question.id, isCorrect, repairReps);
+      setRepairsLeft(repair.current?.remaining ?? 0);
+
+      const held = repair.current !== null;
       clearTimer();
       advanceTimer.current = window.setTimeout(
         // A miss re-asks the same prompt: you have to produce the right answer.
-        isCorrect ? advance : () => setVerdict('waiting'),
+        isCorrect ? (held ? repeatPrompt : advance) : () => setVerdict('waiting'),
         isCorrect ? CORRECT_HOLD_MS : WRONG_HOLD_MS,
       );
     },
-    [advance, clock, keyOf, question, record],
+    [advance, clock, keyOf, question, record, repairReps, repeatPrompt],
   );
 
   const answer = useCallback(
@@ -196,6 +226,8 @@ export function useQuizDrill<Q extends Identifiable, A>({
 
   const reset = useCallback(() => {
     clearTimer();
+    repair.current = null;
+    setRepairsLeft(0);
     history.current = [];
     setStats(EMPTY_STATS);
     clearScores();
@@ -220,6 +252,8 @@ export function useQuizDrill<Q extends Identifiable, A>({
     stats,
     /** What you are getting right and wrong, per score key. */
     scores,
+    /** Clean answers this prompt still owes after a miss; 0 when nothing is pinned. */
+    repairsLeft,
     answer,
     timeout,
     skip: advance,

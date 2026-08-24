@@ -36,6 +36,36 @@ export {
   isLandmark,
   landmarkWhere,
 } from './data/landmarks';
+export type { MissReason, ReachResult, ReachTally } from './data/reach';
+export {
+  EMPTY_TALLY,
+  biasNote,
+  hitRate,
+  judgeReach,
+  meanError,
+  missAdvice,
+  missNote,
+  recordReach,
+} from './data/reach';
+export type { ReachDrillConfig, ReachTarget, Visibility } from './data/reachDrills';
+export { REACH_DRILLS, getReachDrill } from './data/reachDrills';
+export type { Distance, DistanceAnswer, DistanceUnit } from './data/distances';
+export {
+  WHITE_STEPS,
+  directionArrow,
+  distanceAnswer,
+  distanceLabel,
+  intervalName,
+  targetOf,
+  whiteKeys,
+  whiteStep,
+} from './data/distances';
+export type {
+  DistanceAsk,
+  DistanceChallenge,
+  DistanceDrillConfig,
+} from './data/distanceDrills';
+export { DISTANCE_DRILLS, getDistanceDrill } from './data/distanceDrills';
 export type { KeyScope, NoteLabel, NoteNaming } from './data/naming';
 export {
   inScope,
@@ -82,13 +112,17 @@ export {
   getGroupDrill,
   getLandmarkDrill,
 } from './data/blackKeyDrills';
+export { BlindCover } from './components/BlindCover';
 export { GeographyKeyboard } from './components/GeographyKeyboard';
 export { LabelButtons } from './components/LabelButtons';
 export { LetterPicker } from './components/LetterPicker';
 export type { AnswerOption } from './components/LabelButtons';
 export { NoteButtons } from './components/NoteButtons';
 export { BlackGroupDrill } from './drills/BlackGroupDrill';
+export { BlindIdentifyDrill } from './drills/BlindIdentifyDrill';
+export { BlindReachDrill } from './drills/BlindReachDrill';
 export { BlackKeyNameDrill } from './drills/BlackKeyNameDrill';
+export { DistanceDrill } from './drills/DistanceDrill';
 export { EnharmonicDrill } from './drills/EnharmonicDrill';
 export { FindKeyDrill } from './drills/FindKeyDrill';
 export { KeyNameDrill } from './drills/KeyNameDrill';

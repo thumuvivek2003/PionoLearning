@@ -26,11 +26,18 @@ export { DrillPrompt, DrillShell, StageRow } from './components/DrillShell';
 export { StepStrip } from './components/StepStrip';
 export { TimerBar } from './components/TimerBar';
 export { WeakSpots } from './components/WeakSpots';
-export type { ItemScore, ScoreBook } from './scoring';
-export { TARGET_MS, drawWeights, recordAnswer, weakSpots, weaknessWeight } from './scoring';
+export type { ItemScore, Repair, ScoreBook } from './scoring';
+export {
+  TARGET_MS,
+  drawWeights,
+  nextRepair,
+  recordAnswer,
+  weakSpots,
+  weaknessWeight,
+} from './scoring';
 export { useQuizDrill } from './hooks/useQuizDrill';
 export type { QuizStats, QuizVerdict } from './hooks/useQuizDrill';
-export { useAnswerDeadline } from './hooks/useAnswerDeadline';
+export { ALLOWANCE_OPTIONS, useAnswerDeadline } from './hooks/useAnswerDeadline';
 export { useSprint } from './hooks/useSprint';
 export type { SprintStatus } from './hooks/useSprint';
 export { useScoreBook } from './hooks/useScoreBook';
