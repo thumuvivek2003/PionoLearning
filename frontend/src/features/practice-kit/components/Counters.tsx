@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Button } from '@/components/ui';
 import { cn } from '@/lib/cn';
 import type { QuizStats } from '../hooks/useQuizDrill';
+import type { RunStats } from '../hooks/useTimedRun';
 import styles from './kit.module.css';
 
 /** The counter strip at the foot of a drill's control panel. */
@@ -27,6 +28,11 @@ export function Counter({
       {hint && <span className={styles.counterHint}>{hint}</span>}
     </div>
   );
+}
+
+/** Whole-run times, where a tenth of a second is as fine as anyone reads. */
+export function formatSeconds(seconds: number | null): string {
+  return seconds === null ? '—' : `${seconds.toFixed(1)}s`;
 }
 
 export function formatMs(ms: number | null): string {
@@ -56,6 +62,33 @@ export function ScoreBoard({ stats, onReset }: { stats: QuizStats; onReset: () =
       <Button variant="ghost" icon="reset" size="sm" onClick={onReset}>
         Reset
       </Button>
+    </CounterRow>
+  );
+}
+
+interface RunCountersProps {
+  stats: RunStats;
+  /** Plural noun for a completed run, e.g. "Sweeps". */
+  runsLabel?: string;
+}
+
+/**
+ * Counters for a chain drill.
+ *
+ * Whole-run time leads, where ScoreBoard leads on reaction time: a chain is
+ * finished when the run comes out in one smooth pass, and stumbles are what
+ * stand in the way of that.
+ */
+export function RunCounters({ stats, runsLabel = 'Runs' }: RunCountersProps) {
+  return (
+    <CounterRow>
+      <Counter label={runsLabel} value={String(stats.runs)} />
+      <Counter label="Stumbles" value={String(stats.stumbles)} />
+      <Counter
+        label="Last"
+        value={formatSeconds(stats.lastSeconds)}
+        hint={stats.bestSeconds === null ? undefined : `best ${formatSeconds(stats.bestSeconds)}`}
+      />
     </CounterRow>
   );
 }

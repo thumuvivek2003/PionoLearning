@@ -8,10 +8,57 @@ export {
   LANDMARK_HINT,
   NATURALS,
   letterIndex,
+  randomFrom,
   randomLetter,
   runFrom,
   stepLetter,
 } from './data/naturals';
+export { LAYOUT_OPTIONS, SMALL_LAYOUT_ID, WIDE_LAYOUT_ID } from './data/layouts';
+export type { BoardRegion } from './data/octaves';
+export {
+  OCTAVE_HINT,
+  boardRegions,
+  jumpLabel,
+  keyLabel,
+  keysOfLetter,
+  octaveKey,
+  octavesOf,
+  regionOf,
+  regionSpan,
+  repeatedLetters,
+} from './data/octaves';
+export type { ChainKind } from './data/landmarks';
+export {
+  LANDMARK_LETTERS,
+  chainAnchors,
+  chainFrom,
+  chainShape,
+  isLandmark,
+  landmarkWhere,
+} from './data/landmarks';
+export type { KeyScope, NoteLabel, NoteNaming } from './data/naming';
+export {
+  inScope,
+  noteKey,
+  noteLabel,
+  scopeKeys,
+  scopePitchClasses,
+} from './data/naming';
+export type {
+  AskDirection,
+  Challenge,
+  RecognitionDrillConfig,
+} from './data/recognitionDrills';
+export { RECOGNITION_DRILLS, getRecognitionDrill } from './data/recognitionDrills';
+export type { ChainDrillConfig, SprintDrillConfig } from './data/landmarkDrills';
+export {
+  CHAIN_DRILLS,
+  SPRINT_DRILLS,
+  getChainDrill,
+  getSprintDrill,
+} from './data/landmarkDrills';
+export type { JumpDirection, JumpDrillConfig, SweepDrillConfig, SweepPrompt } from './data/octaveDrills';
+export { JUMP_DRILLS, SWEEP_DRILLS, getJumpDrill, getSweepDrill } from './data/octaveDrills';
 export { RELATION_DRILLS, getRelationDrill } from './data/relationDrills';
 export type { BlackGroup, BlackKeySpec, KeyGroup, LandmarkRule } from './data/blackKeys';
 export {
@@ -37,6 +84,7 @@ export {
 } from './data/blackKeyDrills';
 export { GeographyKeyboard } from './components/GeographyKeyboard';
 export { LabelButtons } from './components/LabelButtons';
+export { LetterPicker } from './components/LetterPicker';
 export type { AnswerOption } from './components/LabelButtons';
 export { NoteButtons } from './components/NoteButtons';
 export { BlackGroupDrill } from './drills/BlackGroupDrill';
@@ -44,6 +92,14 @@ export { BlackKeyNameDrill } from './drills/BlackKeyNameDrill';
 export { EnharmonicDrill } from './drills/EnharmonicDrill';
 export { FindKeyDrill } from './drills/FindKeyDrill';
 export { KeyNameDrill } from './drills/KeyNameDrill';
+export { LandmarkChainDrill } from './drills/LandmarkChainDrill';
 export { LandmarkNoteDrill } from './drills/LandmarkNoteDrill';
+export { LandmarkSprintDrill } from './drills/LandmarkSprintDrill';
+export { OctaveJumpDrill } from './drills/OctaveJumpDrill';
+export { OctaveNameDrill } from './drills/OctaveNameDrill';
+export { OctaveSweepDrill } from './drills/OctaveSweepDrill';
+export { RandomSequenceDrill } from './drills/RandomSequenceDrill';
+export { RegisterCompareDrill } from './drills/RegisterCompareDrill';
 export { NaturalSequenceDrill } from './drills/NaturalSequenceDrill';
+export { NoteRecognitionDrill } from './drills/NoteRecognitionDrill';
 export { RelationDrill } from './drills/RelationDrill';

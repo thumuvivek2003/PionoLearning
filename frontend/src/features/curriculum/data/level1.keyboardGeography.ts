@@ -83,42 +83,78 @@ export const level1 = defineLevel({
       ],
     },
     {
+      // Built: the same letter repeats every octave — find it, jump it, name it.
       title: 'Octave Geography',
       practices: [
-        'Find Every C',
-        'Find Every F',
-        'C-to-C Octave',
-        'Same Note Across Octaves',
-        'Low vs High',
-        'Octave Jump Practice',
-        'Random Octave Recognition',
+        { title: 'Find Every C', activity: { kind: 'drill', drillId: 'geo.octave-find-c' } },
+        { title: 'Find Every F', activity: { kind: 'drill', drillId: 'geo.octave-find-f' } },
+        { title: 'C-to-C Octave', activity: { kind: 'drill', drillId: 'geo.octave-c-to-c' } },
+        {
+          title: 'Same Note Across Octaves',
+          activity: { kind: 'drill', drillId: 'geo.octave-same-note' },
+        },
+        { title: 'Low vs High', activity: { kind: 'drill', drillId: 'geo.octave-low-high' } },
+        {
+          title: 'Octave Jump Practice',
+          activity: { kind: 'drill', drillId: 'geo.octave-jump' },
+        },
+        {
+          title: 'Random Octave Recognition',
+          activity: { kind: 'drill', drillId: 'geo.octave-name' },
+        },
       ],
     },
     {
+      // Built: the two anchors, then everything that hangs off them.
       title: 'Landmark Recognition',
       practices: [
-        'C Landmark Drill',
-        'F Landmark Drill',
-        'C → Surrounding Notes',
-        'F → Surrounding Notes',
-        'Landmark → White Keys',
-        'Landmark → Black Keys',
-        'Random Landmark Drill',
+        {
+          title: 'C Landmark Drill',
+          activity: { kind: 'drill', drillId: 'geo.landmark-sprint-c' },
+        },
+        {
+          title: 'F Landmark Drill',
+          activity: { kind: 'drill', drillId: 'geo.landmark-sprint-f' },
+        },
+        {
+          title: 'C → Surrounding Notes',
+          activity: { kind: 'drill', drillId: 'geo.landmark-c-block' },
+        },
+        {
+          title: 'F → Surrounding Notes',
+          activity: { kind: 'drill', drillId: 'geo.landmark-f-block' },
+        },
+        {
+          title: 'Landmark → White Keys',
+          activity: { kind: 'drill', drillId: 'geo.landmark-white-run' },
+        },
+        {
+          title: 'Landmark → Black Keys',
+          activity: { kind: 'drill', drillId: 'geo.landmark-black-run' },
+        },
+        {
+          title: 'Random Landmark Drill',
+          activity: { kind: 'drill', drillId: 'geo.landmark-random' },
+        },
       ],
     },
     {
+      // Built: one recognition engine, nine pressures — plus the sequence run.
       title: 'Random Note Recognition',
       practices: [
-        'Random White Note',
-        'Random Black Note',
-        'Random Sharp Note',
-        'Random Flat Note',
-        'Mixed Random Notes',
-        'Note → Key Drill',
-        'Key → Note Drill',
-        'Random Sequence Drill',
-        'No-Counting Drill',
-        'Speed Recognition',
+        { title: 'Random White Note', activity: { kind: 'drill', drillId: 'geo.random-white' } },
+        { title: 'Random Black Note', activity: { kind: 'drill', drillId: 'geo.random-black' } },
+        { title: 'Random Sharp Note', activity: { kind: 'drill', drillId: 'geo.random-sharp' } },
+        { title: 'Random Flat Note', activity: { kind: 'drill', drillId: 'geo.random-flat' } },
+        { title: 'Mixed Random Notes', activity: { kind: 'drill', drillId: 'geo.random-mixed' } },
+        { title: 'Note → Key Drill', activity: { kind: 'drill', drillId: 'geo.note-to-key' } },
+        { title: 'Key → Note Drill', activity: { kind: 'drill', drillId: 'geo.key-to-note' } },
+        {
+          title: 'Random Sequence Drill',
+          activity: { kind: 'drill', drillId: 'geo.random-sequence' },
+        },
+        { title: 'No-Counting Drill', activity: { kind: 'drill', drillId: 'geo.no-counting' } },
+        { title: 'Speed Recognition', activity: { kind: 'drill', drillId: 'geo.speed-recognition' } },
       ],
     },
     {

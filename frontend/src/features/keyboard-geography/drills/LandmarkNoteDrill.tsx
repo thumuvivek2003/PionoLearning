@@ -14,6 +14,7 @@ import { useSettings } from '@/features/settings';
 import { instrument } from '@/lib/audio';
 import { LANDMARK_RULES } from '../data/blackKeys';
 import type { LandmarkDrillConfig } from '../data/blackKeyDrills';
+import { LAYOUT_OPTIONS } from '../data/layouts';
 import { GeographyKeyboard } from '../components/GeographyKeyboard';
 import { NoteButtons } from '../components/NoteButtons';
 import styles from '../components/geography.module.css';
@@ -110,11 +111,7 @@ export function LandmarkNoteDrill({ config }: { config: LandmarkDrillConfig }) {
           <Field label="Keyboard" hint="A wider board means more of the same landmark to find.">
             <SegmentedControl
               value={layoutId}
-              options={[
-                { value: '25', label: '25 keys' },
-                { value: '49', label: '49 keys' },
-                { value: '61', label: '61 keys' },
-              ]}
+              options={LAYOUT_OPTIONS}
               onChange={setLayoutId}
               block
               ariaLabel="Keyboard size"

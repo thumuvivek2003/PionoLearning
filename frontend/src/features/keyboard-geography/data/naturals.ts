@@ -25,9 +25,20 @@ export function runFrom(letter: Letter, ascending: boolean): readonly Letter[] {
   return NATURALS.map((_, index) => stepLetter(letter, ascending ? index : -index));
 }
 
+/**
+ * A letter drawn from `pool`, avoiding `exclude` while there is a choice.
+ *
+ * Drills draw from a narrowed pool — the letters a given board actually repeats,
+ * say — so the pool is a parameter rather than always the seven naturals.
+ */
+export function randomFrom(pool: readonly Letter[], exclude?: Letter): Letter {
+  const options = exclude ? pool.filter((letter) => letter !== exclude) : pool;
+  const from = options.length > 0 ? options : pool;
+  return from[Math.floor(Math.random() * from.length)] as Letter;
+}
+
 export function randomLetter(exclude?: Letter): Letter {
-  const pool = exclude ? NATURALS.filter((letter) => letter !== exclude) : NATURALS;
-  return pool[Math.floor(Math.random() * pool.length)] as Letter;
+  return randomFrom(NATURALS, exclude);
 }
 
 /**

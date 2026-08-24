@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
 import { Chip, Field, SegmentedControl, Toggle } from '@/components/ui';
 import type { Letter } from '@/features/music-theory';
-import { KEYBOARD_LAYOUTS, getKeyboardLayout } from '@/features/piano';
+import { getKeyboardLayout } from '@/features/piano';
 import { DrillPrompt, DrillShell, ScoreBoard, useQuizDrill } from '@/features/practice-kit';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
+import { LAYOUT_OPTIONS } from '../data/layouts';
 import { LANDMARK_HINT, NATURALS } from '../data/naturals';
 import { GeographyKeyboard } from '../components/GeographyKeyboard';
 import { NoteButtons } from '../components/NoteButtons';
@@ -16,11 +17,6 @@ interface Prompt {
   letter: Letter;
   octave: number;
 }
-
-const LAYOUT_OPTIONS = KEYBOARD_LAYOUTS.map((layout) => ({
-  value: layout.id,
-  label: `${layout.keyCount} keys`,
-}));
 
 function buildPool(layoutId: string): readonly Prompt[] {
   return getKeyboardLayout(layoutId)

@@ -11,6 +11,8 @@ interface GeographyKeyboardProps {
   litPitchClasses?: readonly PitchClass[];
   /** A second, cooler highlight: the answer that was given, or a hint. */
   secondaryMidis?: readonly number[];
+  /** Coolest highlight — keys already collected in this run. */
+  doneMidis?: readonly number[];
   showNames: boolean;
   onKeyPress?: (key: PianoKey) => void;
   footerNote?: string;
@@ -28,6 +30,7 @@ export function GeographyKeyboard({
   litMidis,
   litPitchClasses,
   secondaryMidis,
+  doneMidis,
   showNames,
   onKeyPress,
   footerNote,
@@ -47,8 +50,9 @@ export function GeographyKeyboard({
       current,
       next:
         secondaryMidis && secondaryMidis.length > 0 ? { midis: [...secondaryMidis] } : undefined,
+      previous: doneMidis && doneMidis.length > 0 ? { midis: [...doneMidis] } : undefined,
     });
-  }, [litMidis, litPitchClasses, secondaryMidis]);
+  }, [doneMidis, litMidis, litPitchClasses, secondaryMidis]);
 
   return (
     <PianoKeyboard

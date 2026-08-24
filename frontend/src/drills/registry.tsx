@@ -12,12 +12,25 @@ import {
   EnharmonicDrill,
   FindKeyDrill,
   KeyNameDrill,
+  LandmarkChainDrill,
   LandmarkNoteDrill,
+  LandmarkSprintDrill,
   NaturalSequenceDrill,
+  NoteRecognitionDrill,
+  OctaveJumpDrill,
+  OctaveNameDrill,
+  OctaveSweepDrill,
+  RandomSequenceDrill,
+  RegisterCompareDrill,
   RelationDrill,
+  getChainDrill,
   getGroupDrill,
+  getJumpDrill,
   getLandmarkDrill,
+  getRecognitionDrill,
   getRelationDrill,
+  getSprintDrill,
+  getSweepDrill,
 } from '@/features/keyboard-geography';
 
 /**
@@ -137,6 +150,120 @@ const REGISTERED_DRILLS: readonly Drill[] = [
     render: () => <BlackKeyNameDrill naming="flat" />,
   },
   { id: 'geo.enharmonics', title: 'Sharp ↔ flat equivalents', render: EnharmonicDrill },
+
+  /* ---- L1 · B1.3 — Octave Geography ---- */
+  {
+    id: 'geo.octave-find-c',
+    title: 'Find every C',
+    render: () => <OctaveSweepDrill config={getSweepDrill('c')} />,
+  },
+  {
+    id: 'geo.octave-find-f',
+    title: 'Find every F',
+    render: () => <OctaveSweepDrill config={getSweepDrill('f')} />,
+  },
+  {
+    id: 'geo.octave-c-to-c',
+    title: 'C to C — one octave',
+    render: () => <OctaveJumpDrill config={getJumpDrill('c-to-c')} />,
+  },
+  {
+    id: 'geo.octave-same-note',
+    title: 'Same note across octaves',
+    render: () => <OctaveSweepDrill config={getSweepDrill('same-note')} />,
+  },
+  { id: 'geo.octave-low-high', title: 'Low vs high', render: RegisterCompareDrill },
+  {
+    id: 'geo.octave-jump',
+    title: 'Octave jumps',
+    render: () => <OctaveJumpDrill config={getJumpDrill('any')} />,
+  },
+  { id: 'geo.octave-name', title: 'Random octave recognition', render: OctaveNameDrill },
+
+  /* ---- L1 · B1.4 — Landmark Recognition ---- */
+  {
+    id: 'geo.landmark-sprint-c',
+    title: 'C landmark sprint',
+    render: () => <LandmarkSprintDrill config={getSprintDrill('c')} />,
+  },
+  {
+    id: 'geo.landmark-sprint-f',
+    title: 'F landmark sprint',
+    render: () => <LandmarkSprintDrill config={getSprintDrill('f')} />,
+  },
+  {
+    id: 'geo.landmark-c-block',
+    title: 'C → D E',
+    render: () => <LandmarkChainDrill config={getChainDrill('c-block')} />,
+  },
+  {
+    id: 'geo.landmark-f-block',
+    title: 'F → G A B',
+    render: () => <LandmarkChainDrill config={getChainDrill('f-block')} />,
+  },
+  {
+    id: 'geo.landmark-white-run',
+    title: 'Landmark → white keys',
+    render: () => <LandmarkChainDrill config={getChainDrill('white-run')} />,
+  },
+  {
+    id: 'geo.landmark-black-run',
+    title: 'Landmark → black keys',
+    render: () => <LandmarkChainDrill config={getChainDrill('black-run')} />,
+  },
+  {
+    id: 'geo.landmark-random',
+    title: 'Random landmark drill',
+    render: () => <LandmarkSprintDrill config={getSprintDrill('random')} />,
+  },
+
+  /* ---- L1 · B1.5 — Random Note Recognition ---- */
+  {
+    id: 'geo.random-white',
+    title: 'Random white note',
+    render: () => <NoteRecognitionDrill config={getRecognitionDrill('white')} />,
+  },
+  {
+    id: 'geo.random-black',
+    title: 'Random black note',
+    render: () => <NoteRecognitionDrill config={getRecognitionDrill('black')} />,
+  },
+  {
+    id: 'geo.random-sharp',
+    title: 'Random sharp note',
+    render: () => <NoteRecognitionDrill config={getRecognitionDrill('sharp')} />,
+  },
+  {
+    id: 'geo.random-flat',
+    title: 'Random flat note',
+    render: () => <NoteRecognitionDrill config={getRecognitionDrill('flat')} />,
+  },
+  {
+    id: 'geo.random-mixed',
+    title: 'Mixed random notes',
+    render: () => <NoteRecognitionDrill config={getRecognitionDrill('mixed')} />,
+  },
+  {
+    id: 'geo.note-to-key',
+    title: 'Note → key',
+    render: () => <NoteRecognitionDrill config={getRecognitionDrill('to-key')} />,
+  },
+  {
+    id: 'geo.key-to-note',
+    title: 'Key → note',
+    render: () => <NoteRecognitionDrill config={getRecognitionDrill('to-name')} />,
+  },
+  { id: 'geo.random-sequence', title: 'Random sequence', render: RandomSequenceDrill },
+  {
+    id: 'geo.no-counting',
+    title: 'No-counting drill',
+    render: () => <NoteRecognitionDrill config={getRecognitionDrill('no-counting')} />,
+  },
+  {
+    id: 'geo.speed-recognition',
+    title: 'Speed recognition',
+    render: () => <NoteRecognitionDrill config={getRecognitionDrill('speed')} />,
+  },
 
   /* ---- L2 · B2.1 — Finger Awareness ---- */
   {

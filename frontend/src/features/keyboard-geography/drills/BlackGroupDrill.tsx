@@ -12,6 +12,7 @@ import {
 } from '@/features/practice-kit';
 import { blackGroups, groupIdOf, groupSize } from '../data/blackKeys';
 import type { GroupDirection, GroupDrillConfig } from '../data/blackKeyDrills';
+import { LAYOUT_OPTIONS } from '../data/layouts';
 import { GeographyKeyboard } from '../components/GeographyKeyboard';
 import { LabelButtons } from '../components/LabelButtons';
 import styles from '../components/geography.module.css';
@@ -134,11 +135,7 @@ export function BlackGroupDrill({ config }: { config: GroupDrillConfig }) {
           <Field label="Keyboard">
             <SegmentedControl
               value={layoutId}
-              options={[
-                { value: '25', label: '25 keys' },
-                { value: '49', label: '49 keys' },
-                { value: '61', label: '61 keys' },
-              ]}
+              options={LAYOUT_OPTIONS}
               onChange={setLayoutId}
               block
               ariaLabel="Keyboard size"

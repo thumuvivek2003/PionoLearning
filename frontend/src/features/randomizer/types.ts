@@ -10,6 +10,12 @@ export interface StrategyContext<T extends Identifiable> {
   history: readonly T[];
   /** Random source, injected so sequences can be made deterministic in tests. */
   random: () => number;
+  /**
+   * Optional per-item draw weight, keyed by item id — higher means "ask this
+   * more". Supplied by drills that track how you are doing per item; strategies
+   * that do not care about difficulty simply ignore it.
+   */
+  weights?: ReadonlyMap<string, number>;
 }
 
 /**
@@ -25,4 +31,4 @@ export interface SequenceStrategy {
   pick<T extends Identifiable>(context: StrategyContext<T>): T;
 }
 
-export type StrategyId = 'no-repeat' | 'spread' | 'pure-random';
+export type StrategyId = 'no-repeat' | 'spread' | 'pure-random' | 'weak-focus';

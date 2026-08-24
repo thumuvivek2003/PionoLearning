@@ -8,6 +8,8 @@ export interface GenerateOptions<T extends Identifiable> {
   /** Items already played, so a top-up continues the same stream. */
   history?: readonly T[];
   random?: () => number;
+  /** Per-item draw weights, for the strategies that adapt to them. */
+  weights?: ReadonlyMap<string, number>;
 }
 
 /**
@@ -21,6 +23,7 @@ export function generateSequence<T extends Identifiable>({
   count,
   history = [],
   random = Math.random,
+  weights,
 }: GenerateOptions<T>): T[] {
   if (pool.length === 0 || count <= 0) return [];
 
@@ -28,7 +31,7 @@ export function generateSequence<T extends Identifiable>({
   const produced: T[] = [];
 
   for (let index = 0; index < count; index += 1) {
-    const next = strategy.pick({ pool, history: running, random });
+    const next = strategy.pick({ pool, history: running, random, weights });
     produced.push(next);
     running.push(next);
   }

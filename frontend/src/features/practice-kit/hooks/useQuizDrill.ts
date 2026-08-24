@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getStrategy } from '@/features/randomizer';
 import type { Identifiable } from '@/features/randomizer';
 import { useOptionalPracticeClock } from '../PracticeClockContext';
+import { drawWeights } from '../scoring';
+import { useScoreBook } from './useScoreBook';
 
 /** How long a verdict stays on screen before the next prompt. */
 const CORRECT_HOLD_MS = 450;
@@ -36,6 +38,13 @@ interface QuizDrillOptions<Q extends Identifiable, A> {
   answerOf: (question: Q) => A;
   /** Draw policy — defaults to never repeating the prompt just shown. */
   strategyId?: string;
+  /**
+   * Short label for what a prompt tests, e.g. "F#" — the key its score is kept
+   * under. Prompts sharing a key share a score, which is how "slow on F#"
+   * emerges from thirty separate keys on the board. Defaults to the prompt id,
+   * i.e. one score per prompt.
+   */
+  scoreKeyOf?: (question: Q) => string;
 }
 
 /**
@@ -50,19 +59,36 @@ export function useQuizDrill<Q extends Identifiable, A>({
   pool,
   answerOf,
   strategyId = 'no-repeat',
+  scoreKeyOf,
 }: QuizDrillOptions<Q, A>) {
   const strategy = useMemo(() => getStrategy(strategyId), [strategyId]);
   const clock = useOptionalPracticeClock();
 
-  // Held in a ref so an inline `answerOf` cannot re-create `answer` every
+  // Held in refs so an inline `answerOf` cannot re-create `answer` every
   // render — the drills bind it to key handlers, which would resubscribe.
   const readAnswer = useRef(answerOf);
   useEffect(() => {
     readAnswer.current = answerOf;
   }, [answerOf]);
 
+  const readScoreKey = useRef(scoreKeyOf);
+  useEffect(() => {
+    readScoreKey.current = scoreKeyOf;
+  }, [scoreKeyOf]);
+  const keyOf = useCallback((item: Q) => readScoreKey.current?.(item) ?? item.id, []);
+
+  const { book: scores, record, clear: clearScores } = useScoreBook();
+  const weights = useMemo(() => drawWeights(pool, scores, keyOf), [keyOf, pool, scores]);
+  // Read at draw time rather than closed over, so the ledger steers the next
+  // question without `draw` changing identity on every answer.
+  const currentWeights = useRef(weights);
+  useEffect(() => {
+    currentWeights.current = weights;
+  }, [weights]);
+
   const draw = useCallback(
-    (history: readonly Q[]) => strategy.pick({ pool, history, random: Math.random }),
+    (history: readonly Q[]) =>
+      strategy.pick({ pool, history, random: Math.random, weights: currentWeights.current }),
     [pool, strategy],
   );
 
@@ -100,18 +126,23 @@ export function useQuizDrill<Q extends Identifiable, A>({
     present(draw(history.current));
   }, [draw, present]);
 
-  const answer = useCallback(
-    (value: A) => {
-      // Ignore input while a verdict is showing, so a double tap cannot skip one.
-      if (verdict !== 'waiting') return;
-
-      // The first answer is the moment practice really began.
+  /**
+   * Grades one attempt: the tallies, the ledger and the verdict hold.
+   *
+   * Both ways of failing come through here — a wrong answer and running out of
+   * time — so they cost exactly the same, which is the point of a deadline.
+   */
+  const settle = useCallback(
+    (isCorrect: boolean, value: A | null) => {
+      // The first attempt is the moment practice really began.
       clock?.markActivity();
 
       const elapsed = performance.now() - shownAt.current;
-      const isCorrect = value === readAnswer.current(question);
+      const timed = !missed.current;
       setGiven(value);
       setVerdict(isCorrect ? 'correct' : 'wrong');
+
+      record(keyOf(question), isCorrect, timed ? elapsed : null);
 
       setStats((current) => {
         if (!isCorrect) {
@@ -124,7 +155,6 @@ export function useQuizDrill<Q extends Identifiable, A>({
         }
 
         // Only clean first-try answers are timed — a corrected one is not recall.
-        const timed = !missed.current;
         const correct = current.correct + 1;
         const streak = current.streak + 1;
         const previousTotal = (current.averageMs ?? 0) * current.correct;
@@ -146,15 +176,31 @@ export function useQuizDrill<Q extends Identifiable, A>({
         isCorrect ? CORRECT_HOLD_MS : WRONG_HOLD_MS,
       );
     },
-    [advance, clock, question, verdict],
+    [advance, clock, keyOf, question, record],
   );
+
+  const answer = useCallback(
+    (value: A) => {
+      // Ignore input while a verdict is showing, so a double tap cannot skip one.
+      if (verdict !== 'waiting') return;
+      settle(value === readAnswer.current(question), value);
+    },
+    [question, settle, verdict],
+  );
+
+  /** Ran out of time. Costs the same as a wrong answer, and re-asks. */
+  const timeout = useCallback(() => {
+    if (verdict !== 'waiting') return;
+    settle(false, null);
+  }, [settle, verdict]);
 
   const reset = useCallback(() => {
     clearTimer();
     history.current = [];
     setStats(EMPTY_STATS);
+    clearScores();
     present(draw([]));
-  }, [draw, present]);
+  }, [clearScores, draw, present]);
 
   // A changed pool (a mode switch) invalidates the prompt on screen.
   useEffect(() => {
@@ -172,7 +218,10 @@ export function useQuizDrill<Q extends Identifiable, A>({
     given,
     expected: readAnswer.current(question),
     stats,
+    /** What you are getting right and wrong, per score key. */
+    scores,
     answer,
+    timeout,
     skip: advance,
     reset,
   };

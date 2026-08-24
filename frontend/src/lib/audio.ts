@@ -12,7 +12,19 @@ const NOTE_SECONDS = 0.9;
  * pitch classes", so a sampled piano could replace it without touching the UI.
  */
 export interface Instrument {
+  /**
+   * Plays pitch classes, voiced from a fixed octave.
+   *
+   * Pitch *height* is not meaningful here — every C sounds like the same C —
+   * which is right for the trainers, where the answer is the note name.
+   */
   play(pitchClasses: readonly PitchClass[]): void;
+  /**
+   * Plays exact keys, so two keys an octave apart really sound an octave
+   * apart. The octave drills need this: the whole point they teach is that
+   * C4 and C5 are the same letter at a different height.
+   */
+  playMidis(midis: readonly number[]): void;
   dispose(): void;
 }
 
@@ -29,20 +41,28 @@ class OscillatorInstrument implements Instrument {
   }
 
   play(pitchClasses: readonly PitchClass[]): void {
+    // Stack the tones upward so a chord voices like a real hand position.
+    this.playMidis(
+      pitchClasses.map((pitchClass, index) => {
+        const previous = pitchClasses[index - 1];
+        const octave = BASE_OCTAVE + (previous !== undefined && pitchClass < previous ? 1 : 0);
+        return toMidi(pitchClass, octave);
+      }),
+    );
+  }
+
+  playMidis(midis: readonly number[]): void {
     const context = this.#ensureContext();
-    if (!context || pitchClasses.length === 0) return;
+    if (!context || midis.length === 0) return;
 
     const startedAt = context.currentTime;
     // Share one gain node so a four-note chord is not four times as loud.
     const master = context.createGain();
-    master.gain.value = 0.9 / Math.sqrt(pitchClasses.length);
+    master.gain.value = 0.9 / Math.sqrt(midis.length);
     master.connect(context.destination);
 
-    pitchClasses.forEach((pitchClass, index) => {
-      // Stack chord tones upward so they voice like a real hand position.
-      const previous = pitchClasses[index - 1];
-      const octave = BASE_OCTAVE + (previous !== undefined && pitchClass < previous ? 1 : 0);
-      const frequency = midiToFrequency(toMidi(pitchClass, octave));
+    midis.forEach((midi) => {
+      const frequency = midiToFrequency(midi);
 
       const oscillator = context.createOscillator();
       oscillator.type = 'triangle';

@@ -1,22 +1,16 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Chip, Field, SegmentedControl, Toggle } from '@/components/ui';
 import { LETTER_PITCH_CLASS } from '@/features/music-theory';
 import type { Letter } from '@/features/music-theory';
 import type { PianoKey } from '@/features/piano';
-import {
-  Counter,
-  CounterRow,
-  DrillPrompt,
-  DrillShell,
-  StepStrip,
-  useOptionalPracticeClock,
-} from '@/features/practice-kit';
+import { DrillPrompt, DrillShell, RunCounters, StepStrip, useTimedRun } from '@/features/practice-kit';
 import { useSettings } from '@/features/settings';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { instrument } from '@/lib/audio';
 import { LANDMARK_HINT, NATURALS, randomLetter, runFrom } from '../data/naturals';
 import type { SequenceDirection } from '../geography.types';
 import { GeographyKeyboard } from '../components/GeographyKeyboard';
+import { LetterPicker } from '../components/LetterPicker';
 import { NoteButtons } from '../components/NoteButtons';
 import styles from '../components/geography.module.css';
 
@@ -29,7 +23,7 @@ const DIRECTIONS = [
 ] as const;
 
 const STARTS = [
-  { value: 'c', label: 'From C' },
+  { value: 'chosen', label: 'From key' },
   { value: 'random', label: 'Random start' },
 ] as const;
 
@@ -42,24 +36,20 @@ type StartMode = (typeof STARTS)[number]['value'];
  * letter, so the run has to come out of your head. Upcoming slots stay blank
  * and only fill in behind you, which is what makes "start at A" harder than
  * "start at C" — exactly the drill the bucket asks for.
+ *
+ * The starting note is yours to choose: pick any of the seven and drill it
+ * until it is as automatic as C, or hand it to Random once they all are.
  */
 export function NaturalSequenceDrill() {
   const [direction, setDirection] = useState<SequenceDirection>('ascending');
-  const [startMode, setStartMode] = useState<StartMode>('c');
+  const [startMode, setStartMode] = useState<StartMode>('chosen');
+  const [startLetter, setStartLetter] = useState<Letter>('C');
   const [showNames, setShowNames] = useState(true);
   const { settings } = useSettings();
-  const clock = useOptionalPracticeClock();
 
   const [start, setStart] = useState<Letter>('C');
   const [index, setIndex] = useState(0);
   const [wrong, setWrong] = useState<Letter | null>(null);
-  const [runs, setRuns] = useState(0);
-  const [stumbles, setStumbles] = useState(0);
-  const [lastSeconds, setLastSeconds] = useState<number | null>(null);
-  const [bestSeconds, setBestSeconds] = useState<number | null>(null);
-
-  const startedAt = useRef<number | null>(null);
-  const restartTimer = useRef<number | null>(null);
 
   const run = useMemo(
     () => runFrom(start, direction === 'ascending'),
@@ -69,55 +59,42 @@ export function NaturalSequenceDrill() {
   const expected = index < RUN_LENGTH ? (run[index % NATURALS.length] as Letter) : null;
   const complete = index >= RUN_LENGTH;
 
-  const newRun = useCallback(() => {
-    if (restartTimer.current !== null) window.clearTimeout(restartTimer.current);
-    restartTimer.current = null;
-    setStart((current) => (startMode === 'random' ? randomLetter(current) : 'C'));
+  /** Sets up the next run: a starting note, and an empty strip to fill. */
+  const deal = useCallback(() => {
+    setStart((current) => (startMode === 'random' ? randomLetter(current) : startLetter));
     setIndex(0);
     setWrong(null);
-    startedAt.current = null;
-  }, [startMode]);
+  }, [startLetter, startMode]);
 
-  // Changing how a run is set up starts a fresh one rather than half-rewriting it.
+  const { stats, begin, stumble, finish, dealNow } = useTimedRun({ onDeal: deal });
+
+  // Changing how a run is set up — direction, mode, chosen note — deals a
+  // fresh one rather than half-rewriting the run in flight.
   useEffect(() => {
-    newRun();
-  }, [direction, startMode, newRun]);
-
-  useEffect(
-    () => () => {
-      if (restartTimer.current !== null) window.clearTimeout(restartTimer.current);
-    },
-    [],
-  );
+    dealNow();
+  }, [dealNow, direction, startLetter, startMode]);
 
   const answer = useCallback(
     (letter: Letter) => {
       if (complete) return;
-      clock?.markActivity();
 
       if (letter !== expected) {
         setWrong(letter);
-        setStumbles((count) => count + 1);
+        stumble();
         window.setTimeout(() => setWrong(null), 500);
         return;
       }
 
+      begin();
       if (settings.soundEnabled) instrument.play([LETTER_PITCH_CLASS[letter]]);
-      if (index === 0) startedAt.current = performance.now();
       setWrong(null);
 
       const next = index + 1;
       setIndex(next);
-      if (next < RUN_LENGTH) return;
-
-      // Run finished — bank the time and set up the next one.
-      const seconds = startedAt.current ? (performance.now() - startedAt.current) / 1000 : null;
-      setRuns((count) => count + 1);
-      setLastSeconds(seconds);
-      if (seconds !== null) setBestSeconds((best) => (best === null ? seconds : Math.min(best, seconds)));
-      restartTimer.current = window.setTimeout(newRun, 1100);
+      // The eighth note lands back on the start — that closes the run.
+      if (next >= RUN_LENGTH) finish();
     },
-    [clock, complete, expected, index, newRun, settings.soundEnabled],
+    [begin, complete, expected, finish, index, settings.soundEnabled, stumble],
   );
 
   const answerLetters = useMemo(
@@ -139,7 +116,7 @@ export function NaturalSequenceDrill() {
       steps={[
         'Read the starting note, then enter the whole run from memory — eight notes back to the start.',
         'Say each name out loud as you enter it, and play it on your real keyboard.',
-        'Switch to Random start once From C is automatic. That is the actual test.',
+        'Pick a different starting note once the current one is automatic — then switch to Random start. That is the actual test.',
       ]}
       watchFor='Restarting from C to work out where you are. If "start at A" is much slower than "start at C", stay here a while longer.'
       aside={
@@ -153,13 +130,26 @@ export function NaturalSequenceDrill() {
               ariaLabel="Direction"
             />
           </Field>
-          <Field label="Starting note">
+          <Field
+            label="Starting note"
+            hint={
+              startMode === 'random'
+                ? 'A different note every run.'
+                : 'Every run starts on the note you picked.'
+            }
+          >
             <SegmentedControl
               value={startMode}
               options={STARTS}
               onChange={setStartMode}
               block
               ariaLabel="Starting note"
+            />
+            <LetterPicker
+              value={startLetter}
+              onChange={setStartLetter}
+              disabled={startMode === 'random'}
+              ariaLabel="Start the run from"
             />
           </Field>
           <Toggle
@@ -168,18 +158,10 @@ export function NaturalSequenceDrill() {
             label="Names on the keys"
             description="Turn them off to make the run come from memory alone."
           />
-          <Button variant="secondary" icon="reset" onClick={newRun} block>
+          <Button variant="secondary" icon="reset" onClick={dealNow} block>
             New run
           </Button>
-          <CounterRow>
-            <Counter label="Runs" value={String(runs)} />
-            <Counter label="Stumbles" value={String(stumbles)} />
-            <Counter
-              label="Last run"
-              value={lastSeconds === null ? '—' : `${lastSeconds.toFixed(1)}s`}
-              hint={bestSeconds === null ? undefined : `best ${bestSeconds.toFixed(1)}s`}
-            />
-          </CounterRow>
+          <RunCounters stats={stats} />
         </>
       }
     >
@@ -189,7 +171,7 @@ export function NaturalSequenceDrill() {
           <>
             {complete ? (
               <Chip tone="accent">
-                Run complete{lastSeconds === null ? '' : ` — ${lastSeconds.toFixed(1)}s`}
+                Run complete{stats.lastSeconds === null ? '' : ` — ${stats.lastSeconds.toFixed(1)}s`}
               </Chip>
             ) : (
               <Chip>
