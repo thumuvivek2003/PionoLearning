@@ -23,7 +23,7 @@ npm run build       # the other gate — there is no ESLint or test runner
 | `features/practice-kit/` | Shared drill engines and panels — see below. |
 | `features/piano/`, `music-theory/`, `randomizer/` | Shared domain: keyboard layouts and the white-key ruler, notes/chords/scales/intervals, draw policies. Drill features depend on these, never on each other. |
 | `src/drills/registry.tsx` | Maps a drill id to the component that renders it. |
-| `frontend/references/L*.md` | Hand-written spec for each bucket's practices. |
+| `frontend/references/L<n>/` | Hand-written spec for each bucket's practices, one folder per level. |
 
 ## Adding a practice
 
@@ -35,7 +35,7 @@ npm run build       # the other gate — there is no ESLint or test runner
 A practice with no `activity` renders "Coming soon" on its own. Curriculum data never imports a
 component, and pages never switch on drill kind — prefer a new **config** over a new component.
 
-**Read `frontend/references/L<level>.<bucket>.md` before building a bucket.** It specifies the
+**Read `frontend/references/L<level>/L<level>.<bucket>.md` before building a bucket.** It specifies the
 rounds, targets and pass conditions, and no code links to it. If a bucket has no reference file,
 design from the practice titles plus the level's principle and say so.
 
