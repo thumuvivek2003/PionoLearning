@@ -23,8 +23,11 @@ export interface Instrument {
    * Plays exact keys, so two keys an octave apart really sound an octave
    * apart. The octave drills need this: the whole point they teach is that
    * C4 and C5 are the same letter at a different height.
+   *
+   * `gain` scales the volume around 1, so an accent drill can demonstrate the
+   * difference it is asking you to make.
    */
-  playMidis(midis: readonly number[]): void;
+  playMidis(midis: readonly number[], gain?: number): void;
   dispose(): void;
 }
 
@@ -51,14 +54,14 @@ class OscillatorInstrument implements Instrument {
     );
   }
 
-  playMidis(midis: readonly number[]): void {
+  playMidis(midis: readonly number[], gain = 1): void {
     const context = this.#ensureContext();
     if (!context || midis.length === 0) return;
 
     const startedAt = context.currentTime;
     // Share one gain node so a four-note chord is not four times as loud.
     const master = context.createGain();
-    master.gain.value = 0.9 / Math.sqrt(midis.length);
+    master.gain.value = (0.9 / Math.sqrt(midis.length)) * Math.max(0.1, Math.min(2, gain));
     master.connect(context.destination);
 
     midis.forEach((midi) => {

@@ -1,43 +1,16 @@
-import { FLAT_NAMES, SHARP_NAMES, isBlackPitchClass } from '@/features/music-theory';
 import type { PitchClass } from '@/features/music-theory';
 import type { KeyboardLayout, PianoKey } from '@/features/piano';
 
 /**
- * Which keys a drill deals in, and what it calls them.
+ * Which keys a drill deals in.
  *
- * Bucket 1.5 is the same recognition task under different vocabularies — white
- * keys, black keys, sharps, flats, everything — so the vocabulary is data. The
- * *answer* is always the key itself (a pitch class): C# and Db are one key with
- * two names, and a drill that treated them as two answers would be teaching
- * something untrue.
+ * Bucket 1.5 is the same recognition task over different parts of the board, so
+ * the scope is data. What those keys are *called* is a shared fact rather than a
+ * geography one, and lives in music-theory: C# and Db are one key with two
+ * names, and a drill that treated them as two answers would teach something
+ * untrue.
  */
 export type KeyScope = 'white' | 'black' | 'all';
-
-export type NoteNaming = 'sharp' | 'flat' | 'both';
-
-export interface NoteLabel {
-  /** What the button or prompt reads, e.g. "C#". */
-  label: string;
-  /** The same key's other name, when both are being taught. */
-  sub?: string;
-}
-
-/** How one key is written under a given naming. */
-export function noteLabel(pitchClass: PitchClass, naming: NoteNaming): NoteLabel {
-  const sharp = SHARP_NAMES[pitchClass] as string;
-  const flat = FLAT_NAMES[pitchClass] as string;
-
-  if (!isBlackPitchClass(pitchClass)) return { label: sharp };
-  if (naming === 'sharp') return { label: sharp };
-  if (naming === 'flat') return { label: flat };
-  return { label: sharp, sub: flat };
-}
-
-/** Both names when they differ, e.g. "C#/Db" — how a score is keyed. */
-export function noteKey(pitchClass: PitchClass, naming: NoteNaming): string {
-  const { label, sub } = noteLabel(pitchClass, naming);
-  return sub ? `${label}/${sub}` : label;
-}
 
 export function inScope(key: PianoKey, scope: KeyScope): boolean {
   if (scope === 'all') return true;

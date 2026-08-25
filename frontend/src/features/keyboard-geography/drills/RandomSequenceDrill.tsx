@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Chip, Field, SegmentedControl, Toggle } from '@/components/ui';
+import { noteKey, noteLabel } from '@/features/music-theory';
 import type { PitchClass } from '@/features/music-theory';
 import { getKeyboardLayout } from '@/features/piano';
 import type { PianoKey } from '@/features/piano';
@@ -18,7 +19,7 @@ import { generateSequence, getStrategy } from '@/features/randomizer';
 import { useSettings } from '@/features/settings';
 import { instrument } from '@/lib/audio';
 import { LAYOUT_OPTIONS, SMALL_LAYOUT_ID } from '../data/layouts';
-import { noteKey, noteLabel, scopePitchClasses } from '../data/naming';
+import { scopePitchClasses } from '../data/naming';
 import type { KeyScope } from '../data/naming';
 import { GeographyKeyboard } from '../components/GeographyKeyboard';
 import styles from '../components/geography.module.css';

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Button, Chip, Field, SegmentedControl, Toggle } from '@/components/ui';
+import { Button, Chip, Cover, Field, SegmentedControl, Toggle } from '@/components/ui';
+import { noteKey, noteLabel } from '@/features/music-theory';
 import type { PitchClass } from '@/features/music-theory';
 import { getKeyboardLayout } from '@/features/piano';
 import type { PianoKey } from '@/features/piano';
@@ -16,12 +17,11 @@ import {
 import { useSettings } from '@/features/settings';
 import { instrument } from '@/lib/audio';
 import { LAYOUT_OPTIONS, SMALL_LAYOUT_ID } from '../data/layouts';
-import { noteKey, noteLabel, scopePitchClasses } from '../data/naming';
+import { scopePitchClasses } from '../data/naming';
 import type { KeyScope } from '../data/naming';
 import { boardRegions, keyLabel, regionOf, regionSpan } from '../data/octaves';
 import type { BoardRegion } from '../data/octaves';
 import { GeographyKeyboard } from '../components/GeographyKeyboard';
-import { BlindCover } from '../components/BlindCover';
 import { LabelButtons } from '../components/LabelButtons';
 import styles from '../components/geography.module.css';
 
@@ -269,7 +269,7 @@ export function BlindIdentifyDrill() {
       </DrillPrompt>
 
       <div className={styles.keyboard}>
-        <BlindCover
+        <Cover
           covered={covered}
           note={phase === 'touch' ? 'Covered — touch a key' : 'Name it, then it uncovers'}
         >
@@ -280,7 +280,7 @@ export function BlindIdentifyDrill() {
             onKeyPress={press}
             footerNote={answered ? 'That is where you were' : 'Press where you think you are'}
           />
-        </BlindCover>
+        </Cover>
       </div>
 
       {phase === 'name' && (

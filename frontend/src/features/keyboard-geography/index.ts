@@ -55,10 +55,7 @@ export {
   directionArrow,
   distanceAnswer,
   distanceLabel,
-  intervalName,
   targetOf,
-  whiteKeys,
-  whiteStep,
 } from './data/distances';
 export type {
   DistanceAsk,
@@ -66,14 +63,8 @@ export type {
   DistanceDrillConfig,
 } from './data/distanceDrills';
 export { DISTANCE_DRILLS, getDistanceDrill } from './data/distanceDrills';
-export type { KeyScope, NoteLabel, NoteNaming } from './data/naming';
-export {
-  inScope,
-  noteKey,
-  noteLabel,
-  scopeKeys,
-  scopePitchClasses,
-} from './data/naming';
+export type { KeyScope } from './data/naming';
+export { inScope, scopeKeys, scopePitchClasses } from './data/naming';
 export type {
   AskDirection,
   Challenge,
@@ -112,7 +103,6 @@ export {
   getGroupDrill,
   getLandmarkDrill,
 } from './data/blackKeyDrills';
-export { BlindCover } from './components/BlindCover';
 export { GeographyKeyboard } from './components/GeographyKeyboard';
 export { LabelButtons } from './components/LabelButtons';
 export { LetterPicker } from './components/LetterPicker';

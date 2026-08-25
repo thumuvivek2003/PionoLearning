@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Chip, Field, SegmentedControl, Toggle } from '@/components/ui';
+import { intervalName } from '@/features/music-theory';
 import type { Letter } from '@/features/music-theory';
-import { getKeyboardLayout } from '@/features/piano';
+import { getKeyboardLayout, whiteKeys } from '@/features/piano';
 import type { KeyboardLayout, PianoKey } from '@/features/piano';
 import {
   ALLOWANCE_OPTIONS,
@@ -18,14 +19,7 @@ import { useSettings } from '@/features/settings';
 import { instrument } from '@/lib/audio';
 import { LAYOUT_OPTIONS, WIDE_LAYOUT_ID } from '../data/layouts';
 import { NATURALS } from '../data/naturals';
-import {
-  directionArrow,
-  distanceAnswer,
-  distanceLabel,
-  intervalName,
-  targetOf,
-  whiteKeys,
-} from '../data/distances';
+import { directionArrow, distanceAnswer, distanceLabel, targetOf } from '../data/distances';
 import type { Distance } from '../data/distances';
 import type { DistanceAsk, DistanceDrillConfig } from '../data/distanceDrills';
 import { keyLabel } from '../data/octaves';

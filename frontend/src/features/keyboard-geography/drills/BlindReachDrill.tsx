@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Field, SegmentedControl, Toggle } from '@/components/ui';
+import { Button, Chip, Cover, Field, SegmentedControl, Toggle } from '@/components/ui';
 import type { Letter } from '@/features/music-theory';
-import { getKeyboardLayout } from '@/features/piano';
+import { getKeyboardLayout, whiteKeys, whiteStep } from '@/features/piano';
 import type { KeyboardLayout, PianoKey } from '@/features/piano';
 import {
   Counter,
@@ -19,7 +19,6 @@ import { useSettings } from '@/features/settings';
 import { instrument } from '@/lib/audio';
 import { LANDMARK_RULES } from '../data/blackKeys';
 import { LAYOUT_OPTIONS, SMALL_LAYOUT_ID } from '../data/layouts';
-import { whiteKeys, whiteStep } from '../data/distances';
 import { keyLabel } from '../data/octaves';
 import {
   EMPTY_TALLY,
@@ -34,7 +33,6 @@ import {
 import type { ReachTally } from '../data/reach';
 import type { ReachDrillConfig, ReachTarget } from '../data/reachDrills';
 import { GeographyKeyboard } from '../components/GeographyKeyboard';
-import { BlindCover } from '../components/BlindCover';
 import styles from '../components/geography.module.css';
 
 /** How long the look lasts, per the reference's "about a second". */
@@ -296,7 +294,7 @@ export function BlindReachDrill({ config }: { config: ReachDrillConfig }) {
       )}
 
       <div className={styles.keyboard}>
-        <BlindCover covered={covered} note="Covered — reach from memory">
+        <Cover covered={covered} note="Covered — reach from memory">
           <GeographyKeyboard
             layoutId={layoutId}
             // The target is only ever shown during the look, or on the way back
@@ -309,7 +307,7 @@ export function BlindReachDrill({ config }: { config: ReachDrillConfig }) {
             onKeyPress={press}
             footerNote={covered ? 'Aim, then press' : 'Target lit — this is your look'}
           />
-        </BlindCover>
+        </Cover>
       </div>
 
       <p className={styles.landmark}>

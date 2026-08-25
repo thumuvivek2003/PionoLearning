@@ -10,6 +10,12 @@ interface BlackKeyProps {
   showName: boolean;
   /** Given only when the keyboard is being used as an input. */
   onPress?: () => void;
+  /**
+   * Press and release, for the drills that measure how long a key is held.
+   * A key given these is still a button; the click handler simply goes unused.
+   */
+  onDown?: () => void;
+  onUp?: () => void;
 }
 
 function BlackKeyComponent({
@@ -18,6 +24,8 @@ function BlackKeyComponent({
   highlight,
   showName,
   onPress,
+  onDown,
+  onUp,
 }: BlackKeyProps) {
   const { left, width } = getKeyGeometry(pianoKey, whiteKeyCount);
   const className = [styles.key, styles.black, highlight !== 'none' ? styles[highlight] : '']
@@ -39,6 +47,12 @@ function BlackKeyComponent({
       data-highlight={highlight}
       aria-label={`${pianoKey.sharpName}${pianoKey.octave}`}
       onClick={onPress}
+      onPointerDown={onDown}
+      onPointerUp={onUp}
+      // A pointer that wanders off the key still counts as a release, or the
+      // note would hang for as long as the drill is open.
+      onPointerLeave={onUp}
+      onPointerCancel={onUp}
     >
       {label}
     </button>

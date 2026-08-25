@@ -1,6 +1,6 @@
 import { SEMITONES_PER_OCTAVE } from '@/features/music-theory';
+import { whiteKeys } from '@/features/piano';
 import type { KeyboardLayout, PianoKey } from '@/features/piano';
-import { whiteKeys } from './distances';
 import { keyLabel } from './octaves';
 
 /**

@@ -18,9 +18,10 @@ npm run build       # the other gate — there is no ESLint or test runner
 | --- | --- |
 | `features/curriculum/` | The 8-level → bucket → practice tree. Pure data; ids derived by `defineLevel`. |
 | `features/keyboard-geography/` | Level 1 drills (`L1` = find any key by sight). |
-| `features/finger-training/` | Level 2 drills. |
+| `features/finger-training/` | Level 2 drills — position, independence, intervals, shifting, crossing, black keys, random decisions, rhythm, validation. |
+| `features/rhythm-timing/` | Level 3 drills — pulse, note values, scores played against a metronome. |
 | `features/practice-kit/` | Shared drill engines and panels — see below. |
-| `features/piano/`, `music-theory/`, `randomizer/` | Keyboard layouts, notes/chords/scales, draw policies. |
+| `features/piano/`, `music-theory/`, `randomizer/` | Shared domain: keyboard layouts and the white-key ruler, notes/chords/scales/intervals, draw policies. Drill features depend on these, never on each other. |
 | `src/drills/registry.tsx` | Maps a drill id to the component that renders it. |
 | `frontend/references/L*.md` | Hand-written spec for each bucket's practices. |
 
@@ -45,7 +46,8 @@ design from the practice titles plus the level's principle and say so.
   tracked per note, not per key. `timeout()` grades running out of time as a miss.
 - `useTimedRun` — chain drills: one long answer, timed end to end, scored in stumbles.
 - `useScoreBook` / `scoring.ts` — the ledger, `weaknessWeight`, `weakSpots`.
-- `useAnswerDeadline`, `useSprint` — per-answer allowance, fixed-window sprint.
+- `useAnswerDeadline`, `useSprint`, `useMetronome` — per-answer allowance, fixed-window sprint, a beat
+  to play against. `timing.ts` holds the beat maths and the early/late tally.
 - `DrillShell` / `DrillPrompt` / `StepStrip` / `ScoreBoard` / `RunCounters` / `WeakSpots` / `TimerBar`.
 
 Weakness-aware drills pass `strategyId: 'weak-focus'` and show `<WeakSpots>`; that strategy is
@@ -64,5 +66,5 @@ registered but kept out of Settings, since a plain trainer session has no ledger
 
 ## State
 
-Level 1 complete — all 7 buckets, 56 practices. Level 2 bucket 1 partly built (6 drills);
-buckets 2.2+ are next. Levels 3–8 are mapped out as data only.
+Levels 1 and 2 complete; level 3 buckets 1–4 built — 180 practices across 23 buckets.
+Bucket 3.5 (Rhythm Patterns) is next. Levels 4–8 are mapped out as data only.

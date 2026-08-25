@@ -26,6 +26,19 @@ export { DrillPrompt, DrillShell, StageRow } from './components/DrillShell';
 export { StepStrip } from './components/StepStrip';
 export { TimerBar } from './components/TimerBar';
 export { WeakSpots } from './components/WeakSpots';
+export type { TimingTally } from './timing';
+export {
+  EMPTY_TIMING,
+  LEAD_IN_BEATS,
+  ON_BEAT_MS,
+  beatMs,
+  claims,
+  meanTiming,
+  onBeatRate,
+  recordTiming,
+  timingBias,
+  timingNote,
+} from './timing';
 export type { ItemScore, Repair, ScoreBook } from './scoring';
 export {
   TARGET_MS,
@@ -40,6 +53,7 @@ export type { QuizStats, QuizVerdict } from './hooks/useQuizDrill';
 export { ALLOWANCE_OPTIONS, useAnswerDeadline } from './hooks/useAnswerDeadline';
 export { useSprint } from './hooks/useSprint';
 export type { SprintStatus } from './hooks/useSprint';
+export { useMetronome } from './hooks/useMetronome';
 export { useScoreBook } from './hooks/useScoreBook';
 export { useTimedRun } from './hooks/useTimedRun';
 export type { RunStats } from './hooks/useTimedRun';

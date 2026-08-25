@@ -23,6 +23,12 @@ interface PianoKeyboardProps {
    * trainers use, so no existing screen changes behaviour.
    */
   onKeyPress?: (key: PianoKey) => void;
+  /**
+   * Press and release, for drills that measure how long a key is held.
+   * Supplied alongside or instead of `onKeyPress`.
+   */
+  onKeyDown?: (key: PianoKey) => void;
+  onKeyUp?: (key: PianoKey) => void;
   /** Replaces the layout name in the footer, e.g. "Naturals only". */
   footerNote?: string;
 }
@@ -47,6 +53,8 @@ export function PianoKeyboard({
   channels,
   onChannelChange,
   onKeyPress,
+  onKeyDown,
+  onKeyUp,
   footerNote,
 }: PianoKeyboardProps) {
   // Blacks render after whites so they always stack on top without z-index games.
@@ -108,6 +116,8 @@ export function PianoKeyboard({
                 highlight={resolve(key)}
                 showName={showNoteNames}
                 onPress={onKeyPress ? () => onKeyPress(key) : undefined}
+                onDown={onKeyDown ? () => onKeyDown(key) : undefined}
+                onUp={onKeyUp ? () => onKeyUp(key) : undefined}
               />
             ))}
             {blackKeys.map((key) => (
@@ -118,6 +128,8 @@ export function PianoKeyboard({
                 highlight={resolve(key)}
                 showName={showNoteNames}
                 onPress={onKeyPress ? () => onKeyPress(key) : undefined}
+                onDown={onKeyDown ? () => onKeyDown(key) : undefined}
+                onUp={onKeyUp ? () => onKeyUp(key) : undefined}
               />
             ))}
           </div>
@@ -127,7 +139,7 @@ export function PianoKeyboard({
       <footer className={styles.footer}>
         <span>{footerNote ?? layout.name}</span>
         <span className={styles.scrollHint}>
-          {onKeyPress ? 'Tap a key to answer' : 'Swipe the keys sideways'}
+          {onKeyPress || onKeyDown ? 'Tap a key to answer' : 'Swipe the keys sideways'}
         </span>
       </footer>
     </section>

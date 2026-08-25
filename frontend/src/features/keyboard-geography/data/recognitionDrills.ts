@@ -1,4 +1,5 @@
-import type { KeyScope, NoteNaming } from './naming';
+import type { NoteNaming } from '@/features/music-theory';
+import type { KeyScope } from './naming';
 
 /** How a prompt is put: light a key and ask for its name, or the other way. */
 export type AskDirection = 'name' | 'find';

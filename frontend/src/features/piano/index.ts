@@ -17,4 +17,5 @@ export { EMPTY_HIGHLIGHTS, buildHighlightMap, highlightFor } from './utils/getKe
 export type { HighlightInput, HighlightSource } from './utils/getKeyHighlight';
 export { VOICING_ANCHOR_MIDI, voicePitchClasses } from './utils/voicing';
 export { getKeyGeometry } from './utils/getKeyPosition';
+export { whiteIndexOf, whiteKeys, whiteStep } from './utils/whiteKeys';
 export { PianoKeyboard } from './components/PianoKeyboard';

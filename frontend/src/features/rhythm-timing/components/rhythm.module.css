@@ -1,0 +1,195 @@
+/* ---------------- the bar ---------------- */
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  width: 100%;
+  min-width: 0;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+
+/* A silent bar dims but never stops — the pulse is still running. */
+.barSilent {
+  opacity: 0.45;
+}
+
+.beat {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: var(--r-md);
+  border: 1px dashed var(--border);
+  background: var(--bg-inset);
+  font-family: var(--font-mono);
+  font-size: var(--fs-lg);
+  font-weight: 800;
+  color: var(--text-faint);
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease);
+}
+
+/* An offbeat is smaller: the bar should look like it is counted. */
+.beatOff {
+  width: 40px;
+  height: 40px;
+  font-size: var(--fs-md);
+}
+
+.beatMarked {
+  border-style: solid;
+  color: var(--text-muted);
+}
+
+.beatLive {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  transform: translateY(-2px);
+}
+
+.beatAccent {
+  font-size: var(--fs-xl);
+  border-width: 2px;
+}
+
+.barNote {
+  width: 100%;
+  text-align: center;
+  font-size: var(--fs-xs);
+  color: var(--text-faint);
+}
+
+/* ---------------- the written rhythm ---------------- */
+
+.score {
+  display: flex;
+  align-items: stretch;
+  gap: 3px;
+  width: 100%;
+  max-width: 640px;
+  min-width: 0;
+}
+
+.event {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: 2px;
+  flex-basis: 0;
+  min-width: 0;
+  min-height: 56px;
+  padding: var(--sp-2) 2px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-inset);
+  overflow: hidden;
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease);
+}
+
+/* Silence takes up the same road, so it is drawn to length and left hollow. */
+.eventRest {
+  background: transparent;
+  border-style: dashed;
+}
+
+.eventDownbeat {
+  border-left-width: 3px;
+  border-left-color: var(--accent-strong);
+}
+
+.eventDone {
+  border-color: var(--success);
+  background: var(--success-soft);
+}
+
+.eventLive {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.eventCount {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  color: var(--text);
+}
+
+.eventValue {
+  font-size: 10px;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.eventBar {
+  display: none;
+}
+
+.eventEnd {
+  width: 3px;
+  border-radius: 2px;
+  background: var(--border);
+}
+
+/* ---------------- tap pad ---------------- */
+
+.pad {
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  width: 100%;
+  max-width: 560px;
+  min-height: 120px;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--bg-inset);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  color: var(--text-muted);
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    background var(--dur-fast) var(--ease);
+}
+
+.pad:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.pad:active:not(:disabled) {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.pad:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.padHint {
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--text-faint);
+}
+
+/* ---------------- shared blocks ---------------- */
+
+.board {
+  width: 100%;
+  min-width: 0;
+}
+
+.note {
+  margin: 0;
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+  color: var(--text-faint);
+  text-align: center;
+}

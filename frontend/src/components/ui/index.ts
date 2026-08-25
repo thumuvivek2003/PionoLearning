@@ -3,6 +3,7 @@ export { Button } from './Button';
 export type { ButtonSize, ButtonVariant } from './Button';
 export { Card } from './Card';
 export { Chip } from './Chip';
+export { Cover } from './Cover';
 export { EmptyState } from './EmptyState';
 export { Field } from './Field';
 export { Icon } from './Icon';

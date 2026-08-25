@@ -9,56 +9,87 @@ export const level3 = defineLevel({
     'Hold a pulse — note durations, counting and subdivision, the metronome, and staying steady under pressure.',
   buckets: [
     {
+      // Built: the pulse, measured — including the bars where the click stops.
       title: 'Pulse & Beat',
       practices: [
-        'Understanding the Beat',
-        'Counting 1 2 3 4',
-        'Foot Tapping',
-        'Hand Clapping',
-        'Beat vs Note',
-        'Silent Beats',
-        'Accent on Beat 1',
+        {
+          title: 'Understanding the Beat',
+          activity: { kind: 'drill', drillId: 'pulse.understanding' },
+        },
+        { title: 'Counting 1 2 3 4', activity: { kind: 'drill', drillId: 'pulse.counting' } },
+        { title: 'Foot Tapping', activity: { kind: 'drill', drillId: 'pulse.tapping' } },
+        { title: 'Hand Clapping', activity: { kind: 'drill', drillId: 'pulse.clapping' } },
+        { title: 'Beat vs Note', activity: { kind: 'drill', drillId: 'pulse.beat-vs-note' } },
+        { title: 'Silent Beats', activity: { kind: 'drill', drillId: 'pulse.silent' } },
+        { title: 'Accent on Beat 1', activity: { kind: 'drill', drillId: 'pulse.accent' } },
       ],
     },
     {
+      // Built: how long a sound lasts — the first bucket that scores the release.
       title: 'Note Durations',
       practices: [
-        'Whole Note',
-        'Half Note',
-        'Quarter Note',
-        'Eighth Notes',
-        'Sixteenth Notes',
-        'Note + Rest',
-        'Duration Switching',
-        'Hold vs Release',
+        { title: 'Whole Note', activity: { kind: 'drill', drillId: 'duration.whole' } },
+        { title: 'Half Note', activity: { kind: 'drill', drillId: 'duration.half' } },
+        { title: 'Quarter Note', activity: { kind: 'drill', drillId: 'duration.quarter' } },
+        { title: 'Eighth Notes', activity: { kind: 'drill', drillId: 'duration.eighth' } },
+        { title: 'Sixteenth Notes', activity: { kind: 'drill', drillId: 'duration.sixteenth' } },
+        { title: 'Note + Rest', activity: { kind: 'drill', drillId: 'duration.rests' } },
+        {
+          title: 'Duration Switching',
+          activity: { kind: 'drill', drillId: 'duration.switching' },
+        },
+        { title: 'Hold vs Release', activity: { kind: 'drill', drillId: 'duration.hold-release' } },
       ],
     },
     {
+      // Built: inside the beat — and the click taken away a layer at a time.
       title: 'Counting & Subdivision',
       practices: [
-        'Basic Counting',
-        'Eighth-Note Counting',
-        'Sixteenth Counting',
-        'Clap Quarter Notes',
-        'Clap Eighth Notes',
-        'Alternate Notes & Rests',
-        'Count While Playing',
-        'Internal Counting',
+        { title: 'Basic Counting', activity: { kind: 'drill', drillId: 'count.basic' } },
+        {
+          title: 'Eighth-Note Counting',
+          activity: { kind: 'drill', drillId: 'count.eighths' },
+        },
+        {
+          title: 'Sixteenth Counting',
+          activity: { kind: 'drill', drillId: 'count.sixteenths' },
+        },
+        {
+          title: 'Clap Quarter Notes',
+          activity: { kind: 'drill', drillId: 'count.clap-quarters' },
+        },
+        {
+          title: 'Clap Eighth Notes',
+          activity: { kind: 'drill', drillId: 'count.clap-eighths' },
+        },
+        {
+          title: 'Alternate Notes & Rests',
+          activity: { kind: 'drill', drillId: 'count.notes-rests' },
+        },
+        {
+          title: 'Count While Playing',
+          activity: { kind: 'drill', drillId: 'count.while-playing' },
+        },
+        { title: 'Internal Counting', activity: { kind: 'drill', drillId: 'count.internal' } },
       ],
     },
     {
+      // Built: the click as teacher — held, climbed, removed, and swept.
       title: 'Metronome Training',
       practices: [
-        'Understanding BPM',
-        '40 BPM',
-        '50 BPM',
-        '60 BPM',
-        '80 BPM',
-        '100 BPM',
-        '120 BPM',
-        'Tempo Ladder',
-        'Metronome Gap',
-        'Metronome Accuracy',
+        {
+          title: 'Understanding BPM',
+          activity: { kind: 'drill', drillId: 'metro.understanding' },
+        },
+        { title: '40 BPM', activity: { kind: 'drill', drillId: 'metro.40' } },
+        { title: '50 BPM', activity: { kind: 'drill', drillId: 'metro.50' } },
+        { title: '60 BPM', activity: { kind: 'drill', drillId: 'metro.60' } },
+        { title: '80 BPM', activity: { kind: 'drill', drillId: 'metro.80' } },
+        { title: '100 BPM', activity: { kind: 'drill', drillId: 'metro.100' } },
+        { title: '120 BPM', activity: { kind: 'drill', drillId: 'metro.120' } },
+        { title: 'Tempo Ladder', activity: { kind: 'drill', drillId: 'metro.ladder' } },
+        { title: 'Metronome Gap', activity: { kind: 'drill', drillId: 'metro.gap' } },
+        { title: 'Metronome Accuracy', activity: { kind: 'drill', drillId: 'metro.accuracy' } },
       ],
     },
     {

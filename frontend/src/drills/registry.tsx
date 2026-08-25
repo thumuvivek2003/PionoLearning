@@ -1,10 +1,34 @@
 import type { ComponentType } from 'react';
 import {
+  DurationDrill,
+  MetronomeDrill,
+  PulseDrill,
+  getDurationDrill,
+  getMetronomeDrill,
+  getPulseDrill,
+} from '@/features/rhythm-timing';
+import {
+  BlackKeyFocusDrill,
   FingerLiftDrill,
   FingerNumberDrill,
   FingerTappingDrill,
+  FivePositionDrill,
+  HandRunDrill,
+  IntervalJumpDrill,
+  MovementChoiceDrill,
   NoteFingerDrill,
+  RandomNotesDrill,
   RelaxationDrill,
+  RhythmDrill,
+  ValidationDrill,
+  getBlackKeyDrill,
+  getFivePattern,
+  getHandRunDrill,
+  getIntervalDrill,
+  getMovementDrill,
+  getRandomNoteDrill,
+  getRhythmDrill,
+  getValidationDrill,
 } from '@/features/finger-training';
 import {
   BlackGroupDrill,
@@ -345,6 +369,626 @@ const REGISTERED_DRILLS: readonly Drill[] = [
   { id: 'finger.lift', title: 'Finger lift control', render: FingerLiftDrill },
   { id: 'finger.relaxation', title: 'Relaxation cycle', render: RelaxationDrill },
   { id: 'finger.note-to-finger', title: 'Note ↔ finger', render: NoteFingerDrill },
+
+  /* ---- L2 · B2.2 — Five-Finger Position ---- */
+  {
+    id: 'five.rh-up',
+    title: 'RH 1-2-3-4-5',
+    render: () => <FivePositionDrill config={getFivePattern('rh-up')} />,
+  },
+  {
+    id: 'five.rh-down',
+    title: 'RH 5-4-3-2-1',
+    render: () => <FivePositionDrill config={getFivePattern('rh-down')} />,
+  },
+  {
+    id: 'five.lh-up',
+    title: 'LH 5-4-3-2-1',
+    render: () => <FivePositionDrill config={getFivePattern('lh-up')} />,
+  },
+  {
+    id: 'five.lh-down',
+    title: 'LH 1-2-3-4-5',
+    render: () => <FivePositionDrill config={getFivePattern('lh-down')} />,
+  },
+  {
+    id: 'five.rh-alternating',
+    title: 'RH 1-2-1-2',
+    render: () => <FivePositionDrill config={getFivePattern('rh-alternating')} />,
+  },
+  {
+    id: 'five.rh-odd',
+    title: 'RH 1-3-5-3-1',
+    render: () => <FivePositionDrill config={getFivePattern('rh-odd')} />,
+  },
+  {
+    id: 'five.rh-mixed',
+    title: 'RH 2-4-1-3-5',
+    render: () => <FivePositionDrill config={getFivePattern('rh-mixed')} />,
+  },
+  {
+    id: 'five.lh-combo',
+    title: 'LH 5-3-1-3-5',
+    render: () => <FivePositionDrill config={getFivePattern('lh-combo')} />,
+  },
+  {
+    id: 'five.both-same',
+    title: 'Both hands together',
+    render: () => <FivePositionDrill config={getFivePattern('both-same')} />,
+  },
+  {
+    id: 'five.both-opposite',
+    title: 'Opposite directions',
+    render: () => <FivePositionDrill config={getFivePattern('both-opposite')} />,
+  },
+
+  /* ---- L2 · B2.3 — Finger Independence ---- */
+  {
+    id: 'indep.non-sequential',
+    title: '1-3-2-4-3-5',
+    render: () => <FivePositionDrill config={getFivePattern('non-sequential')} />,
+  },
+  {
+    id: 'indep.reverse-irregular',
+    title: '5-3-4-2-1',
+    render: () => <FivePositionDrill config={getFivePattern('reverse-irregular')} />,
+  },
+  {
+    id: 'indep.randomized',
+    title: '1-2-4-3-5 and friends',
+    render: () => <FivePositionDrill config={getFivePattern('randomized')} />,
+  },
+  {
+    id: 'indep.skip-fingers',
+    title: '1-3-5-2-4',
+    render: () => <FivePositionDrill config={getFivePattern('skip-fingers')} />,
+  },
+  {
+    id: 'indep.large-changes',
+    title: '2-4-1-5-3',
+    render: () => <FivePositionDrill config={getFivePattern('large-changes')} />,
+  },
+  {
+    id: 'indep.repeated',
+    title: 'Repeated fingers',
+    render: () => <FivePositionDrill config={getFivePattern('repeated')} />,
+  },
+  {
+    id: 'indep.hold-move',
+    title: 'Hold + move',
+    render: () => <FivePositionDrill config={getFivePattern('hold-move')} />,
+  },
+  {
+    id: 'indep.accents',
+    title: 'Accent control',
+    render: () => <FivePositionDrill config={getFivePattern('accents')} />,
+  },
+
+  /* ---- L2 · B2.4 — Finger Skips & Intervals ---- */
+  {
+    id: 'skip.one-three',
+    title: '1 → 3',
+    render: () => <IntervalJumpDrill config={getIntervalDrill('one-three')} />,
+  },
+  {
+    id: 'skip.one-four',
+    title: '1 → 4',
+    render: () => <IntervalJumpDrill config={getIntervalDrill('one-four')} />,
+  },
+  {
+    id: 'skip.one-five',
+    title: '1 → 5',
+    render: () => <IntervalJumpDrill config={getIntervalDrill('one-five')} />,
+  },
+  {
+    id: 'skip.stacked-thirds',
+    title: '1 → 3 → 5',
+    render: () => <IntervalJumpDrill config={getIntervalDrill('stacked-thirds')} />,
+  },
+  {
+    id: 'skip.reverse-thirds',
+    title: '5 → 3 → 1',
+    render: () => <IntervalJumpDrill config={getIntervalDrill('reverse-thirds')} />,
+  },
+  {
+    id: 'skip.random-two',
+    title: 'Random 2-note jumps',
+    render: () => <IntervalJumpDrill config={getIntervalDrill('random-two')} />,
+  },
+  {
+    id: 'skip.random-three',
+    title: 'Random 3-note jumps',
+    render: () => <IntervalJumpDrill config={getIntervalDrill('random-three')} />,
+  },
+  {
+    id: 'skip.transfer',
+    title: 'Same fingers, different keys',
+    render: () => <IntervalJumpDrill config={getIntervalDrill('transfer')} />,
+  },
+
+  /* ---- L2 · B2.5 — Position Shifting ---- */
+  {
+    id: 'shift.right-1',
+    title: 'Shift right by 1',
+    render: () => <HandRunDrill config={getHandRunDrill('right-1')} />,
+  },
+  {
+    id: 'shift.right-2',
+    title: 'Shift right by 2',
+    render: () => <HandRunDrill config={getHandRunDrill('right-2')} />,
+  },
+  {
+    id: 'shift.left-1',
+    title: 'Shift left by 1',
+    render: () => <HandRunDrill config={getHandRunDrill('left-1')} />,
+  },
+  {
+    id: 'shift.after-5',
+    title: 'Shift after 5',
+    render: () => <HandRunDrill config={getHandRunDrill('after-5')} />,
+  },
+  {
+    id: 'shift.after-3',
+    title: 'Shift after 3',
+    render: () => <HandRunDrill config={getHandRunDrill('after-3')} />,
+  },
+  {
+    id: 'shift.random-start',
+    title: 'Random starting position',
+    render: () => <HandRunDrill config={getHandRunDrill('random-start')} />,
+  },
+  {
+    id: 'shift.recognition',
+    title: 'Position recognition',
+    render: () => <HandRunDrill config={getHandRunDrill('recognition')} />,
+  },
+  {
+    id: 'shift.silent',
+    title: 'Silent repositioning',
+    render: () => <HandRunDrill config={getHandRunDrill('silent')} />,
+  },
+
+  /* ---- L2 · B2.6 — Thumb Movement ---- */
+  {
+    id: 'thumb.under',
+    title: 'Thumb under',
+    render: () => <HandRunDrill config={getHandRunDrill('thumb-under')} />,
+  },
+  {
+    id: 'thumb.beside',
+    title: 'Thumb beside the hand',
+    render: () => <HandRunDrill config={getHandRunDrill('thumb-beside')} />,
+  },
+  {
+    id: 'thumb.cross-basic',
+    title: '1→2→3→1',
+    render: () => <HandRunDrill config={getHandRunDrill('cross-basic')} />,
+  },
+  {
+    id: 'thumb.cross-extended',
+    title: '1→2→3→4→1',
+    render: () => <HandRunDrill config={getHandRunDrill('cross-extended')} />,
+  },
+  {
+    id: 'thumb.reverse-cross',
+    title: 'Reverse crossing',
+    render: () => <HandRunDrill config={getHandRunDrill('reverse-cross')} />,
+  },
+  {
+    id: 'thumb.slow-cross',
+    title: 'Slow crossing',
+    render: () => <HandRunDrill config={getHandRunDrill('slow-cross')} />,
+  },
+
+  /* ---- L2 · B2.7 — Finger Crossing ---- */
+  {
+    id: 'cross.basic',
+    title: '1-2-3-1',
+    render: () => <HandRunDrill config={getHandRunDrill('seven-basic')} />,
+  },
+  {
+    id: 'cross.reverse',
+    title: '3-2-1-3',
+    render: () => <HandRunDrill config={getHandRunDrill('seven-reverse')} />,
+  },
+  {
+    id: 'cross.extended',
+    title: '1-2-3-4-5-1',
+    render: () => <HandRunDrill config={getHandRunDrill('seven-extended')} />,
+  },
+  {
+    id: 'cross.scale',
+    title: 'Scale fragments',
+    render: () => <HandRunDrill config={getHandRunDrill('seven-scale')} />,
+  },
+  {
+    id: 'cross.varied',
+    title: 'Crossing after different fingers',
+    render: () => <HandRunDrill config={getHandRunDrill('seven-varied')} />,
+  },
+  {
+    id: 'cross.ladder',
+    title: 'Slow → medium → fast',
+    render: () => <HandRunDrill config={getHandRunDrill('seven-ladder')} />,
+  },
+
+  /* ---- L2 · B2.8 — Stretch vs Shift vs Cross ---- */
+  {
+    id: 'choose.nearby',
+    title: 'Nearby note',
+    render: () => <MovementChoiceDrill config={getMovementDrill('nearby')} />,
+  },
+  {
+    id: 'choose.reach',
+    title: 'Comfortable reach',
+    render: () => <MovementChoiceDrill config={getMovementDrill('reach')} />,
+  },
+  {
+    id: 'choose.jump',
+    title: 'Large jump',
+    render: () => <MovementChoiceDrill config={getMovementDrill('jump')} />,
+  },
+  {
+    id: 'choose.ascending',
+    title: 'Continuous ascending notes',
+    render: () => <MovementChoiceDrill config={getMovementDrill('ascending')} />,
+  },
+  {
+    id: 'choose.descending',
+    title: 'Continuous descending notes',
+    render: () => <MovementChoiceDrill config={getMovementDrill('descending')} />,
+  },
+  {
+    id: 'choose.isolated',
+    title: 'Random isolated note',
+    render: () => <MovementChoiceDrill config={getMovementDrill('isolated')} />,
+  },
+  {
+    id: 'choose.mixed',
+    title: 'Long sequence',
+    render: () => <MovementChoiceDrill config={getMovementDrill('mixed')} />,
+  },
+
+  /* ---- L2 · B2.9 — Black Keys & Finger Geography ---- */
+  {
+    id: 'black.groups',
+    title: 'Black-key recognition',
+    render: () => <BlackKeyFocusDrill config={getBlackKeyDrill('groups')} />,
+  },
+  {
+    id: 'black.c-sharp',
+    title: 'C♯ / D♭',
+    render: () => <BlackKeyFocusDrill config={getBlackKeyDrill('c-sharp')} />,
+  },
+  {
+    id: 'black.d-sharp',
+    title: 'D♯ / E♭',
+    render: () => <BlackKeyFocusDrill config={getBlackKeyDrill('d-sharp')} />,
+  },
+  {
+    id: 'black.f-sharp',
+    title: 'F♯ / G♭',
+    render: () => <BlackKeyFocusDrill config={getBlackKeyDrill('f-sharp')} />,
+  },
+  {
+    id: 'black.g-sharp',
+    title: 'G♯ / A♭',
+    render: () => <BlackKeyFocusDrill config={getBlackKeyDrill('g-sharp')} />,
+  },
+  {
+    id: 'black.a-sharp',
+    title: 'A♯ / B♭',
+    render: () => <BlackKeyFocusDrill config={getBlackKeyDrill('a-sharp')} />,
+  },
+  {
+    id: 'black.neighbours',
+    title: 'Natural + black combinations',
+    render: () => <RandomNotesDrill config={getRandomNoteDrill('neighbours')} />,
+  },
+  {
+    id: 'black.random',
+    title: 'Random black keys',
+    render: () => <BlackKeyFocusDrill config={getBlackKeyDrill('random')} />,
+  },
+
+  /* ---- L2 · B2.10 — Random Finger Decisions ---- */
+  {
+    id: 'decide.naturals',
+    title: 'Random natural notes',
+    render: () => <RandomNotesDrill config={getRandomNoteDrill('naturals')} />,
+  },
+  {
+    id: 'decide.two',
+    title: 'Random 2-note patterns',
+    render: () => <RandomNotesDrill config={getRandomNoteDrill('two-note')} />,
+  },
+  {
+    id: 'decide.three',
+    title: 'Random 3-note patterns',
+    render: () => <RandomNotesDrill config={getRandomNoteDrill('three-note')} />,
+  },
+  {
+    id: 'decide.four',
+    title: 'Random 4-note patterns',
+    render: () => <RandomNotesDrill config={getRandomNoteDrill('four-note')} />,
+  },
+  {
+    id: 'decide.five',
+    title: 'Random 5-note patterns',
+    render: () => <RandomNotesDrill config={getRandomNoteDrill('five-note')} />,
+  },
+  {
+    id: 'decide.position',
+    title: 'Random starting position',
+    render: () => <RandomNotesDrill config={getRandomNoteDrill('random-start')} />,
+  },
+  {
+    id: 'decide.direction',
+    title: 'Random direction',
+    render: () => <RandomNotesDrill config={getRandomNoteDrill('random-direction')} />,
+  },
+  {
+    id: 'decide.black-white',
+    title: 'Random black + white keys',
+    render: () => <RandomNotesDrill config={getRandomNoteDrill('black-white')} />,
+  },
+  {
+    id: 'decide.timed',
+    title: 'Timed random notes',
+    render: () => <RandomNotesDrill config={getRandomNoteDrill('timed')} />,
+  },
+  {
+    id: 'decide.adaptive',
+    title: 'Accuracy-first random practice',
+    render: () => <RandomNotesDrill config={getRandomNoteDrill('adaptive')} />,
+  },
+
+  /* ---- L2 · B2.11 — Rhythm + Finger Technique ---- */
+  {
+    id: 'rhythm.quarters',
+    title: 'Quarter notes',
+    render: () => <RhythmDrill config={getRhythmDrill('quarters')} />,
+  },
+  {
+    id: 'rhythm.eighths',
+    title: 'Eighth notes',
+    render: () => <RhythmDrill config={getRhythmDrill('eighths')} />,
+  },
+  {
+    id: 'rhythm.slow',
+    title: 'Metronome slow',
+    render: () => <RhythmDrill config={getRhythmDrill('slow')} />,
+  },
+  {
+    id: 'rhythm.ladder',
+    title: 'Metronome increase',
+    render: () => <RhythmDrill config={getRhythmDrill('ladder')} />,
+  },
+  {
+    id: 'rhythm.rhythms',
+    title: 'Same pattern, different rhythms',
+    render: () => <RhythmDrill config={getRhythmDrill('rhythms')} />,
+  },
+  {
+    id: 'rhythm.accents',
+    title: 'Accent patterns',
+    render: () => <RhythmDrill config={getRhythmDrill('accents')} />,
+  },
+
+  /* ---- L2 · B2.12 — Muscle-Memory Validation ---- */
+  {
+    id: 'validate.slow',
+    title: 'Extremely slow practice',
+    render: () => <ValidationDrill config={getValidationDrill('slow')} />,
+  },
+  {
+    id: 'validate.eyes-open',
+    title: 'Eyes-open accuracy',
+    render: () => <ValidationDrill config={getValidationDrill('eyes-open')} />,
+  },
+  {
+    id: 'validate.eyes-off',
+    title: 'Eyes-off practice',
+    render: () => <ValidationDrill config={getValidationDrill('eyes-off')} />,
+  },
+  {
+    id: 'validate.randomized',
+    title: 'Randomized patterns',
+    render: () => <ValidationDrill config={getValidationDrill('randomized')} />,
+  },
+  {
+    id: 'validate.transposed',
+    title: 'Change starting notes',
+    render: () => <ValidationDrill config={getValidationDrill('transposed')} />,
+  },
+  {
+    id: 'validate.refingered',
+    title: 'Change fingers when appropriate',
+    render: () => <ValidationDrill config={getValidationDrill('refingered')} />,
+  },
+  {
+    id: 'validate.review',
+    title: 'Record yourself',
+    render: () => <ValidationDrill config={getValidationDrill('review')} />,
+  },
+  {
+    id: 'validate.stop-on-errors',
+    title: 'Stop on repeated errors',
+    render: () => <ValidationDrill config={getValidationDrill('stop-on-errors')} />,
+  },
+
+  /* ---- L3 · B3.1 — Pulse & Beat ---- */
+  {
+    id: 'pulse.understanding',
+    title: 'Understanding the beat',
+    render: () => <PulseDrill config={getPulseDrill('understanding')} />,
+  },
+  {
+    id: 'pulse.counting',
+    title: 'Counting 1 2 3 4',
+    render: () => <PulseDrill config={getPulseDrill('counting')} />,
+  },
+  {
+    id: 'pulse.tapping',
+    title: 'Foot tapping',
+    render: () => <PulseDrill config={getPulseDrill('tapping')} />,
+  },
+  {
+    id: 'pulse.clapping',
+    title: 'Hand clapping',
+    render: () => <PulseDrill config={getPulseDrill('clapping')} />,
+  },
+  {
+    id: 'pulse.beat-vs-note',
+    title: 'Beat vs note',
+    render: () => <PulseDrill config={getPulseDrill('beat-vs-note')} />,
+  },
+  {
+    id: 'pulse.silent',
+    title: 'Silent beats',
+    render: () => <PulseDrill config={getPulseDrill('silent')} />,
+  },
+  {
+    id: 'pulse.accent',
+    title: 'Accent on beat 1',
+    render: () => <PulseDrill config={getPulseDrill('accent')} />,
+  },
+
+  /* ---- L3 · B3.2 — Note Durations ---- */
+  {
+    id: 'duration.whole',
+    title: 'Whole note',
+    render: () => <DurationDrill config={getDurationDrill('whole')} />,
+  },
+  {
+    id: 'duration.half',
+    title: 'Half note',
+    render: () => <DurationDrill config={getDurationDrill('half')} />,
+  },
+  {
+    id: 'duration.quarter',
+    title: 'Quarter note',
+    render: () => <DurationDrill config={getDurationDrill('quarter')} />,
+  },
+  {
+    id: 'duration.eighth',
+    title: 'Eighth notes',
+    render: () => <DurationDrill config={getDurationDrill('eighth')} />,
+  },
+  {
+    id: 'duration.sixteenth',
+    title: 'Sixteenth notes',
+    render: () => <DurationDrill config={getDurationDrill('sixteenth')} />,
+  },
+  {
+    id: 'duration.rests',
+    title: 'Note + rest',
+    render: () => <DurationDrill config={getDurationDrill('rests')} />,
+  },
+  {
+    id: 'duration.switching',
+    title: 'Duration switching',
+    render: () => <DurationDrill config={getDurationDrill('switching')} />,
+  },
+  {
+    id: 'duration.hold-release',
+    title: 'Hold vs release',
+    render: () => <DurationDrill config={getDurationDrill('hold-release')} />,
+  },
+
+  /* ---- L3 · B3.3 — Counting & Subdivision ---- */
+  {
+    id: 'count.basic',
+    title: 'Basic counting',
+    render: () => <PulseDrill config={getPulseDrill('count-basic')} />,
+  },
+  {
+    id: 'count.eighths',
+    title: 'Eighth-note counting',
+    render: () => <PulseDrill config={getPulseDrill('count-eighths')} />,
+  },
+  {
+    id: 'count.sixteenths',
+    title: 'Sixteenth counting',
+    render: () => <PulseDrill config={getPulseDrill('count-sixteenths')} />,
+  },
+  {
+    id: 'count.clap-quarters',
+    title: 'Clap quarter notes',
+    render: () => <PulseDrill config={getPulseDrill('clap-quarters')} />,
+  },
+  {
+    id: 'count.clap-eighths',
+    title: 'Clap eighth notes',
+    render: () => <PulseDrill config={getPulseDrill('clap-eighths')} />,
+  },
+  {
+    id: 'count.notes-rests',
+    title: 'Alternate notes & rests',
+    render: () => <PulseDrill config={getPulseDrill('notes-rests')} />,
+  },
+  {
+    id: 'count.while-playing',
+    title: 'Count while playing',
+    render: () => <PulseDrill config={getPulseDrill('count-playing')} />,
+  },
+  {
+    id: 'count.internal',
+    title: 'Internal counting',
+    render: () => <PulseDrill config={getPulseDrill('internal')} />,
+  },
+
+  /* ---- L3 · B3.4 — Metronome Training ---- */
+  {
+    id: 'metro.understanding',
+    title: 'Understanding BPM',
+    render: () => <MetronomeDrill config={getMetronomeDrill('understanding')} />,
+  },
+  {
+    id: 'metro.40',
+    title: '40 BPM',
+    render: () => <MetronomeDrill config={getMetronomeDrill('bpm-40')} />,
+  },
+  {
+    id: 'metro.50',
+    title: '50 BPM',
+    render: () => <MetronomeDrill config={getMetronomeDrill('bpm-50')} />,
+  },
+  {
+    id: 'metro.60',
+    title: '60 BPM',
+    render: () => <MetronomeDrill config={getMetronomeDrill('bpm-60')} />,
+  },
+  {
+    id: 'metro.80',
+    title: '80 BPM',
+    render: () => <MetronomeDrill config={getMetronomeDrill('bpm-80')} />,
+  },
+  {
+    id: 'metro.100',
+    title: '100 BPM',
+    render: () => <MetronomeDrill config={getMetronomeDrill('bpm-100')} />,
+  },
+  {
+    id: 'metro.120',
+    title: '120 BPM',
+    render: () => <MetronomeDrill config={getMetronomeDrill('bpm-120')} />,
+  },
+  {
+    id: 'metro.ladder',
+    title: 'Tempo ladder',
+    render: () => <MetronomeDrill config={getMetronomeDrill('ladder')} />,
+  },
+  {
+    id: 'metro.gap',
+    title: 'Metronome gap',
+    render: () => <MetronomeDrill config={getMetronomeDrill('gap')} />,
+  },
+  {
+    id: 'metro.accuracy',
+    title: 'Metronome accuracy',
+    render: () => <MetronomeDrill config={getMetronomeDrill('accuracy')} />,
+  },
 ];
 
 const DRILL_INDEX: ReadonlyMap<string, Drill> = new Map(

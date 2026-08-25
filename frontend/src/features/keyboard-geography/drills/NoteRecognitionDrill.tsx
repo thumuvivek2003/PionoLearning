@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button, Chip, Field, ProgressRing, SegmentedControl, Toggle } from '@/components/ui';
+import { noteKey, noteLabel } from '@/features/music-theory';
 import type { PitchClass } from '@/features/music-theory';
 import { getKeyboardLayout } from '@/features/piano';
 import type { KeyboardLayout, PianoKey } from '@/features/piano';
@@ -20,7 +21,7 @@ import {
 import { useSettings } from '@/features/settings';
 import { instrument } from '@/lib/audio';
 import { LAYOUT_OPTIONS, SMALL_LAYOUT_ID } from '../data/layouts';
-import { noteKey, noteLabel, scopeKeys, scopePitchClasses } from '../data/naming';
+import { scopeKeys, scopePitchClasses } from '../data/naming';
 import type { AskDirection, RecognitionDrillConfig } from '../data/recognitionDrills';
 import { GeographyKeyboard } from '../components/GeographyKeyboard';
 import { LabelButtons } from '../components/LabelButtons';

@@ -44,6 +44,9 @@ export {
   getScaleType,
 } from './data/scales';
 
+export { intervalName, intervalSteps } from './data/intervals';
+export type { NoteLabel, NoteNaming } from './data/noteLabels';
+export { noteKey, noteLabel } from './data/noteLabels';
 export { accidentalSymbol, createNote, isEnharmonic, parseNote } from './utils/normalizeNote';
 export { dedupeBy, formatNoteList, parseNoteList, tokenize } from './utils/parseNotes';
 export type { ParsedList } from './utils/parseNotes';
