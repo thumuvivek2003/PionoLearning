@@ -19,7 +19,7 @@ npm run build       # the other gate — there is no ESLint or test runner
 | `features/curriculum/` | The 8-level → bucket → practice tree. Pure data; ids derived by `defineLevel`. |
 | `features/keyboard-geography/` | Level 1 drills (`L1` = find any key by sight). |
 | `features/finger-training/` | Level 2 drills — position, independence, intervals, shifting, crossing, black keys, random decisions, rhythm, validation. |
-| `features/rhythm-timing/` | Level 3 drills — pulse, note values, scores played against a metronome. |
+| `features/rhythm-timing/` | Level 3 drills — pulse, note values, counting, the metronome, patterns, accuracy, phrases and contest timing. |
 | `features/practice-kit/` | Shared drill engines and panels — see below. |
 | `features/piano/`, `music-theory/`, `randomizer/` | Shared domain: keyboard layouts and the white-key ruler, notes/chords/scales/intervals, draw policies. Drill features depend on these, never on each other. |
 | `src/drills/registry.tsx` | Maps a drill id to the component that renders it. |
@@ -66,5 +66,5 @@ registered but kept out of Settings, since a plain trainer session has no ledger
 
 ## State
 
-Levels 1 and 2 complete; level 3 buckets 1–4 built — 180 practices across 23 buckets.
-Bucket 3.5 (Rhythm Patterns) is next. Levels 4–8 are mapped out as data only.
+Levels 1–3 complete — 212 practices across 27 buckets. Level 4 (Scales & Patterns) is next;
+levels 4–8 are mapped out as data only.

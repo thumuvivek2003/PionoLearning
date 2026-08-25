@@ -26,6 +26,7 @@ export { DrillPrompt, DrillShell, StageRow } from './components/DrillShell';
 export { StepStrip } from './components/StepStrip';
 export { TimerBar } from './components/TimerBar';
 export { WeakSpots } from './components/WeakSpots';
+export { evenness, meanInterval, percent, slowestStep } from './evenness';
 export type { TimingTally } from './timing';
 export {
   EMPTY_TIMING,

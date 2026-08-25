@@ -193,3 +193,48 @@
   color: var(--text-faint);
   text-align: center;
 }
+
+/* ---------------- self-judgement ---------------- */
+
+.judge {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--sp-3);
+  width: 100%;
+  max-width: 560px;
+  min-width: 0;
+}
+
+.judge .pad {
+  min-height: 72px;
+  font-size: var(--fs-md);
+}
+
+/* ---------------- review and scorecard ---------------- */
+
+.review {
+  display: grid;
+  gap: var(--sp-2);
+  width: 100%;
+  max-width: 640px;
+  min-width: 0;
+  padding: var(--sp-4);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+}
+
+.reviewTitle {
+  margin: 0;
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.reviewList {
+  display: grid;
+  gap: 4px;
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+  color: var(--text-muted);
+}

@@ -125,7 +125,6 @@ export {
   slotOfMidi,
   stepMidis,
 } from './data/positions';
-export { evenness, meanInterval, percent, slowestStep } from './data/evenness';
 export {
   FINGERS,
   FINGER_NUMBERS,

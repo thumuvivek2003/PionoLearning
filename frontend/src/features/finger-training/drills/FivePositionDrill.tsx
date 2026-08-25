@@ -13,6 +13,9 @@ import {
   StepStrip,
   WeakSpots,
   formatMs,
+  evenness,
+  percent,
+  slowestStep,
   useScoreBook,
   useTimedRun,
   usePacedSequence,
@@ -22,7 +25,6 @@ import type { PacedStep } from '@/features/practice-kit';
 import { useSettings } from '@/features/settings';
 import { instrument } from '@/lib/audio';
 import { handShort } from '../data/fingers';
-import { evenness, percent, slowestStep } from '../data/evenness';
 import { forHand, patternLabel } from '../data/fivePatterns';
 import type { FivePatternConfig, PatternStep, PatternVariant } from '../data/fivePatterns';
 import {

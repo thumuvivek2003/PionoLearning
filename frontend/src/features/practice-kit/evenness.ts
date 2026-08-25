@@ -1,10 +1,12 @@
 /**
  * How steady a run was.
  *
- * The reference asks for equal timing over and over — "maintain equal timing",
- * "every note equally controlled" — which is a different thing from being fast
- * or being right. It is the gap *between* notes that has to match, so that is
- * what gets measured: the intervals, not the total.
+ * Being even is a different question from being on the beat: a run can sit
+ * inside the metronome's window and still lurch, and a run with no metronome at
+ * all can be perfectly steady. It is the gaps *between* notes that have to
+ * match, so that is what gets measured — which makes this an engine concern
+ * rather than one bucket's, since the finger work and the rhythm work both ask
+ * it.
  */
 
 /** Gaps shorter than this are a double-tap, not a step. */

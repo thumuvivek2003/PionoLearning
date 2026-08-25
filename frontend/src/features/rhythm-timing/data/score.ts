@@ -16,6 +16,12 @@ export interface RhythmEvent {
   value: NoteValue;
   /** A rest fills its length with silence; the beat carries on regardless. */
   rest?: boolean;
+  /**
+   * White keys above the phrase's first note, for the practices that have a
+   * tune. Left out where the drill supplies its own pitch — the rhythm work
+   * cares when a note happens, and only sometimes which one.
+   */
+  step?: number;
 }
 
 export interface ScoreEvent {
@@ -32,6 +38,8 @@ export interface ScoreEvent {
   count: string;
   /** True on the first note of a bar — the accented one. */
   downbeat: boolean;
+  /** White keys above the phrase's first note, when the phrase has pitches. */
+  step?: number;
 }
 
 export interface Score {
@@ -58,6 +66,7 @@ export function buildScore(
       index,
       value: event.value,
       rest: event.rest === true,
+      step: event.step,
       at: lead + beats * beat,
       lasts: length * beat,
       beat: beats % beatsPerBar,

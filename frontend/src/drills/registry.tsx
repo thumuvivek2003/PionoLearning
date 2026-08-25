@@ -1,10 +1,14 @@
 import type { ComponentType } from 'react';
 import {
+  AccuracyDrill,
   DurationDrill,
   MetronomeDrill,
+  PhraseDrill,
   PulseDrill,
+  getAccuracyDrill,
   getDurationDrill,
   getMetronomeDrill,
+  getPhraseDrill,
   getPulseDrill,
 } from '@/features/rhythm-timing';
 import {
@@ -988,6 +992,174 @@ const REGISTERED_DRILLS: readonly Drill[] = [
     id: 'metro.accuracy',
     title: 'Metronome accuracy',
     render: () => <MetronomeDrill config={getMetronomeDrill('accuracy')} />,
+  },
+
+  /* ---- L3 · B3.5 — Rhythm Patterns ---- */
+  {
+    id: 'pattern.quarters',
+    title: 'Four quarter notes',
+    render: () => <DurationDrill config={getDurationDrill('four-quarters')} />,
+  },
+  {
+    id: 'pattern.halves',
+    title: 'Half + half',
+    render: () => <DurationDrill config={getDurationDrill('half-half')} />,
+  },
+  {
+    id: 'pattern.q-h-q',
+    title: 'Quarter + half + quarter',
+    render: () => <DurationDrill config={getDurationDrill('quarter-half-quarter')} />,
+  },
+  {
+    id: 'pattern.eighth-pairs',
+    title: 'Eighth-note pairs',
+    render: () => <DurationDrill config={getDurationDrill('eighth-pairs')} />,
+  },
+  {
+    id: 'pattern.quarter-eighths',
+    title: 'Quarter + eighths',
+    render: () => <DurationDrill config={getDurationDrill('quarter-eighths')} />,
+  },
+  {
+    id: 'pattern.eighth-quarter',
+    title: 'Eighth + quarter combinations',
+    render: () => <DurationDrill config={getDurationDrill('eighth-quarter')} />,
+  },
+  {
+    id: 'pattern.note-rest',
+    title: 'Note + rest patterns',
+    render: () => <DurationDrill config={getDurationDrill('note-rest')} />,
+  },
+  {
+    id: 'pattern.random',
+    title: 'Random rhythm patterns',
+    render: () => <DurationDrill config={getDurationDrill('random')} />,
+  },
+
+  /* ---- L3 · B3.6 — Rhythm Accuracy ---- */
+  {
+    id: 'accuracy.rhythms',
+    title: 'Same note, different rhythms',
+    render: () => <AccuracyDrill config={getAccuracyDrill('rhythms')} />,
+  },
+  {
+    id: 'accuracy.repeats',
+    title: 'Repeated note timing',
+    render: () => <AccuracyDrill config={getAccuracyDrill('repeats')} />,
+  },
+  {
+    id: 'accuracy.rushing',
+    title: 'Rushing detection',
+    render: () => <AccuracyDrill config={getAccuracyDrill('rushing')} />,
+  },
+  {
+    id: 'accuracy.dragging',
+    title: 'Dragging detection',
+    render: () => <AccuracyDrill config={getAccuracyDrill('dragging')} />,
+  },
+  {
+    id: 'accuracy.evenness',
+    title: 'Evenness practice',
+    render: () => <AccuracyDrill config={getAccuracyDrill('evenness')} />,
+  },
+  {
+    id: 'accuracy.start',
+    title: 'Start on beat',
+    render: () => <AccuracyDrill config={getAccuracyDrill('start')} />,
+  },
+  {
+    id: 'accuracy.stop',
+    title: 'Stop on beat',
+    render: () => <AccuracyDrill config={getAccuracyDrill('stop')} />,
+  },
+  {
+    id: 'accuracy.recover',
+    title: 'Recover after mistake',
+    render: () => <AccuracyDrill config={getAccuracyDrill('recover')} />,
+  },
+
+  /* ---- L3 · B3.7 — Practical Keyboard Rhythm ---- */
+  {
+    id: 'phrase.single',
+    title: 'Single-note rhythm',
+    render: () => <PhraseDrill config={getPhraseDrill('single-note')} />,
+  },
+  {
+    id: 'phrase.two',
+    title: '2-note patterns',
+    render: () => <PhraseDrill config={getPhraseDrill('two-note')} />,
+  },
+  {
+    id: 'phrase.three',
+    title: '3-note patterns',
+    render: () => <PhraseDrill config={getPhraseDrill('three-note')} />,
+  },
+  {
+    id: 'phrase.four',
+    title: '4-note patterns',
+    render: () => <PhraseDrill config={getPhraseDrill('four-note')} />,
+  },
+  {
+    id: 'phrase.melody',
+    title: 'Simple melody + metronome',
+    render: () => <PhraseDrill config={getPhraseDrill('melody')} />,
+  },
+  {
+    id: 'phrase.melody-counting',
+    title: 'Melody with counting',
+    render: () => <PhraseDrill config={getPhraseDrill('melody-counting')} />,
+  },
+  {
+    id: 'phrase.melody-internal',
+    title: 'Melody without counting',
+    render: () => <PhraseDrill config={getPhraseDrill('melody-internal')} />,
+  },
+  {
+    id: 'phrase.review',
+    title: 'Record & review',
+    render: () => <PhraseDrill config={getPhraseDrill('review')} />,
+  },
+
+  /* ---- L3 · B3.8 — Contest-Level Timing ---- */
+  {
+    id: 'contest.count-in',
+    title: 'Start with count-in',
+    render: () => <PhraseDrill config={getPhraseDrill('count-in')} />,
+  },
+  {
+    id: 'contest.consistent',
+    title: 'Consistent tempo',
+    render: () => <PhraseDrill config={getPhraseDrill('consistent')} />,
+  },
+  {
+    id: 'contest.mistakes',
+    title: 'Playing through mistakes',
+    render: () => <PhraseDrill config={getPhraseDrill('through-mistakes')} />,
+  },
+  {
+    id: 'contest.tempos',
+    title: 'Different tempos',
+    render: () => <PhraseDrill config={getPhraseDrill('tempos')} />,
+  },
+  {
+    id: 'contest.no-metronome',
+    title: 'No-metronome test',
+    render: () => <PhraseDrill config={getPhraseDrill('no-metronome')} />,
+  },
+  {
+    id: 'contest.return',
+    title: 'Metronome return test',
+    render: () => <PhraseDrill config={getPhraseDrill('return-test')} />,
+  },
+  {
+    id: 'contest.performance',
+    title: 'Performance practice',
+    render: () => <PhraseDrill config={getPhraseDrill('performance')} />,
+  },
+  {
+    id: 'contest.mock',
+    title: 'Mock contest performance',
+    render: () => <PhraseDrill config={getPhraseDrill('mock')} />,
   },
 ];
 

@@ -24,6 +24,7 @@ import type { TimingTally } from '@/features/practice-kit';
 import { useSettings } from '@/features/settings';
 import { instrument } from '@/lib/audio';
 import { valueSpec } from '../data/noteValues';
+import { barShape, rollBar } from '../data/dice';
 import { HOLD_TOLERANCE, buildScore, heldShare, holdNote, playable } from '../data/score';
 import type { ScoreEvent } from '../data/score';
 import type { DurationDrillConfig } from '../data/durationDrills';
@@ -37,6 +38,8 @@ const LAYOUT_ID = '25';
 
 /** A press this far from a note's due time is that note. */
 const CLAIM_MS = 500;
+
+const MIXED = 'mixed';
 
 /** The click, and the louder downbeat. */
 const CLICK_MIDI = 84;
@@ -59,12 +62,29 @@ const CLICK_MIDI = 84;
 export function DurationDrill({ config }: { config: DurationDrillConfig }) {
   const [tempo, setTempo] = useState(config.tempos[0] ?? 50);
   const [showNames, setShowNames] = useState(true);
+  const [patternId, setPatternId] = useState<string>(
+    config.patterns.length > 1 ? MIXED : (config.patterns[0]?.id ?? ''),
+  );
+  /** Bumped to deal another pass — a fresh roll, or the same written bar again. */
+  const [pass, setPass] = useState(0);
   const { settings } = useSettings();
 
   const layout = useMemo(() => getKeyboardLayout(LAYOUT_ID), []);
   const { book, record, clear } = useScoreBook();
 
-  const score = useMemo(() => buildScore(config.pattern, tempo), [config.pattern, tempo]);
+  /** What this pass plays: a written pattern, or one rolled for the occasion. */
+  const events = useMemo(() => {
+    if (config.dice) return rollBar(config.dice);
+    const chosen =
+      patternId === MIXED
+        ? config.patterns[Math.floor(Math.random() * config.patterns.length)]
+        : config.patterns.find((entry) => entry.id === patternId);
+    return (chosen ?? config.patterns[0])?.events ?? [];
+    // `pass` is what makes a new deal a new rhythm; the rest is settings.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [config.dice, config.patterns, pass, patternId]);
+
+  const score = useMemo(() => buildScore(events, tempo), [events, tempo]);
   const notes = useMemo(() => playable(score), [score]);
 
   /** Where the line sits: one key, or walking up the position. */
@@ -106,7 +126,7 @@ export function DurationDrill({ config }: { config: DurationDrillConfig }) {
 
   useEffect(() => {
     reset();
-  }, [config, reset, tempo]);
+  }, [config, events, reset, tempo]);
 
   // The run ends itself: when the score is over, the click stops with it.
   useEffect(() => {
@@ -188,6 +208,25 @@ export function DurationDrill({ config }: { config: DurationDrillConfig }) {
               ariaLabel="Tempo"
             />
           </Field>
+          {config.patterns.length > 1 && (
+            <Field label="Pattern" hint="Mixed deals a different one every pass.">
+              <SegmentedControl
+                value={patternId}
+                options={[
+                  ...config.patterns.map((entry) => ({ value: entry.id, label: entry.label })),
+                  { value: MIXED, label: 'Mixed' },
+                ]}
+                onChange={setPatternId}
+                block
+                ariaLabel="Pattern"
+              />
+            </Field>
+          )}
+          {(config.dice || config.patterns.length > 1) && (
+            <Button variant="secondary" icon="reset" onClick={() => setPass((current) => current + 1)} block>
+              {config.dice ? 'Roll a new bar' : 'Deal another'}
+            </Button>
+          )}
           <Button
             variant={metronome.running ? 'danger' : 'primary'}
             icon={metronome.running ? 'stop' : 'play'}
@@ -227,6 +266,7 @@ export function DurationDrill({ config }: { config: DurationDrillConfig }) {
       <DrillPrompt
         label={[
           `${score.beatsPerBar}/4 · ${tempo} BPM`,
+          config.dice ? barShape(events) : null,
           expected ? `${valueSpec(expected.value).label.toLowerCase()} · count ${valueSpec(expected.value).count}` : 'done',
         ].join(' · ')}
         footer={

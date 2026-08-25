@@ -93,55 +93,119 @@ export const level3 = defineLevel({
       ],
     },
     {
+      // Built: written rhythms, and bars rolled on the spot to read first time.
       title: 'Rhythm Patterns',
       practices: [
-        'Four Quarter Notes',
-        'Half + Half',
-        'Quarter + Half + Quarter',
-        'Eighth-Note Pairs',
-        'Quarter + Eighths',
-        'Eighth + Quarter Combinations',
-        'Note + Rest Patterns',
-        'Random Rhythm Patterns',
+        {
+          title: 'Four Quarter Notes',
+          activity: { kind: 'drill', drillId: 'pattern.quarters' },
+        },
+        { title: 'Half + Half', activity: { kind: 'drill', drillId: 'pattern.halves' } },
+        {
+          title: 'Quarter + Half + Quarter',
+          activity: { kind: 'drill', drillId: 'pattern.q-h-q' },
+        },
+        {
+          title: 'Eighth-Note Pairs',
+          activity: { kind: 'drill', drillId: 'pattern.eighth-pairs' },
+        },
+        {
+          title: 'Quarter + Eighths',
+          activity: { kind: 'drill', drillId: 'pattern.quarter-eighths' },
+        },
+        {
+          title: 'Eighth + Quarter Combinations',
+          activity: { kind: 'drill', drillId: 'pattern.eighth-quarter' },
+        },
+        {
+          title: 'Note + Rest Patterns',
+          activity: { kind: 'drill', drillId: 'pattern.note-rest' },
+        },
+        {
+          title: 'Random Rhythm Patterns',
+          activity: { kind: 'drill', drillId: 'pattern.random' },
+        },
       ],
     },
     {
+      // Built: one question at a time — placement, spacing, entry, ending, recovery.
       title: 'Rhythm Accuracy',
       practices: [
-        'Same Note, Different Rhythms',
-        'Repeated Note Timing',
-        'Rushing Detection',
-        'Dragging Detection',
-        'Evenness Practice',
-        'Start on Beat',
-        'Stop on Beat',
-        'Recover After Mistake',
+        {
+          title: 'Same Note, Different Rhythms',
+          activity: { kind: 'drill', drillId: 'accuracy.rhythms' },
+        },
+        {
+          title: 'Repeated Note Timing',
+          activity: { kind: 'drill', drillId: 'accuracy.repeats' },
+        },
+        { title: 'Rushing Detection', activity: { kind: 'drill', drillId: 'accuracy.rushing' } },
+        {
+          title: 'Dragging Detection',
+          activity: { kind: 'drill', drillId: 'accuracy.dragging' },
+        },
+        { title: 'Evenness Practice', activity: { kind: 'drill', drillId: 'accuracy.evenness' } },
+        { title: 'Start on Beat', activity: { kind: 'drill', drillId: 'accuracy.start' } },
+        { title: 'Stop on Beat', activity: { kind: 'drill', drillId: 'accuracy.stop' } },
+        {
+          title: 'Recover After Mistake',
+          activity: { kind: 'drill', drillId: 'accuracy.recover' },
+        },
       ],
     },
     {
+      // Built: one key up to a tune, with the counting removed a step at a time.
       title: 'Practical Keyboard Rhythm',
       practices: [
-        'Single-Note Rhythm',
-        '2-Note Patterns',
-        '3-Note Patterns',
-        '4-Note Patterns',
-        'Simple Melody + Metronome',
-        'Melody With Counting',
-        'Melody Without Counting',
-        'Record & Review',
+        { title: 'Single-Note Rhythm', activity: { kind: 'drill', drillId: 'phrase.single' } },
+        { title: '2-Note Patterns', activity: { kind: 'drill', drillId: 'phrase.two' } },
+        { title: '3-Note Patterns', activity: { kind: 'drill', drillId: 'phrase.three' } },
+        { title: '4-Note Patterns', activity: { kind: 'drill', drillId: 'phrase.four' } },
+        {
+          title: 'Simple Melody + Metronome',
+          activity: { kind: 'drill', drillId: 'phrase.melody' },
+        },
+        {
+          title: 'Melody With Counting',
+          activity: { kind: 'drill', drillId: 'phrase.melody-counting' },
+        },
+        {
+          title: 'Melody Without Counting',
+          activity: { kind: 'drill', drillId: 'phrase.melody-internal' },
+        },
+        { title: 'Record & Review', activity: { kind: 'drill', drillId: 'phrase.review' } },
       ],
     },
     {
+      // Built: start on time, hold it, survive a mistake, finish on time — scored.
       title: 'Contest-Level Timing',
       practices: [
-        'Start With Count-In',
-        'Consistent Tempo',
-        'Playing Through Mistakes',
-        'Different Tempos',
-        'No-Metronome Test',
-        'Metronome Return Test',
-        'Performance Practice',
-        'Mock Contest Performance',
+        {
+          title: 'Start With Count-In',
+          activity: { kind: 'drill', drillId: 'contest.count-in' },
+        },
+        { title: 'Consistent Tempo', activity: { kind: 'drill', drillId: 'contest.consistent' } },
+        {
+          title: 'Playing Through Mistakes',
+          activity: { kind: 'drill', drillId: 'contest.mistakes' },
+        },
+        { title: 'Different Tempos', activity: { kind: 'drill', drillId: 'contest.tempos' } },
+        {
+          title: 'No-Metronome Test',
+          activity: { kind: 'drill', drillId: 'contest.no-metronome' },
+        },
+        {
+          title: 'Metronome Return Test',
+          activity: { kind: 'drill', drillId: 'contest.return' },
+        },
+        {
+          title: 'Performance Practice',
+          activity: { kind: 'drill', drillId: 'contest.performance' },
+        },
+        {
+          title: 'Mock Contest Performance',
+          activity: { kind: 'drill', drillId: 'contest.mock' },
+        },
       ],
     },
   ],

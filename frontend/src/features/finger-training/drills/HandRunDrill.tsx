@@ -14,6 +14,8 @@ import {
   WeakSpots,
   drawWeights,
   formatMs,
+  evenness,
+  percent,
   useScoreBook,
   useTimedRun,
   usePacedSequence,
@@ -23,7 +25,6 @@ import type { PacedStep } from '@/features/practice-kit';
 import { getStrategy } from '@/features/randomizer';
 import { useSettings } from '@/features/settings';
 import { instrument } from '@/lib/audio';
-import { evenness, percent } from '../data/evenness';
 import { handShort } from '../data/fingers';
 import {
   buildCrossRun,
