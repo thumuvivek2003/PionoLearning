@@ -1,5 +1,19 @@
 import type { ComponentType } from 'react';
 import {
+  EarModeDrill,
+  FormulaDrill,
+  ScalePlayDrill,
+  ScaleQuizDrill,
+  ScaleReadDrill,
+  ScaleRecallDrill,
+  getEarDrill,
+  getFormulaDrill,
+  getScalePlayDrill,
+  getScaleQuiz,
+  getScaleReadDrill,
+  getScaleRecallDrill,
+} from '@/features/scales-patterns';
+import {
   AccuracyDrill,
   DurationDrill,
   MetronomeDrill,
@@ -1160,6 +1174,480 @@ const REGISTERED_DRILLS: readonly Drill[] = [
     id: 'contest.mock',
     title: 'Mock contest performance',
     render: () => <PhraseDrill config={getPhraseDrill('mock')} />,
+  },
+
+
+  /* ---- L4 · B4.1 — Major Scale Formula ---- */
+  {
+    id: 'scale.whole-step',
+    title: 'Whole step',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('whole')} />,
+  },
+  {
+    id: 'scale.half-step',
+    title: 'Half step',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('half')} />,
+  },
+  {
+    id: 'scale.formula',
+    title: 'W-W-H-W-W-W-H formula',
+    render: () => <FormulaDrill config={getFormulaDrill('formula')} />,
+  },
+  {
+    id: 'scale.any-note',
+    title: 'Formula from any note',
+    render: () => <FormulaDrill config={getFormulaDrill('any-note')} />,
+  },
+  {
+    id: 'scale.on-keyboard',
+    title: 'Formula on the keyboard',
+    render: () => <FormulaDrill config={getFormulaDrill('keyboard')} />,
+  },
+  {
+    id: 'scale.construct',
+    title: 'Scale construction drill',
+    render: () => <FormulaDrill config={getFormulaDrill('construct')} />,
+  },
+
+  /* ---- L4 · B4.2 — C Major Scale ---- */
+  {
+    id: 'cmajor.notes',
+    title: 'C major notes',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('c-notes')} />,
+  },
+  {
+    id: 'cmajor.formula',
+    title: 'C major formula',
+    render: () => <FormulaDrill config={getFormulaDrill('c-formula')} />,
+  },
+  {
+    id: 'cmajor.rh',
+    title: 'RH C major',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('rh-c')} />,
+  },
+  {
+    id: 'cmajor.lh',
+    title: 'LH C major',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('lh-c')} />,
+  },
+  {
+    id: 'cmajor.together',
+    title: 'Hands together — C',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('together-c')} />,
+  },
+  {
+    id: 'cmajor.slow',
+    title: 'Slow scale practice',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('slow')} />,
+  },
+  {
+    id: 'cmajor.random-start',
+    title: 'Random start practice',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('random-start')} />,
+  },
+
+  /* ---- L4 · B4.3 — G Major Scale ---- */
+  {
+    id: 'gmajor.notes',
+    title: 'G major notes',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('g-notes')} />,
+  },
+  {
+    id: 'gmajor.f-sharp',
+    title: 'F# recognition',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('f-sharp')} />,
+  },
+  {
+    id: 'gmajor.formula',
+    title: 'G major formula',
+    render: () => <FormulaDrill config={getFormulaDrill('g-formula')} />,
+  },
+  {
+    id: 'gmajor.rh',
+    title: 'RH G major',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('rh-g')} />,
+  },
+  {
+    id: 'gmajor.lh',
+    title: 'LH G major',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('lh-g')} />,
+  },
+  {
+    id: 'gmajor.together',
+    title: 'Hands together — G',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('together-g')} />,
+  },
+  {
+    id: 'gmajor.compare',
+    title: 'C → G comparison',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('c-g')} />,
+  },
+
+  /* ---- L4 · B4.4 — F Major Scale ---- */
+  {
+    id: 'fmajor.notes',
+    title: 'F major notes',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('f-notes')} />,
+  },
+  {
+    id: 'fmajor.b-flat',
+    title: 'Bb recognition',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('b-flat')} />,
+  },
+  {
+    id: 'fmajor.formula',
+    title: 'F major formula',
+    render: () => <FormulaDrill config={getFormulaDrill('f-formula')} />,
+  },
+  {
+    id: 'fmajor.rh',
+    title: 'RH F major',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('rh-f')} />,
+  },
+  {
+    id: 'fmajor.lh',
+    title: 'LH F major',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('lh-f')} />,
+  },
+  {
+    id: 'fmajor.together',
+    title: 'Hands together — F',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('together-f')} />,
+  },
+  {
+    id: 'fmajor.compare',
+    title: 'C → G → F comparison',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('c-g-f')} />,
+  },
+
+  /* ---- L4 · B4.5 — Major Scale Family ---- */
+  {
+    id: 'family.c',
+    title: 'C major',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('family-c')} />,
+  },
+  {
+    id: 'family.g',
+    title: 'G major',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('family-g')} />,
+  },
+  {
+    id: 'family.d',
+    title: 'D major',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('family-d')} />,
+  },
+  {
+    id: 'family.a',
+    title: 'A major',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('family-a')} />,
+  },
+  {
+    id: 'family.e',
+    title: 'E major',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('family-e')} />,
+  },
+  {
+    id: 'family.b',
+    title: 'B major',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('family-b')} />,
+  },
+  {
+    id: 'family.f',
+    title: 'F major',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('family-f')} />,
+  },
+  {
+    id: 'family.bb',
+    title: 'Bb major',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('family-bb')} />,
+  },
+  {
+    id: 'family.eb',
+    title: 'Eb major',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('family-eb')} />,
+  },
+  {
+    id: 'family.ab',
+    title: 'Ab major',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('family-ab')} />,
+  },
+  {
+    id: 'family.db',
+    title: 'Db major',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('family-db')} />,
+  },
+  {
+    id: 'family.sharp-order',
+    title: 'Sharp-key order',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('sharp-order')} />,
+  },
+  {
+    id: 'family.flat-order',
+    title: 'Flat-key order',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('flat-order')} />,
+  },
+  {
+    id: 'family.random',
+    title: 'Random major scale',
+    render: () => <FormulaDrill config={getFormulaDrill('family-random')} />,
+  },
+
+  /* ---- L4 · B4.6 — Minor Scale Foundation ---- */
+  {
+    id: 'minor.sound',
+    title: 'Major vs minor sound',
+    render: () => <EarModeDrill config={getEarDrill('major-minor')} />,
+  },
+  {
+    id: 'minor.formula',
+    title: 'Natural minor formula',
+    render: () => <FormulaDrill config={getFormulaDrill('minor-formula')} />,
+  },
+  {
+    id: 'minor.relative',
+    title: 'Relative minor concept',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('relative-concept')} />,
+  },
+  {
+    id: 'minor.sixth',
+    title: 'Relative minor from major',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('relative-sixth')} />,
+  },
+  {
+    id: 'minor.build',
+    title: 'Minor scale construction',
+    render: () => <FormulaDrill config={getFormulaDrill('minor-build')} />,
+  },
+
+  /* ---- L4 · B4.7 — A Minor Scale ---- */
+  {
+    id: 'aminor.notes',
+    title: 'A minor notes',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('a-minor-notes')} />,
+  },
+  {
+    id: 'aminor.formula',
+    title: 'A minor formula',
+    render: () => <FormulaDrill config={getFormulaDrill('a-minor-formula')} />,
+  },
+  {
+    id: 'aminor.vs-c',
+    title: 'A minor vs C major',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('a-minor-vs-c')} />,
+  },
+  {
+    id: 'aminor.rh',
+    title: 'RH A minor',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('rh-am')} />,
+  },
+  {
+    id: 'aminor.lh',
+    title: 'LH A minor',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('lh-am')} />,
+  },
+  {
+    id: 'aminor.together',
+    title: 'Hands together — A minor',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('together-am')} />,
+  },
+
+  /* ---- L4 · B4.8 — E Minor Scale ---- */
+  {
+    id: 'eminor.notes',
+    title: 'E minor notes',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('e-minor-notes')} />,
+  },
+  {
+    id: 'eminor.formula',
+    title: 'E minor formula',
+    render: () => <FormulaDrill config={getFormulaDrill('e-minor-formula')} />,
+  },
+  {
+    id: 'eminor.vs-g',
+    title: 'E minor vs G major',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('e-minor-vs-g')} />,
+  },
+  {
+    id: 'eminor.rh',
+    title: 'RH E minor',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('rh-em')} />,
+  },
+  {
+    id: 'eminor.lh',
+    title: 'LH E minor',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('lh-em')} />,
+  },
+  {
+    id: 'eminor.together',
+    title: 'Hands together — E minor',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('together-em')} />,
+  },
+  /* ---- L4 · B4.9 — D Minor Scale ---- */
+  {
+    id: 'dminor.notes',
+    title: 'D minor notes',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('d-minor-notes')} />,
+  },
+  {
+    id: 'dminor.formula',
+    title: 'D minor formula',
+    render: () => <FormulaDrill config={getFormulaDrill('d-minor-formula')} />,
+  },
+  {
+    id: 'dminor.vs-f',
+    title: 'D minor vs F major',
+    render: () => <ScaleQuizDrill config={getScaleQuiz('d-minor-vs-f')} />,
+  },
+  {
+    id: 'dminor.rh',
+    title: 'RH D minor',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('rh-dm')} />,
+  },
+  {
+    id: 'dminor.lh',
+    title: 'LH D minor',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('lh-dm')} />,
+  },
+  {
+    id: 'dminor.together',
+    title: 'Hands together — D minor',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('together-dm')} />,
+  },
+
+  /* ---- L4 · B4.10 — Scale Pattern Recognition ---- */
+  {
+    id: 'pattern.start-note',
+    title: 'Identify starting note',
+    render: () => <ScaleReadDrill config={getScaleReadDrill('start-note')} />,
+  },
+  {
+    id: 'pattern.accidentals',
+    title: 'Identify accidentals',
+    render: () => <ScaleReadDrill config={getScaleReadDrill('spot-accidentals')} />,
+  },
+  {
+    id: 'pattern.missing',
+    title: 'Missing note drill',
+    render: () => <ScaleReadDrill config={getScaleReadDrill('missing-note')} />,
+  },
+  {
+    id: 'pattern.ascending',
+    title: 'Ascending pattern',
+    render: () => <ScaleReadDrill config={getScaleReadDrill('ascending')} />,
+  },
+  {
+    id: 'pattern.descending',
+    title: 'Descending pattern',
+    render: () => <ScaleReadDrill config={getScaleReadDrill('descending')} />,
+  },
+  {
+    id: 'pattern.key-to-scale',
+    title: 'Random key → scale',
+    render: () => <FormulaDrill config={getFormulaDrill('key-to-scale')} />,
+  },
+  {
+    id: 'pattern.scale-to-key',
+    title: 'Scale → key',
+    render: () => <ScaleReadDrill config={getScaleReadDrill('scale-to-key')} />,
+  },
+  {
+    id: 'pattern.quality',
+    title: 'Major vs minor',
+    render: () => <ScaleReadDrill config={getScaleReadDrill('major-or-minor')} />,
+  },
+
+  /* ---- L4 · B4.11 — Scale Playing Technique ---- */
+  {
+    id: 'technique.fingers',
+    title: 'Finger numbering',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('finger-numbers')} />,
+  },
+  {
+    id: 'technique.thumb',
+    title: 'Thumb tuck',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('thumb-tuck')} />,
+  },
+  {
+    id: 'technique.crossing',
+    title: 'Finger crossing',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('finger-crossing')} />,
+  },
+  {
+    id: 'technique.even',
+    title: 'Even notes',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('even-notes')} />,
+  },
+  {
+    id: 'technique.speed',
+    title: 'Slow → fast',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('slow-fast')} />,
+  },
+  {
+    id: 'technique.metronome',
+    title: 'Metronome practice',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('metronome')} />,
+  },
+  {
+    id: 'technique.accents',
+    title: 'Accent-free playing',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('accent-free')} />,
+  },
+  {
+    id: 'technique.both-ways',
+    title: 'Ascending + descending',
+    render: () => <ScalePlayDrill config={getScalePlayDrill('up-and-down')} />,
+  },
+
+  /* ---- L4 · B4.12 — Scale Recall & Random-Key Practice ---- */
+  {
+    id: 'recall.key',
+    title: 'Random key recognition',
+    render: () => <ScaleRecallDrill config={getScaleRecallDrill('key-recognition')} />,
+  },
+  {
+    id: 'recall.name',
+    title: 'Name the scale notes',
+    render: () => <ScaleRecallDrill config={getScaleRecallDrill('name-notes')} />,
+  },
+  {
+    id: 'recall.find',
+    title: 'Find notes on keyboard',
+    render: () => <ScaleRecallDrill config={getScaleRecallDrill('find-notes')} />,
+  },
+  {
+    id: 'recall.blind',
+    title: 'Play without looking',
+    render: () => <ScaleRecallDrill config={getScaleRecallDrill('play-blind')} />,
+  },
+  {
+    id: 'recall.ascending',
+    title: 'Ascending challenge',
+    render: () => <ScaleRecallDrill config={getScaleRecallDrill('ascending-challenge')} />,
+  },
+  {
+    id: 'recall.descending',
+    title: 'Descending challenge',
+    render: () => <ScaleRecallDrill config={getScaleRecallDrill('descending-challenge')} />,
+  },
+  {
+    id: 'recall.quality',
+    title: 'Major/minor challenge',
+    render: () => <ScaleRecallDrill config={getScaleRecallDrill('quality-challenge')} />,
+  },
+  {
+    id: 'recall.timed',
+    title: 'Timed scale challenge',
+    render: () => <ScaleRecallDrill config={getScaleRecallDrill('timed-challenge')} />,
+  },
+  {
+    id: 'recall.correction',
+    title: 'Mistake correction',
+    render: () => <ScaleRecallDrill config={getScaleRecallDrill('mistake-correction')} />,
+  },
+  {
+    id: 'recall.contest',
+    title: 'Contest simulation',
+    render: () => <ScaleRecallDrill config={getScaleRecallDrill('contest-simulation')} />,
   },
 ];
 

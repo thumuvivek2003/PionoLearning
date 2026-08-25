@@ -28,11 +28,24 @@ export interface Instrument {
    * difference it is asking you to make.
    */
   playMidis(midis: readonly number[], gain?: number): void;
+  /**
+   * Plays keys one after another, so a scale sounds like a scale.
+   *
+   * The ear practices need a melody rather than a chord: relative keys hold the
+   * same notes, so the only thing that separates them is the order they arrive
+   * in and where the line comes to rest. Scheduled on the audio clock rather
+   * than with timers, so the notes stay even while the screen is busy.
+   */
+  playSequence(midis: readonly number[], gapSeconds?: number): void;
+  /** Cuts anything still sounding, so a replay does not stack on the last one. */
+  silence(): void;
   dispose(): void;
 }
 
 class OscillatorInstrument implements Instrument {
   #context: AudioContext | null = null;
+  /** Voices still scheduled or sounding, so they can be cut short. */
+  #voices = new Set<OscillatorNode>();
 
   #ensureContext(): AudioContext | null {
     if (typeof window === 'undefined') return null;
@@ -64,25 +77,64 @@ class OscillatorInstrument implements Instrument {
     master.gain.value = (0.9 / Math.sqrt(midis.length)) * Math.max(0.1, Math.min(2, gain));
     master.connect(context.destination);
 
-    midis.forEach((midi) => {
-      const frequency = midiToFrequency(midi);
+    midis.forEach((midi) => this.#voice(context, master, midi, startedAt, NOTE_SECONDS));
+  }
 
-      const oscillator = context.createOscillator();
-      oscillator.type = 'triangle';
-      oscillator.frequency.value = frequency;
+  playSequence(midis: readonly number[], gapSeconds = 0.32): void {
+    const context = this.#ensureContext();
+    if (!context || midis.length === 0) return;
+    this.silence();
 
-      const envelope = context.createGain();
-      envelope.gain.setValueAtTime(0.0001, startedAt);
-      envelope.gain.exponentialRampToValueAtTime(0.28, startedAt + 0.012);
-      envelope.gain.exponentialRampToValueAtTime(0.0001, startedAt + NOTE_SECONDS);
+    const startedAt = context.currentTime;
+    const master = context.createGain();
+    master.gain.value = 0.9;
+    master.connect(context.destination);
 
-      oscillator.connect(envelope).connect(master);
-      oscillator.start(startedAt);
-      oscillator.stop(startedAt + NOTE_SECONDS + 0.05);
+    // Notes overlap a little, which is what makes a run sound joined up rather
+    // than like eight separate presses.
+    const held = Math.max(gapSeconds * 1.4, 0.3);
+    midis.forEach((midi, index) => {
+      this.#voice(context, master, midi, startedAt + index * gapSeconds, held);
     });
   }
 
+  silence(): void {
+    for (const voice of this.#voices) {
+      try {
+        voice.stop();
+      } catch {
+        // Already stopped; nothing to cut.
+      }
+    }
+    this.#voices.clear();
+  }
+
+  /** One note: an oscillator under its own envelope, tracked so it can be cut. */
+  #voice(
+    context: AudioContext,
+    master: GainNode,
+    midi: number,
+    startAt: number,
+    seconds: number,
+  ): void {
+    const oscillator = context.createOscillator();
+    oscillator.type = 'triangle';
+    oscillator.frequency.value = midiToFrequency(midi);
+
+    const envelope = context.createGain();
+    envelope.gain.setValueAtTime(0.0001, startAt);
+    envelope.gain.exponentialRampToValueAtTime(0.28, startAt + 0.012);
+    envelope.gain.exponentialRampToValueAtTime(0.0001, startAt + seconds);
+
+    oscillator.connect(envelope).connect(master);
+    oscillator.start(startAt);
+    oscillator.stop(startAt + seconds + 0.05);
+    this.#voices.add(oscillator);
+    oscillator.onended = () => this.#voices.delete(oscillator);
+  }
+
   dispose(): void {
+    this.silence();
     void this.#context?.close();
     this.#context = null;
   }

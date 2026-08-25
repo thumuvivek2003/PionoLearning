@@ -20,6 +20,7 @@ npm run build       # the other gate — there is no ESLint or test runner
 | `features/keyboard-geography/` | Level 1 drills (`L1` = find any key by sight). |
 | `features/finger-training/` | Level 2 drills — position, independence, intervals, shifting, crossing, black keys, random decisions, rhythm, validation. |
 | `features/rhythm-timing/` | Level 3 drills — pulse, note values, counting, the metronome, patterns, accuracy, phrases and contest timing. |
+| `features/scales-patterns/` | Level 4 drills — scale formulas (major and natural minor), key signatures, relative keys, and scales under the hands. |
 | `features/practice-kit/` | Shared drill engines and panels — see below. |
 | `features/piano/`, `music-theory/`, `randomizer/` | Shared domain: keyboard layouts and the white-key ruler, notes/chords/scales/intervals, draw policies. Drill features depend on these, never on each other. |
 | `src/drills/registry.tsx` | Maps a drill id to the component that renders it. |
@@ -66,5 +67,14 @@ registered but kept out of Settings, since a plain trainer session has no ledger
 
 ## State
 
-Levels 1–3 complete — 212 practices across 27 buckets. Level 4 (Scales & Patterns) is next;
-levels 4–8 are mapped out as data only.
+Levels 1–4 complete — 302 practices across 39 buckets. Level 5 (chords and harmony,
+`level5.chordsHarmony.ts`) is next; its reference files live in `references/L5/`.
+
+Each minor key's six practices (4.7–4.9) are generated from one entry in `MINOR_KEYS`
+(`scales-patterns/data/scaleDrills.ts`) — add a key there, not six configs.
+`ScaleReadDrill` is the mirror of `ScaleQuizDrill`: it prints a run and asks what it is,
+on a per-answer deadline. `ScalePlayDrill` takes optional `keys`/`segment`/`ladder`/
+`subdivisions`/`cleanTarget`/`focus` for the technique bucket; omit them for the old behaviour.
+`ScaleRecallDrill` (4.12) chains a key through `phases` — locate, name, find, play, reverse —
+and is the level's daily measurement: a per-key card, a per-phase time split, and a tally of
+*why* mistakes happen. All ten of 4.12's practices are configs of it.
