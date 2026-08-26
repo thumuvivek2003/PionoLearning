@@ -6,15 +6,19 @@ import { AsyncImage, Chip, Icon } from '@/components/ui';
 import {
   CURRICULUM_ROOT,
   bucketHref,
+  bucketPracticeIds,
   bucketReadiness,
   levelHref,
   levelNeighbours,
+  levelPracticeIds,
   levelReadiness,
   resolvePath,
+  useProgress,
 } from '@/features/curriculum';
 import type { CurriculumBucket, CurriculumLevel } from '@/features/curriculum';
 import { cn } from '@/lib/cn';
 import { DEFAULT_MODULE_ID } from '@/modules/registry';
+import { ProgressBar } from './CurriculumBucketPage';
 import { CurriculumMissing } from './CurriculumMissing';
 import styles from './curriculum.module.css';
 
@@ -22,6 +26,7 @@ import styles from './curriculum.module.css';
 export function CurriculumLevelPage() {
   const { levelId } = useParams();
   const path = resolvePath({ levelId });
+  const progress = useProgress();
 
   if (!path) return <CurriculumMissing what="level" />;
 
@@ -29,6 +34,7 @@ export function CurriculumLevelPage() {
   const { total, ready } = levelReadiness(level);
   const { previous, next } = levelNeighbours(level);
   const diagram = getLevelDiagram(level.id);
+  const levelDone = progress.countDone(levelPracticeIds(level));
 
   return (
     <AppShell
@@ -52,9 +58,15 @@ export function CurriculumLevelPage() {
             <span className={styles.code}>Level {level.order}</span>
             <h2 className={styles.headTitle}>{level.title}</h2>
           </span>
-          {ready > 0 ? <Chip tone="accent">{ready} ready</Chip> : <Chip>Coming soon</Chip>}
+          <span className={styles.headChips}>
+            <Chip tone={levelDone === total ? 'accent' : 'neutral'}>
+              {levelDone} of {total} done
+            </Chip>
+            {ready > 0 ? <Chip>{ready} ready</Chip> : <Chip>Coming soon</Chip>}
+          </span>
         </div>
         <p className={styles.cardSummary}>{level.summary}</p>
+        <ProgressBar done={levelDone} total={total} />
       </section>
 
       {diagram && <LevelMap level={level} diagram={diagram} />}
@@ -102,8 +114,10 @@ function LevelMap({ level, diagram }: { level: CurriculumLevel; diagram: LevelDi
 }
 
 function BucketCard({ bucket }: { bucket: CurriculumBucket }) {
+  const progress = useProgress();
   const { total, ready } = bucketReadiness(bucket);
   const preview = bucket.practices.slice(0, 3).map((practice) => practice.title);
+  const done = progress.countDone(bucketPracticeIds(bucket));
 
   return (
     <Link to={bucketHref(bucket)} className={styles.card}>
@@ -123,8 +137,14 @@ function BucketCard({ bucket }: { bucket: CurriculumBucket }) {
 
         <div className={styles.meta}>
           <span>{total} practices</span>
+          {done > 0 && (
+            <Chip tone={done === total ? 'accent' : 'neutral'}>
+              {done === total ? 'Done' : `${done} done`}
+            </Chip>
+          )}
           {ready > 0 ? <Chip tone="accent">{ready} ready</Chip> : <Chip>Coming soon</Chip>}
         </div>
+        <ProgressBar done={done} total={total} />
       </div>
     </Link>
   );

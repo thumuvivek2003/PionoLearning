@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { DEFAULT_MODULE_ID } from '@/modules/registry';
+import { CURRICULUM_ROOT } from '@/features/curriculum';
 import { AboutPage } from '@/pages/AboutPage';
 import {
   CurriculumBucketPage,
@@ -18,13 +18,17 @@ import { TrainerPage } from '@/pages/TrainerPage';
  * Trainers share one route: :moduleId selects the plug-in, so a new module
  * becomes reachable the moment it is registered.
  *
+ * The root lands on the curriculum rather than a trainer: the curriculum is the
+ * map of what to do next, and a drill picked without it is a drill picked at
+ * random.
+ *
  * The curriculum mirrors its own shape — level / bucket / practice — so every
  * node in the tree is a bookmarkable URL without a route per level.
  */
 export function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to={`/train/${DEFAULT_MODULE_ID}`} replace />} />
+      <Route path="/" element={<Navigate to={CURRICULUM_ROOT} replace />} />
       <Route path="/train/:moduleId" element={<TrainerPage />} />
       <Route path="/curriculum" element={<CurriculumPage />} />
       <Route path="/curriculum/:levelId" element={<CurriculumLevelPage />} />

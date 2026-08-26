@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { BrowserRouter } from 'react-router-dom';
+import { ProgressProvider } from '@/features/curriculum';
 import { LessonsProvider } from '@/features/lessons';
 import { PracticeClockProvider } from '@/features/practice-kit';
 import { SettingsProvider } from '@/features/settings';
@@ -12,7 +13,9 @@ export function AppProviders({ children }: { children: ReactNode }) {
       <SettingsProvider>
         <StatisticsProvider>
           <LessonsProvider>
-            <PracticeClockProvider>{children}</PracticeClockProvider>
+            <ProgressProvider>
+              <PracticeClockProvider>{children}</PracticeClockProvider>
+            </ProgressProvider>
           </LessonsProvider>
         </StatisticsProvider>
       </SettingsProvider>

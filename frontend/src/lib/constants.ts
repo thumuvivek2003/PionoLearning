@@ -1,4 +1,4 @@
-export const APP_NAME = 'Piano Random';
+export const APP_NAME = 'Piano';
 export const APP_SUBTITLE = 'Trainer';
 export const APP_VERSION = '1.0.0';
 
@@ -25,6 +25,7 @@ export const STORAGE_KEYS = {
   statistics: 'prt.statistics.v1',
   sessionSetup: 'prt.session-setup.v1',
   lessons: 'prt.lessons.v1',
+  progress: 'prt.progress.v1',
 } as const;
 
 export const MAX_STORED_SESSIONS = 50;

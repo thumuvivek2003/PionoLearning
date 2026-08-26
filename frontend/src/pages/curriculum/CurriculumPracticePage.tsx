@@ -1,6 +1,6 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AppShell, Breadcrumbs } from '@/components/layout';
-import { Button, Chip, Icon } from '@/components/ui';
+import { Button, Chip, Icon, Tick } from '@/components/ui';
 import {
   CURRICULUM_ROOT,
   bucketHref,
@@ -10,6 +10,7 @@ import {
   practiceNeighbours,
   resolvePath,
   trainerHref,
+  useProgress,
 } from '@/features/curriculum';
 import type {
   CurriculumPractice,
@@ -33,6 +34,7 @@ import styles from './curriculum.module.css';
 export function CurriculumPracticePage() {
   const { levelId, bucketId, practiceId } = useParams();
   const path = resolvePath({ levelId, bucketId, practiceId });
+  const progress = useProgress();
 
   if (!path) return <CurriculumMissing what="level" />;
   if (!path.bucket) return <CurriculumMissing what="bucket" />;
@@ -63,7 +65,19 @@ export function CurriculumPracticePage() {
             <span className={styles.code}>{practice.id}</span>
             <h2 className={styles.headTitle}>{practice.title}</h2>
           </span>
-          {isPracticeReady(practice) ? <Chip tone="accent">Ready</Chip> : <Chip>Coming soon</Chip>}
+          <span className={styles.headChips}>
+            {isPracticeReady(practice) ? <Chip tone="accent">Ready</Chip> : <Chip>Coming soon</Chip>}
+            {/* Ticking here is the natural place: you have just finished it. */}
+            <label className={styles.donePill}>
+              <Tick
+                checked={progress.isDone(practice.id)}
+                onChange={() => progress.toggle(practice.id)}
+                label={`Mark ${practice.title} done`}
+                size="sm"
+              />
+              <span>{progress.isDone(practice.id) ? 'Done' : 'Mark done'}</span>
+            </label>
+          </span>
         </div>
         <p className={styles.cardSummary}>
           {bucket.title} — step {stepNumber(practice)} of {bucket.practices.length} in this bucket.

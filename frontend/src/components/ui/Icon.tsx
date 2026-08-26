@@ -37,6 +37,7 @@ const PATHS = {
   target: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Zm0-5a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0-4a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z',
   'sidebar-collapse': 'M4 4h16v16H4zM10 4v16M15 9l-2 3 2 3',
   'sidebar-expand': 'M4 4h16v16H4zM10 4v16M13 9l2 3-2 3',
+  menu: 'M4 7h16M4 12h16M4 17h16',
 } as const;
 
 export type IconName = keyof typeof PATHS;

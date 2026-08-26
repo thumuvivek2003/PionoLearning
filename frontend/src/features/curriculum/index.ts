@@ -29,3 +29,9 @@ export {
   resolvePath,
   trainerHref,
 } from './curriculumService';
+export {
+  ProgressProvider,
+  bucketPracticeIds,
+  levelPracticeIds,
+  useProgress,
+} from './ProgressContext';

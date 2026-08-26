@@ -8,11 +8,13 @@
 
 @media (max-width: 960px) {
   .shell {
+    /* The drawer is taken out of the flow, so the main column is the layout. */
     grid-template-columns: minmax(0, 1fr);
-    /* Keep the nav bar at its content height; only the main column grows. */
     grid-template-rows: auto minmax(0, 1fr);
     height: auto;
     min-height: 100%;
+    padding: var(--sp-3);
+    gap: var(--sp-3);
   }
 }
 
@@ -29,16 +31,38 @@
   overflow-y: auto;
 }
 
+/*
+ * Below the breakpoint the sidebar leaves the grid and becomes a drawer.
+ *
+ * The previous behaviour was a horizontal strip that had to be scrolled
+ * sideways to reach half the links — everything past "Mode" was off the edge of
+ * a phone. A drawer shows the whole navigation at once, which is the point of
+ * having it.
+ */
 @media (max-width: 960px) {
   .sidebar {
-    position: sticky;
+    position: fixed;
     top: 0;
-    z-index: var(--z-sticky);
-    flex-direction: row;
-    align-items: center;
-    gap: var(--sp-4);
-    overflow-x: auto;
-    overflow-y: hidden;
+    bottom: 0;
+    left: 0;
+    z-index: var(--z-drawer);
+    width: min(84vw, 300px);
+    border-radius: 0 var(--r-xl) var(--r-xl) 0;
+    transform: translateX(-102%);
+    transition: transform var(--dur-base) var(--ease);
+    will-change: transform;
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+    box-shadow: 0 0 60px -10px rgb(0 0 0 / 55%);
+  }
+}
+
+/* A drawer that slides would be disorienting for anyone who asked it not to. */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar {
+    transition: none;
   }
 }
 
@@ -85,24 +109,10 @@
   flex: 1;
 }
 
-@media (max-width: 960px) {
-  .nav {
-    flex-direction: row;
-    align-items: center;
-    gap: var(--sp-2);
-  }
-}
-
 .navGroup {
   display: flex;
   flex-direction: column;
   gap: 2px;
-}
-
-@media (max-width: 960px) {
-  .navGroup {
-    flex-direction: row;
-  }
 }
 
 .navGroupLabel {
@@ -113,12 +123,6 @@
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
   color: var(--text-faint);
-}
-
-@media (max-width: 960px) {
-  .navGroupLabel {
-    display: none;
-  }
 }
 
 .navItem {
@@ -169,12 +173,6 @@
   font-size: var(--fs-sm);
   font-weight: 700;
   letter-spacing: 0.03em;
-}
-
-@media (max-width: 960px) {
-  .promo {
-    display: none;
-  }
 }
 
 /* ---------------- Main ---------------- */
@@ -382,5 +380,96 @@
 
   .sidebarCollapsed .promo {
     padding: var(--sp-2);
+  }
+}
+
+/* ---------------- Mobile drawer ---------------- */
+
+/* The bar that replaces the sidebar below the breakpoint. */
+.mobileBar {
+  display: none;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-1);
+}
+
+@media (max-width: 960px) {
+  .mobileBar {
+    display: flex;
+  }
+}
+
+.mobileBrand {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+  /* Takes the space between the menu button and the actions. */
+  flex: 1;
+}
+
+.mobileActions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  flex: none;
+}
+
+.mobileMark {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: var(--r-sm);
+  background: linear-gradient(150deg, var(--accent-strong), var(--accent-deep));
+  color: #fff;
+}
+
+.mobileTitle {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Tapping anywhere off the drawer closes it — a button so it is reachable. */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-drawer) - 1);
+  border: 0;
+  background: rgb(0 0 0 / 45%);
+  cursor: pointer;
+}
+
+@media (min-width: 961px) {
+  .backdrop {
+    display: none;
+  }
+}
+
+/* Collapsing belongs to the wide layout; closing belongs to the drawer. */
+.drawerClose {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .collapseButton {
+    display: none;
+  }
+
+  .drawerClose {
+    display: inline-flex;
+  }
+
+  /*
+   * The mobile bar takes the header's place: it names the screen and carries
+   * the same controls, so hiding the header here loses nothing.
+   */
+  .header {
+    display: none;
   }
 }

@@ -9,8 +9,26 @@ import styles from './layout.module.css';
 interface SidebarProps {
   /** The trainer the mode shortcuts should jump to. */
   activeModuleId: string;
+  /**
+   * Whether the drawer is showing.
+   *
+   * Only meaningful on a narrow screen: on a wide one the sidebar is always
+   * there and this is ignored, which is why the shell rather than the sidebar
+   * owns the state.
+   */
+  open?: boolean;
+  /** Closes the drawer — a link was followed, or the close button was pressed. */
+  onClose?: () => void;
 }
 
+/**
+ * Learn comes first.
+ *
+ * The curriculum is the map of what to do next; the trainers below it are tools
+ * you reach for once you know which practice you are on. Putting them first
+ * invited picking a drill at random, which is what the curriculum exists to
+ * stop.
+ */
 const LEARN_LINKS = [
   { to: '/curriculum', label: 'Curriculum', icon: 'layers' },
   { to: '/lessons', label: 'Lessons', icon: 'crown' },
@@ -26,7 +44,7 @@ const SYSTEM_LINKS = [
   { to: '/about', label: 'About', icon: 'about' },
 ] as const;
 
-export function Sidebar({ activeModuleId }: SidebarProps) {
+export function Sidebar({ activeModuleId, open = false, onClose }: SidebarProps) {
   const { settings, update } = useSettings();
   const modules = listModules();
   const collapsed = settings.sidebarCollapsed;
@@ -42,8 +60,13 @@ export function Sidebar({ activeModuleId }: SidebarProps) {
 
   return (
     <nav
-      className={cn(styles.sidebar, collapsed && styles.sidebarCollapsed)}
+      className={cn(styles.sidebar, collapsed && styles.sidebarCollapsed, open && styles.sidebarOpen)}
       aria-label="Main"
+      // Following a link should put the drawer away; on a wide screen there is
+      // no drawer and the handler does nothing.
+      onClick={(event) => {
+        if ((event.target as HTMLElement).closest('a')) onClose?.();
+      }}
     >
       <div className={styles.brand}>
         <span className={styles.brandMark}>
@@ -59,9 +82,25 @@ export function Sidebar({ activeModuleId }: SidebarProps) {
           label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           onClick={() => update('sidebarCollapsed', !collapsed)}
         />
+        <IconButton
+          className={styles.drawerClose}
+          icon="x"
+          label="Close menu"
+          onClick={onClose}
+        />
       </div>
 
       <div className={styles.nav}>
+        <div className={styles.navGroup}>
+          <span className={styles.navGroupLabel}>Learn</span>
+          {LEARN_LINKS.map((link) => (
+            <NavLink key={link.to} to={link.to} className={navClass} title={itemTitle(link.label)}>
+              <Icon name={link.icon} />
+              <span className={styles.navLabel}>{link.label}</span>
+            </NavLink>
+          ))}
+        </div>
+
         <div className={styles.navGroup}>
           <span className={styles.navGroupLabel}>Trainers</span>
           {modules.map((module) => (
@@ -96,16 +135,6 @@ export function Sidebar({ activeModuleId }: SidebarProps) {
               </NavLink>
             );
           })}
-        </div>
-
-        <div className={styles.navGroup}>
-          <span className={styles.navGroupLabel}>Learn</span>
-          {LEARN_LINKS.map((link) => (
-            <NavLink key={link.to} to={link.to} className={navClass} title={itemTitle(link.label)}>
-              <Icon name={link.icon} />
-              <span className={styles.navLabel}>{link.label}</span>
-            </NavLink>
-          ))}
         </div>
 
         <div className={styles.navGroup}>

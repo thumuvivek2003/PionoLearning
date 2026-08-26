@@ -5,11 +5,14 @@ import { AsyncImage, Chip, Icon } from '@/components/ui';
 import {
   curriculumReadiness,
   levelHref,
+  levelPracticeIds,
   levelReadiness,
   listLevels,
+  useProgress,
 } from '@/features/curriculum';
 import type { CurriculumLevel } from '@/features/curriculum';
 import { DEFAULT_MODULE_ID } from '@/modules/registry';
+import { ProgressBar } from './CurriculumBucketPage';
 import styles from './curriculum.module.css';
 import pageStyles from '../pages.module.css';
 
@@ -23,6 +26,8 @@ export function CurriculumPage() {
   const levels = listLevels();
   const totals = curriculumReadiness();
   const buckets = levels.reduce((count, level) => count + level.buckets.length, 0);
+  const progress = useProgress();
+  const done = progress.doneCount;
 
   return (
     <AppShell
@@ -31,6 +36,20 @@ export function CurriculumPage() {
       activeModuleId={DEFAULT_MODULE_ID}
     >
       <section className={styles.surface}>
+        <div className={styles.overall}>
+          <div className={styles.overallTop}>
+            <span className={styles.overallCount}>
+              {done} <span className={styles.overallOf}>of {totals.total} practices done</span>
+            </span>
+            {done > 0 && (
+              <button type="button" className={styles.tickAll} onClick={progress.clearAll}>
+                Reset progress
+              </button>
+            )}
+          </div>
+          <ProgressBar done={done} total={totals.total} />
+        </div>
+
         <div className={styles.introSteps}>
           <div className={styles.step}>
             <span className={styles.stepLabel}>Level</span>
@@ -71,6 +90,7 @@ export function CurriculumPage() {
 function LevelCard({ level }: { level: CurriculumLevel }) {
   const { total, ready } = levelReadiness(level);
   const diagram = getLevelDiagram(level.id);
+  const done = useProgress().countDone(levelPracticeIds(level));
 
   return (
     <Link to={levelHref(level)} className={styles.card}>
@@ -100,8 +120,14 @@ function LevelCard({ level }: { level: CurriculumLevel }) {
           <span>{level.buckets.length} buckets</span>
           <span>·</span>
           <span>{total} practices</span>
+          {done > 0 && (
+            <Chip tone={done === total ? 'accent' : 'neutral'}>
+              {done === total ? 'Done' : `${done} done`}
+            </Chip>
+          )}
           {ready > 0 ? <Chip tone="accent">{ready} ready</Chip> : <Chip>Coming soon</Chip>}
         </div>
+        <ProgressBar done={done} total={total} />
       </div>
     </Link>
   );

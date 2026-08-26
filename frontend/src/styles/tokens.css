@@ -49,6 +49,7 @@
   --z-key-black: 2;
   --z-sticky: 20;
   --z-popover: 40;
+  --z-drawer: 60;
 
   /* ---- accent (overridden by [data-accent]) ---- */
   --accent: #8b5cf6;

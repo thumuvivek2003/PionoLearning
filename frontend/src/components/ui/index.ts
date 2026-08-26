@@ -14,3 +14,4 @@ export { ProgressRing } from './ProgressRing';
 export { SegmentedControl } from './SegmentedControl';
 export { Select } from './Select';
 export { Toggle } from './Toggle';
+export { Tick } from './Tick';
