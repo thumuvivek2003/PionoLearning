@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react';
+import { PatternDrill, getPatternDrill } from '@/features/playing-patterns';
 import {
   FingeringDrill,
   ReadingContestDrill,
@@ -2660,6 +2661,292 @@ const REGISTERED_DRILLS: readonly Drill[] = [
     id: 'flu.contest',
     title: 'Contest simulation',
     render: () => <ReadingContestDrill config={getReadingContestDrill('reading-contest')} />,
+  },
+
+
+  /* ---- L7 · B7.1 — Melodies ---- */
+  {
+    id: 'mel.right',
+    title: 'Right-hand melodies',
+    render: () => <PatternDrill config={getPatternDrill('melody-right')} />,
+  },
+  {
+    id: 'mel.left',
+    title: 'Left-hand melodies',
+    render: () => <PatternDrill config={getPatternDrill('melody-left')} />,
+  },
+  {
+    id: 'mel.stepwise',
+    title: 'Stepwise melodies',
+    render: () => <PatternDrill config={getPatternDrill('melody-stepwise')} />,
+  },
+  {
+    id: 'mel.skips',
+    title: 'Skipping melodies',
+    render: () => <PatternDrill config={getPatternDrill('melody-skips')} />,
+  },
+  {
+    id: 'mel.repeated',
+    title: 'Repeated notes',
+    render: () => <PatternDrill config={getPatternDrill('melody-repeated')} />,
+  },
+  {
+    id: 'mel.rhythms',
+    title: 'Melody with different rhythms',
+    render: () => <PatternDrill config={getPatternDrill('melody-rhythms')} />,
+  },
+  {
+    id: 'mel.memorise',
+    title: 'Short melody memorization',
+    render: () => <PatternDrill config={getPatternDrill('melody-memorise')} />,
+  },
+
+  /* ---- L7 · B7.2 — Broken Chords ---- */
+  {
+    id: 'bro.135',
+    title: '1–3–5 pattern',
+    render: () => <PatternDrill config={getPatternDrill('broken-135')} />,
+  },
+  {
+    id: 'bro.531',
+    title: '5–3–1 pattern',
+    render: () => <PatternDrill config={getPatternDrill('broken-531')} />,
+  },
+  {
+    id: 'bro.c',
+    title: 'C major broken chord',
+    render: () => <PatternDrill config={getPatternDrill('broken-c')} />,
+  },
+  {
+    id: 'bro.f',
+    title: 'F major broken chord',
+    render: () => <PatternDrill config={getPatternDrill('broken-f')} />,
+  },
+  {
+    id: 'bro.g',
+    title: 'G major broken chord',
+    render: () => <PatternDrill config={getPatternDrill('broken-g')} />,
+  },
+  {
+    id: 'bro.major',
+    title: 'Major chord broken patterns',
+    render: () => <PatternDrill config={getPatternDrill('broken-major')} />,
+  },
+  {
+    id: 'bro.minor',
+    title: 'Minor chord broken patterns',
+    render: () => <PatternDrill config={getPatternDrill('broken-minor')} />,
+  },
+  {
+    id: 'bro.continuous',
+    title: 'Continuous broken chords',
+    render: () => <PatternDrill config={getPatternDrill('broken-continuous')} />,
+  },
+
+  /* ---- L7 · B7.3 — Arpeggios ---- */
+  {
+    id: 'arp.1358',
+    title: '1–3–5–8 pattern',
+    render: () => <PatternDrill config={getPatternDrill('arpeggio-1358')} />,
+  },
+  {
+    id: 'arp.up',
+    title: 'Ascending arpeggios',
+    render: () => <PatternDrill config={getPatternDrill('arpeggio-up')} />,
+  },
+  {
+    id: 'arp.down',
+    title: 'Descending arpeggios',
+    render: () => <PatternDrill config={getPatternDrill('arpeggio-down')} />,
+  },
+  {
+    id: 'arp.c',
+    title: 'C major arpeggio',
+    render: () => <PatternDrill config={getPatternDrill('arpeggio-c')} />,
+  },
+  {
+    id: 'arp.f',
+    title: 'F major arpeggio',
+    render: () => <PatternDrill config={getPatternDrill('arpeggio-f')} />,
+  },
+  {
+    id: 'arp.g',
+    title: 'G major arpeggio',
+    render: () => <PatternDrill config={getPatternDrill('arpeggio-g')} />,
+  },
+  {
+    id: 'arp.minor',
+    title: 'Minor arpeggios',
+    render: () => <PatternDrill config={getPatternDrill('arpeggio-minor')} />,
+  },
+  {
+    id: 'arp.repetition',
+    title: 'Arpeggio repetition',
+    render: () => <PatternDrill config={getPatternDrill('arpeggio-repetition')} />,
+  },
+
+
+  /* ---- L7 · B7.4 — Alberti Bass ---- */
+  {
+    id: 'alb.pattern',
+    title: 'Alberti bass pattern',
+    render: () => <PatternDrill config={getPatternDrill('alberti-pattern')} />,
+  },
+  {
+    id: 'alb.c',
+    title: 'C major Alberti bass',
+    render: () => <PatternDrill config={getPatternDrill('alberti-c')} />,
+  },
+  {
+    id: 'alb.f',
+    title: 'F major Alberti bass',
+    render: () => <PatternDrill config={getPatternDrill('alberti-f')} />,
+  },
+  {
+    id: 'alb.g',
+    title: 'G major Alberti bass',
+    render: () => <PatternDrill config={getPatternDrill('alberti-g')} />,
+  },
+  {
+    id: 'alb.continuous',
+    title: 'Continuous Alberti bass',
+    render: () => <PatternDrill config={getPatternDrill('alberti-continuous')} />,
+  },
+  {
+    id: 'alb.melody',
+    title: 'Alberti bass with melody',
+    render: () => <PatternDrill config={getPatternDrill('alberti-melody')} />,
+  },
+
+  /* ---- L7 · B7.5 — Chord + Melody ---- */
+  {
+    id: 'cm.single',
+    title: 'Single chord + melody',
+    render: () => <PatternDrill config={getPatternDrill('chord-single')} />,
+  },
+  {
+    id: 'cm.block',
+    title: 'Block chord + melody',
+    render: () => <PatternDrill config={getPatternDrill('chord-block')} />,
+  },
+  {
+    id: 'cm.c',
+    title: 'C chord + melody',
+    render: () => <PatternDrill config={getPatternDrill('chord-c')} />,
+  },
+  {
+    id: 'cm.cfg',
+    title: 'C–F–G chord + melody',
+    render: () => <PatternDrill config={getPatternDrill('chord-cfg')} />,
+  },
+  {
+    id: 'cm.changes',
+    title: 'Chord changes + melody',
+    render: () => <PatternDrill config={getPatternDrill('chord-changes')} />,
+  },
+  {
+    id: 'cm.phrasing',
+    title: 'Melody phrasing',
+    render: () => <PatternDrill config={getPatternDrill('melody-phrasing')} />,
+  },
+  {
+    id: 'cm.song',
+    title: 'Simple song arrangement',
+    render: () => <PatternDrill config={getPatternDrill('song-arrangement')} />,
+  },
+
+  /* ---- L7 · B7.6 — Left-Hand Accompaniment ---- */
+  {
+    id: 'lh.roots',
+    title: 'Root notes',
+    render: () => <PatternDrill config={getPatternDrill('lh-roots')} />,
+  },
+  {
+    id: 'lh.rootchord',
+    title: 'Root–chord pattern',
+    render: () => <PatternDrill config={getPatternDrill('lh-root-chord')} />,
+  },
+  {
+    id: 'lh.octave',
+    title: 'Octave bass',
+    render: () => <PatternDrill config={getPatternDrill('lh-octave')} />,
+  },
+  {
+    id: 'lh.basschord',
+    title: 'Bass + chord',
+    render: () => <PatternDrill config={getPatternDrill('lh-bass-chord')} />,
+  },
+  {
+    id: 'lh.waltz',
+    title: 'Waltz pattern',
+    render: () => <PatternDrill config={getPatternDrill('lh-waltz')} />,
+  },
+  {
+    id: 'lh.pop',
+    title: 'Pop pattern',
+    render: () => <PatternDrill config={getPatternDrill('lh-pop')} />,
+  },
+  {
+    id: 'lh.broken',
+    title: 'Broken-chord accompaniment',
+    render: () => <PatternDrill config={getPatternDrill('lh-broken')} />,
+  },
+  {
+    id: 'lh.progression',
+    title: 'Chord progression accompaniment',
+    render: () => <PatternDrill config={getPatternDrill('lh-progression')} />,
+  },
+
+  /* ---- L7 · B7.7 — Two-Hand Coordination ---- */
+  {
+    id: 'th.same',
+    title: 'Hands together — same rhythm',
+    render: () => <PatternDrill config={getPatternDrill('two-same-rhythm')} />,
+  },
+  {
+    id: 'th.different',
+    title: 'Hands together — different notes',
+    render: () => <PatternDrill config={getPatternDrill('two-different-notes')} />,
+  },
+  {
+    id: 'th.steady',
+    title: 'Left-hand steady + right-hand melody',
+    render: () => <PatternDrill config={getPatternDrill('two-steady-melody')} />,
+  },
+  {
+    id: 'th.rhythms',
+    title: 'Different rhythms',
+    render: () => <PatternDrill config={getPatternDrill('two-different-rhythms')} />,
+  },
+  {
+    id: 'th.repeating',
+    title: 'Repeating LH pattern + RH melody',
+    render: () => <PatternDrill config={getPatternDrill('two-repeating')} />,
+  },
+  {
+    id: 'th.changes',
+    title: 'Chord changes + melody',
+    render: () => <PatternDrill config={getPatternDrill('two-chord-changes')} />,
+  },
+  {
+    id: 'th.speed',
+    title: 'Slow → medium → fast',
+    render: () => <PatternDrill config={getPatternDrill('two-speed')} />,
+  },
+  {
+    id: 'th.independent',
+    title: 'Hands-independent practice',
+    render: () => <PatternDrill config={getPatternDrill('two-independent')} />,
+  },
+  {
+    id: 'th.continuous',
+    title: 'Continuous playing',
+    render: () => <PatternDrill config={getPatternDrill('two-continuous')} />,
+  },
+  {
+    id: 'th.song',
+    title: 'Full two-hand song',
+    render: () => <PatternDrill config={getPatternDrill('two-song')} />,
   },
 ];
 

@@ -23,6 +23,7 @@ npm run build       # the other gate — there is no ESLint or test runner
 | `features/scales-patterns/` | Level 4 drills — scale formulas (major and natural minor), key signatures, relative keys, and scales under the hands. |
 | `features/chords-harmony/` | Level 5 drills — triads built from `music-theory`'s chord service, and recognised back. |
 | `features/music-reading/` | Level 6 drills — the staff drawn as SVG, read in both clefs. |
+| `features/playing-patterns/` | Level 7 drills — chords and scales turned into figures under the hands. |
 | `features/practice-kit/` | Shared drill engines and panels — see below. |
 | `features/piano/`, `music-theory/`, `randomizer/` | Shared domain: keyboard layouts and the white-key ruler, notes/chords/scales/intervals, draw policies. Drill features depend on these, never on each other. |
 | `src/drills/registry.tsx` | Maps a drill id to the component that renders it. |
@@ -69,8 +70,8 @@ registered but kept out of Settings, since a plain trainer session has no ledger
 
 ## State
 
-Levels 1–6 complete — 490 practices across 59 buckets. Level 7 (playing patterns,
-`level7.playingPatterns.ts`) is next; its reference files live in `references/L7/`.
+Levels 1–7 complete — 544 practices across 66 buckets. Level 8 (performance fluency,
+`level8.performanceFluency.ts`) is next; its reference files live in `references/L8/`.
 
 Each minor key's six practices (4.7–4.9) are generated from one entry in `MINOR_KEYS`
 (`scales-patterns/data/scaleDrills.ts`) — add a key there, not six configs.
@@ -111,3 +112,9 @@ no-stopping are all config. `FingeringDrill` (6.8) reads printed finger numbers;
 `ReadingContestDrill` (6.10.10) runs ten timed rounds onto one card.
 Key-signature *positions* are convention, not derivable, so `keySignatures.ts` lists
 them per clef and the checks assert each lands on the letter it alters.
+L7's `buildFigure()` turns a `FigureSource` — a triad's degrees, a contour through a
+scale, or an accompaniment whose steps may sound several keys at once — into notes
+with fingering, lengths and *turns* marked. `buildEvents()` merges a right and a left
+figure **by beat**, so two hands land together rather than being zipped. `PatternDrill`
+plays any of it and times the turn apart from the rest, because that is where every
+figure lurches. All fifty-four of level 7 are configs of it.
