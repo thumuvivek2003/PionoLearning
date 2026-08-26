@@ -2,18 +2,18 @@ import type { ChordType } from '../types/music.types';
 
 /** Chord recipes, ordered from simplest to most colourful. */
 export const CHORD_TYPES: readonly ChordType[] = [
-  { id: 'major', symbol: '', name: 'Major triad', intervals: [0, 4, 7], quality: 'major' },
-  { id: 'minor', symbol: 'm', name: 'Minor triad', intervals: [0, 3, 7], quality: 'minor' },
-  { id: 'dim', symbol: 'dim', name: 'Diminished triad', intervals: [0, 3, 6], quality: 'diminished' },
-  { id: 'aug', symbol: 'aug', name: 'Augmented triad', intervals: [0, 4, 8], quality: 'augmented' },
+  { id: 'major', symbol: '', name: 'Major triad', intervals: [0, 4, 7], quality: 'major', tertian: true },
+  { id: 'minor', symbol: 'm', name: 'Minor triad', intervals: [0, 3, 7], quality: 'minor', tertian: true },
+  { id: 'dim', symbol: 'dim', name: 'Diminished triad', intervals: [0, 3, 6], quality: 'diminished', tertian: true },
+  { id: 'aug', symbol: 'aug', name: 'Augmented triad', intervals: [0, 4, 8], quality: 'augmented', tertian: true },
   { id: 'sus2', symbol: 'sus2', name: 'Suspended 2nd', intervals: [0, 2, 7], quality: 'suspended' },
   { id: 'sus4', symbol: 'sus4', name: 'Suspended 4th', intervals: [0, 5, 7], quality: 'suspended' },
-  { id: 'maj7', symbol: 'maj7', name: 'Major 7th', intervals: [0, 4, 7, 11], quality: 'major' },
-  { id: 'dom7', symbol: '7', name: 'Dominant 7th', intervals: [0, 4, 7, 10], quality: 'major' },
-  { id: 'min7', symbol: 'm7', name: 'Minor 7th', intervals: [0, 3, 7, 10], quality: 'minor' },
-  { id: 'min-maj7', symbol: 'mMaj7', name: 'Minor major 7th', intervals: [0, 3, 7, 11], quality: 'minor' },
-  { id: 'half-dim7', symbol: 'm7b5', name: 'Half-diminished 7th', intervals: [0, 3, 6, 10], quality: 'diminished' },
-  { id: 'dim7', symbol: 'dim7', name: 'Diminished 7th', intervals: [0, 3, 6, 9], quality: 'diminished' },
+  { id: 'maj7', symbol: 'maj7', name: 'Major 7th', intervals: [0, 4, 7, 11], quality: 'major', tertian: true },
+  { id: 'dom7', symbol: '7', name: 'Dominant 7th', intervals: [0, 4, 7, 10], quality: 'major', tertian: true },
+  { id: 'min7', symbol: 'm7', name: 'Minor 7th', intervals: [0, 3, 7, 10], quality: 'minor', tertian: true },
+  { id: 'min-maj7', symbol: 'mMaj7', name: 'Minor major 7th', intervals: [0, 3, 7, 11], quality: 'minor', tertian: true },
+  { id: 'half-dim7', symbol: 'm7b5', name: 'Half-diminished 7th', intervals: [0, 3, 6, 10], quality: 'diminished', tertian: true },
+  { id: 'dim7', symbol: 'dim7', name: 'Diminished 7th', intervals: [0, 3, 6, 9], quality: 'diminished', tertian: true },
   { id: 'maj6', symbol: '6', name: 'Major 6th', intervals: [0, 4, 7, 9], quality: 'major' },
   { id: 'min6', symbol: 'm6', name: 'Minor 6th', intervals: [0, 3, 7, 9], quality: 'minor' },
 ];

@@ -1,5 +1,19 @@
 import type { ComponentType } from 'react';
 import {
+  ChordContestDrill,
+  ChordEarDrill,
+  ChordRhythmDrill,
+  ProgressionDrill,
+  TriadBuildDrill,
+  TriadQuizDrill,
+  getChordContestDrill,
+  getChordEarDrill,
+  getChordRhythmDrill,
+  getProgressionDrill,
+  getTriadBuildDrill,
+  getTriadQuiz,
+} from '@/features/chords-harmony';
+import {
   EarModeDrill,
   FormulaDrill,
   ScalePlayDrill,
@@ -1648,6 +1662,521 @@ const REGISTERED_DRILLS: readonly Drill[] = [
     id: 'recall.contest',
     title: 'Contest simulation',
     render: () => <ScaleRecallDrill config={getScaleRecallDrill('contest-simulation')} />,
+  },
+
+  /* ---- L5 · B5.1 — Triads & Chord Formula ---- */
+  {
+    id: 'triad.chord',
+    title: 'What is a chord?',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('what-is-a-chord')} />,
+  },
+  {
+    id: 'triad.concept',
+    title: 'Triad concept',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('triad-concept')} />,
+  },
+  {
+    id: 'triad.degrees',
+    title: 'Scale degrees',
+    render: () => <TriadQuizDrill config={getTriadQuiz('scale-degrees')} />,
+  },
+  {
+    id: 'triad.major',
+    title: 'Major triad formula',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('major-formula')} />,
+  },
+  {
+    id: 'triad.minor',
+    title: 'Minor triad formula',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('minor-formula')} />,
+  },
+  {
+    id: 'triad.compare',
+    title: 'Major vs minor',
+    render: () => <TriadQuizDrill config={getTriadQuiz('major-vs-minor')} />,
+  },
+  {
+    id: 'triad.construct',
+    title: 'Triad construction drill',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('construction-drill')} />,
+  },
+  {
+    id: 'triad.recognise',
+    title: 'Triad recognition',
+    render: () => <TriadQuizDrill config={getTriadQuiz('triad-recognition')} />,
+  },
+
+
+  /* ---- L5 · B5.2 — Major Chords ---- */
+  {
+    id: 'major.c',
+    title: 'C major chord',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('c-major')} />,
+  },
+  {
+    id: 'major.d',
+    title: 'D major chord',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('d-major')} />,
+  },
+  {
+    id: 'major.e',
+    title: 'E major chord',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('e-major')} />,
+  },
+  {
+    id: 'major.f',
+    title: 'F major chord',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('f-major')} />,
+  },
+  {
+    id: 'major.g',
+    title: 'G major chord',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('g-major')} />,
+  },
+  {
+    id: 'major.a',
+    title: 'A major chord',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('a-major')} />,
+  },
+  {
+    id: 'major.b',
+    title: 'B major chord',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('b-major')} />,
+  },
+  {
+    id: 'major.sharps',
+    title: 'Sharp major chords',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('black-major')} />,
+  },
+  {
+    id: 'major.flats',
+    title: 'Flat naming',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('flat-naming')} />,
+  },
+  {
+    id: 'major.twelve',
+    title: '12 major chord drill',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('twelve-major')} />,
+  },
+
+  /* ---- L5 · B5.3 — Minor Chords ---- */
+  {
+    id: 'minor.c',
+    title: 'C minor chord',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('c-minor')} />,
+  },
+  {
+    id: 'minor.d',
+    title: 'D minor chord',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('d-minor')} />,
+  },
+  {
+    id: 'minor.e',
+    title: 'E minor chord',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('e-minor')} />,
+  },
+  {
+    id: 'minor.f',
+    title: 'F minor chord',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('f-minor')} />,
+  },
+  {
+    id: 'minor.g',
+    title: 'G minor chord',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('g-minor')} />,
+  },
+  {
+    id: 'minor.a',
+    title: 'A minor chord',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('a-minor')} />,
+  },
+  {
+    id: 'minor.b',
+    title: 'B minor chord',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('b-minor')} />,
+  },
+  {
+    id: 'minor.blackkeys',
+    title: 'Sharp/flat minor chords',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('black-minor')} />,
+  },
+  {
+    id: 'minor.switch',
+    title: 'Major vs minor drill',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('quality-switch')} />,
+  },
+  {
+    id: 'minor.twelve',
+    title: '12 minor chord drill',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('twelve-minor')} />,
+  },
+
+
+  /* ---- L5 · B5.4 — Chord Inversions ---- */
+  {
+    id: 'inv.root',
+    title: 'Root position',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('position-0')} />,
+  },
+  {
+    id: 'inv.first',
+    title: '1st inversion',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('position-1')} />,
+  },
+  {
+    id: 'inv.second',
+    title: '2nd inversion',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('position-2')} />,
+  },
+  {
+    id: 'inv.recognise',
+    title: 'Inversion recognition',
+    render: () => <TriadQuizDrill config={getTriadQuiz('inversion-recognition')} />,
+  },
+  {
+    id: 'inv.major',
+    title: 'Major chord inversions',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('positions-major')} />,
+  },
+  {
+    id: 'inv.minor',
+    title: 'Minor chord inversions',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('positions-minor')} />,
+  },
+  {
+    id: 'inv.switching',
+    title: 'Inversion switching',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('inversion-switching')} />,
+  },
+  {
+    id: 'inv.same',
+    title: 'Same chord, different position',
+    render: () => <TriadQuizDrill config={getTriadQuiz('same-chord')} />,
+  },
+  {
+    id: 'inv.movement',
+    title: 'Minimal movement drill',
+    render: () => <ProgressionDrill config={getProgressionDrill('minimal-movement')} />,
+  },
+  {
+    id: 'inv.random',
+    title: 'Random inversion drill',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('random-inversion')} />,
+  },
+
+  /* ---- L5 · B5.5 — 7th Chords ---- */
+  {
+    id: 'seventh.what',
+    title: 'What is a 7th chord?',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('what-is-a-seventh')} />,
+  },
+  {
+    id: 'seventh.maj',
+    title: 'Major 7',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('maj7-formula')} />,
+  },
+  {
+    id: 'seventh.dom',
+    title: 'Dominant 7',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('dom7-formula')} />,
+  },
+  {
+    id: 'seventh.min',
+    title: 'Minor 7',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('min7-formula')} />,
+  },
+  {
+    id: 'seventh.maj-practice',
+    title: 'Major 7 practice',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('maj7-mastery')} />,
+  },
+  {
+    id: 'seventh.dom-practice',
+    title: 'Dominant 7 practice',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('dom7-mastery')} />,
+  },
+  {
+    id: 'seventh.min-practice',
+    title: 'Minor 7 practice',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('min7-mastery')} />,
+  },
+  {
+    id: 'seventh.compare',
+    title: '7th chord comparison',
+    render: () => <TriadQuizDrill config={getTriadQuiz('seventh-comparison')} />,
+  },
+  {
+    id: 'seventh.inversions',
+    title: '7th chord inversions',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('seventh-inversions')} />,
+  },
+  {
+    id: 'seventh.random',
+    title: 'Random 7th drill',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('random-seventh')} />,
+  },
+
+
+  /* ---- L5 · B5.6 — Diatonic Chords ---- */
+  {
+    id: 'dia.family',
+    title: 'Chords from a major scale',
+    render: () => <ProgressionDrill config={getProgressionDrill('family-build')} />,
+  },
+  {
+    id: 'dia.i',
+    title: 'I chord',
+    render: () => <ProgressionDrill config={getProgressionDrill('degree-I')} />,
+  },
+  {
+    id: 'dia.ii',
+    title: 'ii chord',
+    render: () => <ProgressionDrill config={getProgressionDrill('degree-ii')} />,
+  },
+  {
+    id: 'dia.iii',
+    title: 'iii chord',
+    render: () => <ProgressionDrill config={getProgressionDrill('degree-iii')} />,
+  },
+  {
+    id: 'dia.iv',
+    title: 'IV chord',
+    render: () => <ProgressionDrill config={getProgressionDrill('degree-IV')} />,
+  },
+  {
+    id: 'dia.v',
+    title: 'V chord',
+    render: () => <ProgressionDrill config={getProgressionDrill('degree-V')} />,
+  },
+  {
+    id: 'dia.vi',
+    title: 'vi chord',
+    render: () => <ProgressionDrill config={getProgressionDrill('degree-vi')} />,
+  },
+  {
+    id: 'dia.vii',
+    title: 'vii° chord',
+    render: () => <ProgressionDrill config={getProgressionDrill('degree-vii°')} />,
+  },
+  {
+    id: 'dia.numerals',
+    title: 'Roman numerals',
+    render: () => <TriadQuizDrill config={getTriadQuiz('roman-numerals')} />,
+  },
+  {
+    id: 'dia.cfamily',
+    title: 'C major chord family',
+    render: () => <ProgressionDrill config={getProgressionDrill('chord-family')} />,
+  },
+
+  /* ---- L5 · B5.7 — Chord Progressions ---- */
+  {
+    id: 'prog.i-iv-v',
+    title: 'I-IV-V',
+    render: () => <ProgressionDrill config={getProgressionDrill('prog-i-iv-v')} />,
+  },
+  {
+    id: 'prog.i-v-i',
+    title: 'I-V-I',
+    render: () => <ProgressionDrill config={getProgressionDrill('prog-i-v-i')} />,
+  },
+  {
+    id: 'prog.i-v-vi-iv',
+    title: 'I-V-vi-IV',
+    render: () => <ProgressionDrill config={getProgressionDrill('prog-i-v-vi-iv')} />,
+  },
+  {
+    id: 'prog.vi-iv-i-v',
+    title: 'vi-IV-I-V',
+    render: () => <ProgressionDrill config={getProgressionDrill('prog-vi-iv-i-v')} />,
+  },
+  {
+    id: 'prog.i-vi-iv-v',
+    title: 'I-vi-IV-V',
+    render: () => <ProgressionDrill config={getProgressionDrill('prog-i-vi-iv-v')} />,
+  },
+  {
+    id: 'prog.ii-v-i',
+    title: 'ii-V-I',
+    render: () => <ProgressionDrill config={getProgressionDrill('prog-ii-v-i')} />,
+  },
+  {
+    id: 'prog.iv-v-i',
+    title: 'IV-V-I',
+    render: () => <ProgressionDrill config={getProgressionDrill('prog-iv-v-i')} />,
+  },
+  {
+    id: 'prog.keys',
+    title: 'Progressions in different keys',
+    render: () => <ProgressionDrill config={getProgressionDrill('prog-keys')} />,
+  },
+  {
+    id: 'prog.listen',
+    title: 'Progression recognition',
+    render: () => <ProgressionDrill config={getProgressionDrill('prog-listen')} />,
+  },
+  {
+    id: 'prog.random',
+    title: 'Random progression drill',
+    render: () => <ProgressionDrill config={getProgressionDrill('prog-random')} />,
+  },
+
+
+  /* ---- L5 · B5.8 — Chord Changes & Rhythm ---- */
+  {
+    id: 'rhy.one',
+    title: 'One chord per bar',
+    render: () => <ChordRhythmDrill config={getChordRhythmDrill('one-per-bar')} />,
+  },
+  {
+    id: 'rhy.two',
+    title: 'Two chords per bar',
+    render: () => <ChordRhythmDrill config={getChordRhythmDrill('two-per-bar')} />,
+  },
+  {
+    id: 'rhy.metronome',
+    title: 'Metronome chord practice',
+    render: () => <ChordRhythmDrill config={getChordRhythmDrill('metronome')} />,
+  },
+  {
+    id: 'rhy.whole',
+    title: 'Whole-note chords',
+    render: () => <ChordRhythmDrill config={getChordRhythmDrill('whole-notes')} />,
+  },
+  {
+    id: 'rhy.half',
+    title: 'Half-note chords',
+    render: () => <ChordRhythmDrill config={getChordRhythmDrill('half-notes')} />,
+  },
+  {
+    id: 'rhy.quarter',
+    title: 'Quarter-note chords',
+    render: () => <ChordRhythmDrill config={getChordRhythmDrill('quarter-notes')} />,
+  },
+  {
+    id: 'rhy.melody',
+    title: 'Chord + melody',
+    render: () => <ChordRhythmDrill config={getChordRhythmDrill('chord-melody')} />,
+  },
+  {
+    id: 'rhy.smooth',
+    title: 'Smooth chord transitions',
+    render: () => <ChordRhythmDrill config={getChordRhythmDrill('smooth')} />,
+  },
+  {
+    id: 'rhy.loop',
+    title: 'Progression loop',
+    render: () => <ChordRhythmDrill config={getChordRhythmDrill('loop')} />,
+  },
+  {
+    id: 'rhy.speed',
+    title: 'Speed drill',
+    render: () => <ChordRhythmDrill config={getChordRhythmDrill('speed')} />,
+  },
+
+  /* ---- L5 · B5.9 — Chord Ear Training ---- */
+  {
+    id: 'ear.quality',
+    title: 'Major vs minor',
+    render: () => <ChordEarDrill config={getChordEarDrill('ear-quality')} />,
+  },
+  {
+    id: 'ear.root',
+    title: 'Root note recognition',
+    render: () => <ChordEarDrill config={getChordEarDrill('ear-root')} />,
+  },
+  {
+    id: 'ear.bass',
+    title: 'Chord bass recognition',
+    render: () => <ChordEarDrill config={getChordEarDrill('ear-bass')} />,
+  },
+  {
+    id: 'ear.position',
+    title: 'Root position vs inversion',
+    render: () => <ChordEarDrill config={getChordEarDrill('ear-position')} />,
+  },
+  {
+    id: 'ear.function',
+    title: 'I vs IV vs V',
+    render: () => <ChordEarDrill config={getChordEarDrill('ear-function')} />,
+  },
+  {
+    id: 'ear.major-prog',
+    title: 'Major progression recognition',
+    render: () => <ProgressionDrill config={getProgressionDrill('prog-predict')} />,
+  },
+  {
+    id: 'ear.minor-prog',
+    title: 'Minor progression recognition',
+    render: () => <ProgressionDrill config={getProgressionDrill('prog-minor')} />,
+  },
+  {
+    id: 'ear.qualities',
+    title: 'Chord quality drill',
+    render: () => <ChordEarDrill config={getChordEarDrill('ear-qualities')} />,
+  },
+  {
+    id: 'ear.recall',
+    title: 'Sing the root',
+    render: () => <ChordEarDrill config={getChordEarDrill('ear-recall')} />,
+  },
+  {
+    id: 'ear.random',
+    title: 'Random chord quiz',
+    render: () => <ChordEarDrill config={getChordEarDrill('ear-everything')} />,
+  },
+
+
+  /* ---- L5 · B5.10 — Practical Song Application ---- */
+  {
+    id: 'song.two',
+    title: 'Simple 2-chord songs',
+    render: () => <ChordRhythmDrill config={getChordRhythmDrill('song-two')} />,
+  },
+  {
+    id: 'song.three',
+    title: '3-chord songs',
+    render: () => <ChordRhythmDrill config={getChordRhythmDrill('song-three')} />,
+  },
+  {
+    id: 'song.four',
+    title: '4-chord songs',
+    render: () => <ChordRhythmDrill config={getChordRhythmDrill('song-four')} />,
+  },
+  {
+    id: 'song.melody',
+    title: 'Chord + melody',
+    render: () => <ChordRhythmDrill config={getChordRhythmDrill('song-melody')} />,
+  },
+  {
+    id: 'song.patterns',
+    title: 'Chord rhythm patterns',
+    render: () => <ChordRhythmDrill config={getChordRhythmDrill('song-patterns')} />,
+  },
+  {
+    id: 'song.inversions',
+    title: 'Inversion-based accompaniment',
+    render: () => <ChordRhythmDrill config={getChordRhythmDrill('song-inversions')} />,
+  },
+  {
+    id: 'song.transpose',
+    title: 'Transpose a song',
+    render: () => <ProgressionDrill config={getProgressionDrill('song-transpose')} />,
+  },
+  {
+    id: 'song.blind',
+    title: 'Play without looking',
+    render: () => <ChordRhythmDrill config={getChordRhythmDrill('song-blind')} />,
+  },
+  {
+    id: 'song.random',
+    title: 'Random chord challenge',
+    render: () => <TriadBuildDrill config={getTriadBuildDrill('song-random')} />,
+  },
+  {
+    id: 'song.contest',
+    title: 'Contest simulation',
+    render: () => <ChordContestDrill config={getChordContestDrill('chord-contest')} />,
   },
 ];
 

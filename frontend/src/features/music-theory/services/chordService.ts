@@ -17,7 +17,13 @@ import { spellIntervals } from '../utils/spelling';
  * Chords are spelled from the root so Db7 reads Db F Ab Cb, not C# E# G# B.
  */
 export function buildChord(root: SpelledNote, type: ChordType): Chord {
-  const notes = spellIntervals(root, type.intervals, { oneLetterPerDegree: false });
+  // Chords that stack in thirds are spelled by letter, so a minor triad reads
+  // C Eb G. The rest keep the root's accidental preference, which is how sus
+  // and added-note chords are conventionally written.
+  const notes = spellIntervals(root, type.intervals, {
+    oneLetterPerDegree: type.tertian === true,
+    letterStep: 2,
+  });
   return {
     root,
     type,

@@ -20,14 +20,17 @@ function letterAt(start: Letter, steps: number): Letter {
  * Spell a set of intervals above a root.
  *
  * Seven-note scales get one letter per degree (the musically correct spelling,
- * so D Major reads D E F# G A B C# and never D E Gb G A B Db). Everything else
- * falls back to the accidental preference implied by the root.
+ * so D Major reads D E F# G A B C# and never D E Gb G A B Db). Chords built by
+ * stacking thirds take every other letter instead — `letterStep: 2` — which is
+ * what makes C minor read C Eb G rather than C D# G. Everything else falls back
+ * to the accidental preference implied by the root.
  */
 export function spellIntervals(
   root: SpelledNote,
   intervals: IntervalSet,
-  options: { oneLetterPerDegree?: boolean } = {},
+  options: { oneLetterPerDegree?: boolean; letterStep?: number } = {},
 ): SpelledNote[] {
+  const letterStep = options.letterStep ?? 1;
   const oneLetterPerDegree = options.oneLetterPerDegree ?? intervals.length === 7;
   const preference = preferredAccidental(root);
 
@@ -35,7 +38,7 @@ export function spellIntervals(
     if (degree === 0) return root;
 
     if (oneLetterPerDegree) {
-      const letter = letterAt(root.letter, degree);
+      const letter = letterAt(root.letter, degree * letterStep);
       const naturalDistance = mod12(LETTER_PITCH_CLASS[letter] - LETTER_PITCH_CLASS[root.letter]);
       const targetDistance = mod12(semitones + root.alteration);
       const alteration = normalizeAlteration(targetDistance - naturalDistance);

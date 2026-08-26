@@ -38,6 +38,15 @@ export interface ChordType {
   intervals: IntervalSet;
   /** Roman-numeral case hint used when labelling scale degrees. */
   quality: 'major' | 'minor' | 'diminished' | 'augmented' | 'suspended';
+  /**
+   * True when the chord is built by stacking thirds.
+   *
+   * A tertian chord puts its tones on every other letter — C E G, never C D# G —
+   * so its spelling follows the letters rather than the root's accidental
+   * preference. Suspended and added-note chords do not stack in thirds and are
+   * left to the preference, which is what they are conventionally written with.
+   */
+  tertian?: boolean;
 }
 
 export interface Scale {
