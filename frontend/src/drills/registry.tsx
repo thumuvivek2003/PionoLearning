@@ -1,5 +1,15 @@
 import type { ComponentType } from 'react';
 import {
+  FingeringDrill,
+  ReadingContestDrill,
+  StaffQuizDrill,
+  StaffRunDrill,
+  getFingerDrill,
+  getReadingContestDrill,
+  getReadingDrill,
+  getStaffRunDrill,
+} from '@/features/music-reading';
+import {
   ChordContestDrill,
   ChordEarDrill,
   ChordRhythmDrill,
@@ -2177,6 +2187,479 @@ const REGISTERED_DRILLS: readonly Drill[] = [
     id: 'song.contest',
     title: 'Contest simulation',
     render: () => <ChordContestDrill config={getChordContestDrill('chord-contest')} />,
+  },
+
+
+  /* ---- L6 · B6.1 — Staff & Musical Symbols ---- */
+  {
+    id: 'staff.map',
+    title: 'Staff',
+    render: () => <StaffQuizDrill config={getReadingDrill('staff-map')} />,
+  },
+  {
+    id: 'staff.lines',
+    title: 'Lines',
+    render: () => <StaffQuizDrill config={getReadingDrill('lines')} />,
+  },
+  {
+    id: 'staff.spaces',
+    title: 'Spaces',
+    render: () => <StaffQuizDrill config={getReadingDrill('spaces')} />,
+  },
+  {
+    id: 'staff.notes',
+    title: 'Notes',
+    render: () => <StaffQuizDrill config={getReadingDrill('notes')} />,
+  },
+  {
+    id: 'staff.direction',
+    title: 'Note direction',
+    render: () => <StaffQuizDrill config={getReadingDrill('direction')} />,
+  },
+  {
+    id: 'staff.clefs',
+    title: 'Clefs',
+    render: () => <StaffQuizDrill config={getReadingDrill('clefs')} />,
+  },
+  {
+    id: 'staff.treble',
+    title: 'Treble clef symbol',
+    render: () => <StaffQuizDrill config={getReadingDrill('treble-map')} />,
+  },
+  {
+    id: 'staff.bass',
+    title: 'Bass clef symbol',
+    render: () => <StaffQuizDrill config={getReadingDrill('bass-map')} />,
+  },
+  {
+    id: 'staff.keyboard',
+    title: 'Staff + keyboard',
+    render: () => <StaffQuizDrill config={getReadingDrill('staff-keyboard')} />,
+  },
+
+  /* ---- L6 · B6.2 — Treble Clef ---- */
+  {
+    id: 'treble.clef',
+    title: 'Treble clef recognition',
+    render: () => <StaffQuizDrill config={getReadingDrill('treble-clef')} />,
+  },
+  {
+    id: 'treble.lines',
+    title: 'Treble line notes',
+    render: () => <StaffQuizDrill config={getReadingDrill('treble-lines')} />,
+  },
+  {
+    id: 'treble.spaces',
+    title: 'Treble space notes',
+    render: () => <StaffQuizDrill config={getReadingDrill('treble-spaces')} />,
+  },
+  {
+    id: 'treble.face',
+    title: 'FACE pattern',
+    render: () => <StaffQuizDrill config={getReadingDrill('treble-place-spaces')} />,
+  },
+  {
+    id: 'treble.egbdf',
+    title: 'Every good boy pattern',
+    render: () => <StaffQuizDrill config={getReadingDrill('treble-place-lines')} />,
+  },
+  {
+    id: 'treble.middlec',
+    title: 'Middle C',
+    render: () => <StaffQuizDrill config={getReadingDrill('treble-middle-c')} />,
+  },
+  {
+    id: 'treble.keyboard',
+    title: 'Treble note → keyboard',
+    render: () => <StaffQuizDrill config={getReadingDrill('treble-keyboard')} />,
+  },
+  {
+    id: 'treble.random',
+    title: 'Random treble notes',
+    render: () => <StaffQuizDrill config={getReadingDrill('treble-random')} />,
+  },
+  {
+    id: 'treble.ascending',
+    title: 'Ascending treble notes',
+    render: () => <StaffRunDrill config={getStaffRunDrill('ascending')} />,
+  },
+  {
+    id: 'treble.descending',
+    title: 'Descending treble notes',
+    render: () => <StaffRunDrill config={getStaffRunDrill('descending')} />,
+  },
+
+
+  /* ---- L6 · B6.3 — Bass Clef ---- */
+  {
+    id: 'bass.clef',
+    title: 'Bass clef recognition',
+    render: () => <StaffQuizDrill config={getReadingDrill('bass-clef')} />,
+  },
+  {
+    id: 'bass.lines',
+    title: 'Bass line notes',
+    render: () => <StaffQuizDrill config={getReadingDrill('bass-lines')} />,
+  },
+  {
+    id: 'bass.spaces',
+    title: 'Bass space notes',
+    render: () => <StaffQuizDrill config={getReadingDrill('bass-spaces')} />,
+  },
+  {
+    id: 'bass.gbdfa',
+    title: 'Good boys do fine always',
+    render: () => <StaffQuizDrill config={getReadingDrill('bass-place-lines')} />,
+  },
+  {
+    id: 'bass.aceg',
+    title: 'All cows eat grass',
+    render: () => <StaffQuizDrill config={getReadingDrill('bass-place-spaces')} />,
+  },
+  {
+    id: 'bass.middlec',
+    title: 'Middle C',
+    render: () => <StaffQuizDrill config={getReadingDrill('bass-middle-c')} />,
+  },
+  {
+    id: 'bass.keyboard',
+    title: 'Bass note → keyboard',
+    render: () => <StaffQuizDrill config={getReadingDrill('bass-keyboard')} />,
+  },
+  {
+    id: 'bass.random',
+    title: 'Random bass notes',
+    render: () => <StaffQuizDrill config={getReadingDrill('bass-random')} />,
+  },
+  {
+    id: 'bass.ascending',
+    title: 'Ascending bass notes',
+    render: () => <StaffRunDrill config={getStaffRunDrill('bass-ascending')} />,
+  },
+  {
+    id: 'bass.descending',
+    title: 'Descending bass notes',
+    render: () => <StaffRunDrill config={getStaffRunDrill('bass-descending')} />,
+  },
+
+  /* ---- L6 · B6.4 — Ledger Lines ---- */
+  {
+    id: 'ledger.concept',
+    title: 'Ledger line concept',
+    render: () => <StaffQuizDrill config={getReadingDrill('ledger-concept')} />,
+  },
+  {
+    id: 'ledger.above-treble',
+    title: 'Above treble staff',
+    render: () => <StaffQuizDrill config={getReadingDrill('ledger-above-treble')} />,
+  },
+  {
+    id: 'ledger.below-treble',
+    title: 'Below treble staff',
+    render: () => <StaffQuizDrill config={getReadingDrill('ledger-below-treble')} />,
+  },
+  {
+    id: 'ledger.above-bass',
+    title: 'Above bass staff',
+    render: () => <StaffQuizDrill config={getReadingDrill('ledger-above-bass')} />,
+  },
+  {
+    id: 'ledger.below-bass',
+    title: 'Below bass staff',
+    render: () => <StaffQuizDrill config={getReadingDrill('ledger-below-bass')} />,
+  },
+  {
+    id: 'ledger.middlec',
+    title: 'Middle C ledger line',
+    render: () => <StaffQuizDrill config={getReadingDrill('ledger-middle-c')} />,
+  },
+  {
+    id: 'ledger.random',
+    title: 'Random ledger notes',
+    render: () => <StaffQuizDrill config={getReadingDrill('ledger-random')} />,
+  },
+
+  /* ---- L6 · B6.5 — Accidentals ---- */
+  {
+    id: 'acc.sharp',
+    title: 'Sharp ♯',
+    render: () => <StaffQuizDrill config={getReadingDrill('sign-sharp')} />,
+  },
+  {
+    id: 'acc.flat',
+    title: 'Flat ♭',
+    render: () => <StaffQuizDrill config={getReadingDrill('sign-flat')} />,
+  },
+  {
+    id: 'acc.natural',
+    title: 'Natural ♮',
+    render: () => <StaffQuizDrill config={getReadingDrill('sign-natural')} />,
+  },
+  {
+    id: 'acc.sharps',
+    title: 'Sharp note examples',
+    render: () => <StaffQuizDrill config={getReadingDrill('sharp-notes')} />,
+  },
+  {
+    id: 'acc.flats',
+    title: 'Flat note examples',
+    render: () => <StaffQuizDrill config={getReadingDrill('flat-notes')} />,
+  },
+  {
+    id: 'acc.staff',
+    title: 'Accidental on staff',
+    render: () => <StaffQuizDrill config={getReadingDrill('accidental-staff')} />,
+  },
+  {
+    id: 'acc.keyboard',
+    title: 'Accidental → keyboard',
+    render: () => <StaffQuizDrill config={getReadingDrill('accidental-keyboard')} />,
+  },
+  {
+    id: 'acc.random',
+    title: 'Random accidentals',
+    render: () => <StaffQuizDrill config={getReadingDrill('random-accidentals')} />,
+  },
+
+  /* ---- L6 · B6.6 — Key Signatures ---- */
+  {
+    id: 'keysig.concept',
+    title: 'Key signature concept',
+    render: () => <StaffQuizDrill config={getReadingDrill('signature-concept')} />,
+  },
+  {
+    id: 'keysig.vs',
+    title: 'Key signature vs accidental',
+    render: () => <StaffQuizDrill config={getReadingDrill('signature-vs-accidental')} />,
+  },
+  {
+    id: 'keysig.c',
+    title: 'C major',
+    render: () => <StaffQuizDrill config={getReadingDrill('key-c')} />,
+  },
+  {
+    id: 'keysig.g',
+    title: 'G major',
+    render: () => <StaffQuizDrill config={getReadingDrill('key-g')} />,
+  },
+  {
+    id: 'keysig.d',
+    title: 'D major',
+    render: () => <StaffQuizDrill config={getReadingDrill('key-d')} />,
+  },
+  {
+    id: 'keysig.f',
+    title: 'F major',
+    render: () => <StaffQuizDrill config={getReadingDrill('key-f')} />,
+  },
+  {
+    id: 'keysig.patterns',
+    title: 'Major key signature patterns',
+    render: () => <StaffQuizDrill config={getReadingDrill('signature-patterns')} />,
+  },
+  {
+    id: 'keysig.scale',
+    title: 'Key signature → scale',
+    render: () => <StaffQuizDrill config={getReadingDrill('signature-scale')} />,
+  },
+  {
+    id: 'keysig.keyboard',
+    title: 'Key signature → keyboard',
+    render: () => <StaffQuizDrill config={getReadingDrill('signature-scale')} />,
+  },
+  {
+    id: 'keysig.random',
+    title: 'Random key recognition',
+    render: () => <StaffQuizDrill config={getReadingDrill('signature-random')} />,
+  },
+
+
+  /* ---- L6 · B6.7 — Notation → Keyboard ---- */
+  {
+    id: 'read.note',
+    title: 'Note → key',
+    render: () => <StaffQuizDrill config={getReadingDrill('note-to-key')} />,
+  },
+  {
+    id: 'read.treble',
+    title: 'Treble → keyboard',
+    render: () => <StaffQuizDrill config={getReadingDrill('treble-to-key')} />,
+  },
+  {
+    id: 'read.bass',
+    title: 'Bass → keyboard',
+    render: () => <StaffQuizDrill config={getReadingDrill('bass-to-key')} />,
+  },
+  {
+    id: 'read.accidentals',
+    title: 'Accidentals → keyboard',
+    render: () => <StaffQuizDrill config={getReadingDrill('accidental-to-key')} />,
+  },
+  {
+    id: 'read.distance',
+    title: 'Note distance',
+    render: () => <StaffQuizDrill config={getReadingDrill('note-distance')} />,
+  },
+  {
+    id: 'read.stepwise',
+    title: 'Stepwise motion',
+    render: () => <StaffQuizDrill config={getReadingDrill('stepwise-motion')} />,
+  },
+  {
+    id: 'read.skips',
+    title: 'Skips',
+    render: () => <StaffQuizDrill config={getReadingDrill('skips')} />,
+  },
+  {
+    id: 'read.repeated',
+    title: 'Repeated notes',
+    render: () => <StaffQuizDrill config={getReadingDrill('repeated-notes')} />,
+  },
+  {
+    id: 'read.random',
+    title: 'Random note drill',
+    render: () => <StaffQuizDrill config={getReadingDrill('random-notes')} />,
+  },
+
+  /* ---- L6 · B6.8 — Notation → Fingering ---- */
+  {
+    id: 'fing.numbers',
+    title: 'Finger numbers',
+    render: () => <FingeringDrill config={getFingerDrill('finger-numbers')} />,
+  },
+  {
+    id: 'fing.right',
+    title: 'Right-hand fingering',
+    render: () => <FingeringDrill config={getFingerDrill('right-hand')} />,
+  },
+  {
+    id: 'fing.left',
+    title: 'Left-hand fingering',
+    render: () => <FingeringDrill config={getFingerDrill('left-hand')} />,
+  },
+  {
+    id: 'fing.five',
+    title: 'Five-finger positions',
+    render: () => <FingeringDrill config={getFingerDrill('five-finger')} />,
+  },
+  {
+    id: 'fing.scale',
+    title: 'Scale fingering',
+    render: () => <FingeringDrill config={getFingerDrill('scale-fingering')} />,
+  },
+  {
+    id: 'fing.melody',
+    title: 'Melody fingering',
+    render: () => <FingeringDrill config={getFingerDrill('melody-fingering')} />,
+  },
+  {
+    id: 'fing.reading',
+    title: 'Fingering + reading',
+    render: () => <FingeringDrill config={getFingerDrill('fingering-reading')} />,
+  },
+
+  /* ---- L6 · B6.9 — Sight Reading ---- */
+  {
+    id: 'sight.one',
+    title: 'One-note reading',
+    render: () => <StaffRunDrill config={getStaffRunDrill('sight-1')} />,
+  },
+  {
+    id: 'sight.two',
+    title: 'Two-note patterns',
+    render: () => <StaffRunDrill config={getStaffRunDrill('sight-2')} />,
+  },
+  {
+    id: 'sight.three',
+    title: 'Three-note patterns',
+    render: () => <StaffRunDrill config={getStaffRunDrill('sight-3')} />,
+  },
+  {
+    id: 'sight.melodies',
+    title: 'Simple melodies',
+    render: () => <StaffRunDrill config={getStaffRunDrill('sight-melody')} />,
+  },
+  {
+    id: 'sight.treble',
+    title: 'Treble sight reading',
+    render: () => <StaffRunDrill config={getStaffRunDrill('sight-treble')} />,
+  },
+  {
+    id: 'sight.bass',
+    title: 'Bass sight reading',
+    render: () => <StaffRunDrill config={getStaffRunDrill('sight-bass')} />,
+  },
+  {
+    id: 'sight.separate',
+    title: 'Hands separately',
+    render: () => <StaffRunDrill config={getStaffRunDrill('sight-hands-separately')} />,
+  },
+  {
+    id: 'sight.together',
+    title: 'Hands together',
+    render: () => <StaffRunDrill config={getStaffRunDrill('sight-hands-together')} />,
+  },
+  {
+    id: 'sight.nostop',
+    title: 'No-stopping practice',
+    render: () => <StaffRunDrill config={getStaffRunDrill('sight-no-stopping')} />,
+  },
+  {
+    id: 'sight.metronome',
+    title: 'Metronome reading',
+    render: () => <StaffRunDrill config={getStaffRunDrill('sight-metronome')} />,
+  },
+
+  /* ---- L6 · B6.10 — Reading Fluency ---- */
+  {
+    id: 'flu.speed',
+    title: 'Note recognition speed',
+    render: () => <StaffQuizDrill config={getReadingDrill('speed-notes')} />,
+  },
+  {
+    id: 'flu.pattern',
+    title: 'Pattern recognition',
+    render: () => <StaffQuizDrill config={getReadingDrill('pattern-recognition')} />,
+  },
+  {
+    id: 'flu.interval',
+    title: 'Interval recognition',
+    render: () => <StaffQuizDrill config={getReadingDrill('interval-recognition')} />,
+  },
+  {
+    id: 'flu.direction',
+    title: 'Direction recognition',
+    render: () => <StaffQuizDrill config={getReadingDrill('direction-recognition')} />,
+  },
+  {
+    id: 'flu.rhythm',
+    title: 'Rhythm + notes',
+    render: () => <StaffRunDrill config={getStaffRunDrill('fluency-rhythm')} />,
+  },
+  {
+    id: 'flu.signature',
+    title: 'Key signature + notes',
+    render: () => <StaffRunDrill config={getStaffRunDrill('fluency-signature')} />,
+  },
+  {
+    id: 'flu.slow',
+    title: 'Slow sight reading',
+    render: () => <StaffRunDrill config={getStaffRunDrill('fluency-slow')} />,
+  },
+  {
+    id: 'flu.medium',
+    title: 'Medium sight reading',
+    render: () => <StaffRunDrill config={getStaffRunDrill('fluency-medium')} />,
+  },
+  {
+    id: 'flu.timed',
+    title: 'Timed reading',
+    render: () => <StaffRunDrill config={getStaffRunDrill('fluency-timed')} />,
+  },
+  {
+    id: 'flu.contest',
+    title: 'Contest simulation',
+    render: () => <ReadingContestDrill config={getReadingContestDrill('reading-contest')} />,
   },
 ];
 

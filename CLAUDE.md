@@ -22,6 +22,7 @@ npm run build       # the other gate — there is no ESLint or test runner
 | `features/rhythm-timing/` | Level 3 drills — pulse, note values, counting, the metronome, patterns, accuracy, phrases and contest timing. |
 | `features/scales-patterns/` | Level 4 drills — scale formulas (major and natural minor), key signatures, relative keys, and scales under the hands. |
 | `features/chords-harmony/` | Level 5 drills — triads built from `music-theory`'s chord service, and recognised back. |
+| `features/music-reading/` | Level 6 drills — the staff drawn as SVG, read in both clefs. |
 | `features/practice-kit/` | Shared drill engines and panels — see below. |
 | `features/piano/`, `music-theory/`, `randomizer/` | Shared domain: keyboard layouts and the white-key ruler, notes/chords/scales/intervals, draw policies. Drill features depend on these, never on each other. |
 | `src/drills/registry.tsx` | Maps a drill id to the component that renders it. |
@@ -68,8 +69,8 @@ registered but kept out of Settings, since a plain trainer session has no ledger
 
 ## State
 
-Levels 1–5 complete — 400 practices across 49 buckets. Level 6 (music reading,
-`level6.musicReading.ts`) is next; its reference files live in `references/L6/`.
+Levels 1–6 complete — 490 practices across 59 buckets. Level 7 (playing patterns,
+`level7.playingPatterns.ts`) is next; its reference files live in `references/L7/`.
 
 Each minor key's six practices (4.7–4.9) are generated from one entry in `MINOR_KEYS`
 (`scales-patterns/data/scaleDrills.ts`) — add a key there, not six configs.
@@ -97,3 +98,16 @@ a config into a beat schedule — even subdivisions or a `StrumPattern`'s eighth
 timing on a chord *change* is tallied apart from timing on a repeat. `ChordEarDrill`
 (5.9) asks quality/root/bass/position/function with nothing on screen.
 `ChordContestDrill` (5.10.10) runs ten timed rounds of mixed kinds onto one card.
+L6 draws notation itself. `music-reading/data/staff.ts` counts in diatonic *steps*
+from the bottom line — even steps are lines, odd are spaces — and a clef only
+contributes what sits on its bottom line (treble E4, bass G2); every note follows by
+counting. `<Staff>` renders from steps alone, so the geometry never knows which note
+it draws — it also draws accidentals beside noteheads and key signatures after the
+clef. 6.2 and 6.3's sixteen practices come from `clefSet(clef)`, and the bass runs
+from `bassRun()` — add a clef there, not sixteen configs. `StaffQuizDrill` covers
+6.1, 6.4–6.7 and part of 6.10 (sixty-two configs); `StaffRunDrill` reads a run —
+contour, length, leaps, a key signature, note values, a second staff, a click and
+no-stopping are all config. `FingeringDrill` (6.8) reads printed finger numbers;
+`ReadingContestDrill` (6.10.10) runs ten timed rounds onto one card.
+Key-signature *positions* are convention, not derivable, so `keySignatures.ts` lists
+them per clef and the checks assert each lands on the letter it alters.
