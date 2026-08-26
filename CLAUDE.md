@@ -24,6 +24,7 @@ npm run build       # the other gate — there is no ESLint or test runner
 | `features/chords-harmony/` | Level 5 drills — triads built from `music-theory`'s chord service, and recognised back. |
 | `features/music-reading/` | Level 6 drills — the staff drawn as SVG, read in both clefs. |
 | `features/playing-patterns/` | Level 7 drills — chords and scales turned into figures under the hands. |
+| `features/performance/` | Level 8 drills — everything earlier, drawn at random against a clock. |
 | `features/practice-kit/` | Shared drill engines and panels — see below. |
 | `features/piano/`, `music-theory/`, `randomizer/` | Shared domain: keyboard layouts and the white-key ruler, notes/chords/scales/intervals, draw policies. Drill features depend on these, never on each other. |
 | `src/drills/registry.tsx` | Maps a drill id to the component that renders it. |
@@ -70,8 +71,9 @@ registered but kept out of Settings, since a plain trainer session has no ledger
 
 ## State
 
-Levels 1–7 complete — 544 practices across 66 buckets. Level 8 (performance fluency,
-`level8.performanceFluency.ts`) is next; its reference files live in `references/L8/`.
+**All eight levels complete — 613 practices across 74 buckets, every one wired.**
+`perf2.check.ts` asserts that end to end: eight levels, no unwired practice, no dead
+drill id anywhere in the app.
 
 Each minor key's six practices (4.7–4.9) are generated from one entry in `MINOR_KEYS`
 (`scales-patterns/data/scaleDrills.ts`) — add a key there, not six configs.
@@ -118,3 +120,12 @@ with fingering, lengths and *turns* marked. `buildEvents()` merges a right and a
 figure **by beat**, so two hands land together rather than being zipped. `PatternDrill`
 plays any of it and times the turn apart from the rest, because that is where every
 figure lurches. All fifty-four of level 7 are configs of it.
+L8 introduces no material: a `Challenge` is a discriminated union (note, scale, chord,
+progression, or a naming variant) and `dealRound()` turns one into a prompt, a list of
+keys and their *spellings* — keys are unambiguous, spelling is not, so a round that
+asked for Ab shows Ab. `ChallengeDrill` times the **first item apart from the rest**:
+a slow start is a recall problem and a slow run is an execution one. It also runs the
+heard rounds (8.6), the rhythm rounds against a click (8.7) and the closing piece
+(8.8) — a `PieceBar[]` of numerals and melody degrees, played under conditions.
+8.5's reading practices live in `music-reading` rather than here, because reading is
+what that feature owns; the registry composes them.

@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react';
+import { ChallengeDrill, getChallengeDrill } from '@/features/performance';
 import { PatternDrill, getPatternDrill } from '@/features/playing-patterns';
 import {
   FingeringDrill,
@@ -2947,6 +2948,369 @@ const REGISTERED_DRILLS: readonly Drill[] = [
     id: 'th.song',
     title: 'Full two-hand song',
     render: () => <PatternDrill config={getPatternDrill('two-song')} />,
+  },
+
+
+  /* ---- L8 · B8.1 — Random Notes ---- */
+  {
+    id: 'rn.white',
+    title: 'Random white keys',
+    render: () => <ChallengeDrill config={getChallengeDrill('white-keys')} />,
+  },
+  {
+    id: 'rn.black',
+    title: 'Random black keys',
+    render: () => <ChallengeDrill config={getChallengeDrill('black-keys')} />,
+  },
+  {
+    id: 'rn.tokey',
+    title: 'Note → keyboard',
+    render: () => <ChallengeDrill config={getChallengeDrill('note-to-key')} />,
+  },
+  {
+    id: 'rn.tonote',
+    title: 'Keyboard → note',
+    render: () => <ChallengeDrill config={getChallengeDrill('key-to-note')} />,
+  },
+  {
+    id: 'rn.octave',
+    title: 'Octave identification',
+    render: () => <ChallengeDrill config={getChallengeDrill('octaves')} />,
+  },
+  {
+    id: 'rn.random',
+    title: 'Random note drill',
+    render: () => <ChallengeDrill config={getChallengeDrill('random-notes')} />,
+  },
+  {
+    id: 'rn.blind',
+    title: 'Eyes-closed note drill',
+    render: () => <ChallengeDrill config={getChallengeDrill('blind-notes')} />,
+  },
+  {
+    id: 'rn.speed',
+    title: 'Speed note challenge',
+    render: () => <ChallengeDrill config={getChallengeDrill('speed-notes')} />,
+  },
+
+  /* ---- L8 · B8.2 — Random Scales ---- */
+  {
+    id: 'rs.c',
+    title: 'C major random start',
+    render: () => <ChallengeDrill config={getChallengeDrill('scale-c')} />,
+  },
+  {
+    id: 'rs.g',
+    title: 'G major',
+    render: () => <ChallengeDrill config={getChallengeDrill('scale-g')} />,
+  },
+  {
+    id: 'rs.d',
+    title: 'D major',
+    render: () => <ChallengeDrill config={getChallengeDrill('scale-d')} />,
+  },
+  {
+    id: 'rs.f',
+    title: 'F major',
+    render: () => <ChallengeDrill config={getChallengeDrill('scale-f')} />,
+  },
+  {
+    id: 'rs.a',
+    title: 'A major',
+    render: () => <ChallengeDrill config={getChallengeDrill('scale-a')} />,
+  },
+  {
+    id: 'rs.e',
+    title: 'E major',
+    render: () => <ChallengeDrill config={getChallengeDrill('scale-e')} />,
+  },
+  {
+    id: 'rs.random',
+    title: 'Major scale randomizer',
+    render: () => <ChallengeDrill config={getChallengeDrill('scale-random')} />,
+  },
+  {
+    id: 'rs.bothways',
+    title: 'Ascending + descending',
+    render: () => <ChallengeDrill config={getChallengeDrill('scale-both-ways')} />,
+  },
+  {
+    id: 'rs.hands',
+    title: 'Hands separately',
+    render: () => <ChallengeDrill config={getChallengeDrill('scale-hands')} />,
+  },
+  {
+    id: 'rs.speed',
+    title: 'Scale speed drill',
+    render: () => <ChallengeDrill config={getChallengeDrill('scale-speed')} />,
+  },
+
+  /* ---- L8 · B8.3 — Random Chords ---- */
+  {
+    id: 'rc.major',
+    title: 'Major triad recall',
+    render: () => <ChallengeDrill config={getChallengeDrill('major-triads')} />,
+  },
+  {
+    id: 'rc.minor',
+    title: 'Minor triad recall',
+    render: () => <ChallengeDrill config={getChallengeDrill('minor-triads')} />,
+  },
+  {
+    id: 'rc.dim',
+    title: 'Diminished triads',
+    render: () => <ChallengeDrill config={getChallengeDrill('dim-triads')} />,
+  },
+  {
+    id: 'rc.tonotes',
+    title: 'Chord → notes',
+    render: () => <ChallengeDrill config={getChallengeDrill('chord-to-notes')} />,
+  },
+  {
+    id: 'rc.tochord',
+    title: 'Notes → chord',
+    render: () => <ChallengeDrill config={getChallengeDrill('notes-to-chord')} />,
+  },
+  {
+    id: 'rc.random',
+    title: 'Random chord drill',
+    render: () => <ChallengeDrill config={getChallengeDrill('random-chords')} />,
+  },
+  {
+    id: 'rc.inversions',
+    title: 'Chord inversions',
+    render: () => <ChallengeDrill config={getChallengeDrill('chord-inversions')} />,
+  },
+  {
+    id: 'rc.speed',
+    title: 'Chord speed drill',
+    render: () => <ChallengeDrill config={getChallengeDrill('chord-speed')} />,
+  },
+
+  /* ---- L8 · B8.4 — Random Progressions ---- */
+  {
+    id: 'rp.iivv',
+    title: 'I–IV–V',
+    render: () => <ChallengeDrill config={getChallengeDrill('prog-i-iv-v')} />,
+  },
+  {
+    id: 'rp.ivviv',
+    title: 'I–V–vi–IV',
+    render: () => <ChallengeDrill config={getChallengeDrill('prog-i-v-vi-iv')} />,
+  },
+  {
+    id: 'rp.iviivv',
+    title: 'I–vi–IV–V',
+    render: () => <ChallengeDrill config={getChallengeDrill('prog-i-vi-iv-v')} />,
+  },
+  {
+    id: 'rp.iivi',
+    title: 'ii–V–I',
+    render: () => <ChallengeDrill config={getChallengeDrill('prog-ii-v-i')} />,
+  },
+  {
+    id: 'rp.randomkey',
+    title: 'Random key progression',
+    render: () => <ChallengeDrill config={getChallengeDrill('prog-random-key')} />,
+  },
+  {
+    id: 'rp.randomseq',
+    title: 'Random chord sequence',
+    render: () => <ChallengeDrill config={getChallengeDrill('prog-random-sequence')} />,
+  },
+  {
+    id: 'rp.smooth',
+    title: 'Smooth transitions',
+    render: () => <ChallengeDrill config={getChallengeDrill('prog-smooth')} />,
+  },
+  {
+    id: 'rp.rhythm',
+    title: 'Progression + rhythm',
+    render: () => <ChallengeDrill config={getChallengeDrill('prog-rhythm')} />,
+  },
+
+
+  /* ---- L8 · B8.5 — Sight Reading ---- */
+  {
+    id: 'sr.notes',
+    title: 'Note recognition',
+    render: () => <StaffRunDrill config={getStaffRunDrill('perf-notes')} />,
+  },
+  {
+    id: 'sr.melodies',
+    title: 'Simple melodies',
+    render: () => <StaffRunDrill config={getStaffRunDrill('perf-melodies')} />,
+  },
+  {
+    id: 'sr.rh',
+    title: 'RH sight reading',
+    render: () => <StaffRunDrill config={getStaffRunDrill('perf-rh')} />,
+  },
+  {
+    id: 'sr.lh',
+    title: 'LH sight reading',
+    render: () => <StaffRunDrill config={getStaffRunDrill('perf-lh')} />,
+  },
+  {
+    id: 'sr.together',
+    title: 'Hands together',
+    render: () => <StaffRunDrill config={getStaffRunDrill('perf-together')} />,
+  },
+  {
+    id: 'sr.rhythm',
+    title: 'Rhythm reading',
+    render: () => <StaffRunDrill config={getStaffRunDrill('perf-rhythm')} />,
+  },
+  {
+    id: 'sr.nostop',
+    title: 'No-stopping drill',
+    render: () => <StaffRunDrill config={getStaffRunDrill('perf-nostop')} />,
+  },
+  {
+    id: 'sr.firstplay',
+    title: 'First-play challenge',
+    render: () => <StaffRunDrill config={getStaffRunDrill('perf-first-play')} />,
+  },
+
+  /* ---- L8 · B8.6 — Ear → Keyboard ---- */
+  {
+    id: 'ek.one',
+    title: 'Single note recognition',
+    render: () => <ChallengeDrill config={getChallengeDrill('ear-one-note')} />,
+  },
+  {
+    id: 'ek.tokey',
+    title: 'Note → keyboard',
+    render: () => <ChallengeDrill config={getChallengeDrill('ear-note-to-key')} />,
+  },
+  {
+    id: 'ek.two',
+    title: 'Two-note recognition',
+    render: () => <ChallengeDrill config={getChallengeDrill('ear-two-notes')} />,
+  },
+  {
+    id: 'ek.three',
+    title: 'Three-note recognition',
+    render: () => <ChallengeDrill config={getChallengeDrill('ear-three-notes')} />,
+  },
+  {
+    id: 'ek.quality',
+    title: 'Major vs minor',
+    render: () => <ChallengeDrill config={getChallengeDrill('ear-major-minor')} />,
+  },
+  {
+    id: 'ek.major',
+    title: 'Major chord identification',
+    render: () => <ChallengeDrill config={getChallengeDrill('ear-major-chords')} />,
+  },
+  {
+    id: 'ek.minor',
+    title: 'Minor chord identification',
+    render: () => <ChallengeDrill config={getChallengeDrill('ear-minor-chords')} />,
+  },
+  {
+    id: 'ek.chord',
+    title: 'Chord → keyboard',
+    render: () => <ChallengeDrill config={getChallengeDrill('ear-chord-to-key')} />,
+  },
+  {
+    id: 'ek.melody',
+    title: 'Melody → keyboard',
+    render: () => <ChallengeDrill config={getChallengeDrill('ear-melody')} />,
+  },
+
+  /* ---- L8 · B8.7 — Rhythm → Keyboard ---- */
+  {
+    id: 'rk.steady',
+    title: 'Steady beat',
+    render: () => <ChallengeDrill config={getChallengeDrill('steady-beat')} />,
+  },
+  {
+    id: 'rk.quarters',
+    title: 'Quarter notes',
+    render: () => <ChallengeDrill config={getChallengeDrill('quarter-notes')} />,
+  },
+  {
+    id: 'rk.eighths',
+    title: 'Eighth notes',
+    render: () => <ChallengeDrill config={getChallengeDrill('eighth-notes')} />,
+  },
+  {
+    id: 'rk.rests',
+    title: 'Rests',
+    render: () => <ChallengeDrill config={getChallengeDrill('rests')} />,
+  },
+  {
+    id: 'rk.imitation',
+    title: 'Rhythm imitation',
+    render: () => <ChallengeDrill config={getChallengeDrill('rhythm-imitation')} />,
+  },
+  {
+    id: 'rk.melody',
+    title: 'Melody rhythm',
+    render: () => <ChallengeDrill config={getChallengeDrill('melody-rhythm')} />,
+  },
+  {
+    id: 'rk.metronome',
+    title: 'Metronome challenge',
+    render: () => <ChallengeDrill config={getChallengeDrill('metronome-challenge')} />,
+  },
+  {
+    id: 'rk.random',
+    title: 'Random rhythm drill',
+    render: () => <ChallengeDrill config={getChallengeDrill('random-rhythm')} />,
+  },
+
+  /* ---- L8 · B8.8 — Performance ---- */
+  {
+    id: 'pf.complete',
+    title: 'Complete piece',
+    render: () => <ChallengeDrill config={getChallengeDrill('piece-complete')} />,
+  },
+  {
+    id: 'pf.nostop',
+    title: 'No-stopping practice',
+    render: () => <ChallengeDrill config={getChallengeDrill('piece-no-stopping')} />,
+  },
+  {
+    id: 'pf.metronome',
+    title: 'Metronome performance',
+    render: () => <ChallengeDrill config={getChallengeDrill('piece-metronome')} />,
+  },
+  {
+    id: 'pf.memory',
+    title: 'Memory performance',
+    render: () => <ChallengeDrill config={getChallengeDrill('piece-memory')} />,
+  },
+  {
+    id: 'pf.randomstart',
+    title: 'Random start',
+    render: () => <ChallengeDrill config={getChallengeDrill('piece-random-start')} />,
+  },
+  {
+    id: 'pf.recovery',
+    title: 'Recovery drill',
+    render: () => <ChallengeDrill config={getChallengeDrill('piece-recovery')} />,
+  },
+  {
+    id: 'pf.fullspeed',
+    title: 'Full-speed performance',
+    render: () => <ChallengeDrill config={getChallengeDrill('piece-full-speed')} />,
+  },
+  {
+    id: 'pf.onetake',
+    title: 'One-take performance',
+    render: () => <ChallengeDrill config={getChallengeDrill('piece-one-take')} />,
+  },
+  {
+    id: 'pf.pressure',
+    title: 'Pressure simulation',
+    render: () => <ChallengeDrill config={getChallengeDrill('piece-pressure')} />,
+  },
+  {
+    id: 'pf.contest',
+    title: 'Final contest simulation',
+    render: () => <ChallengeDrill config={getChallengeDrill('piece-contest')} />,
   },
 ];
 

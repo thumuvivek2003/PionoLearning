@@ -1,5 +1,5 @@
 import type { Clef, Step } from '../reading.types';
-import { TOP_STEP } from './staff';
+import { TOP_STEP, stepRange } from './staff';
 
 /**
  * 6.2, 6.3, 6.9 and 6.10 as data — notes read in a line rather than one at a
@@ -418,6 +418,167 @@ const FLUENCY_DRILLS: Readonly<Record<string, StaffRunConfig>> = {
   },
 };
 
+/* ---------------- 8.5 · sight reading at level 8 ---------------- */
+
+/**
+ * The same act as 6.9, under performance conditions.
+ *
+ * Level 8 adds no reading skill — it adds pressure. These are longer runs, both
+ * clefs, tighter clocks and no stopping, and they live here because reading is
+ * what this feature owns. What makes them level 8 is that nothing is optional.
+ */
+const PERFORMANCE_READING: Readonly<Record<string, StaffRunConfig>> = {
+  'perf-notes': {
+    ...base,
+    id: 'perf-notes',
+    contours: ['same'],
+    length: 1,
+    starts: stepRange(-2, TOP_STEP + 2),
+    ladder: [3000, 2000, 1500],
+    runs: 20,
+    goal: 'One note at a time, down to a second and a half — recognition, not counting.',
+    guidance: [
+      'Single notes from across the staff and past it, played as fast as they can be read.',
+      'A second and a half is not enough to count lines. It is enough to recognise one.',
+      'Scores are per note, so the two or three that always cost you get named.',
+    ],
+    watchFor:
+      'Counting up from a landmark. It gives the right key and it is the ceiling on your reading speed.',
+  },
+  'perf-melodies': {
+    ...base,
+    id: 'perf-melodies',
+    contours: CONTOURS,
+    length: 6,
+    starts: stepRange(0, 4),
+    skips: true,
+    ladder: [14000, 11000, 8000],
+    runs: 12,
+    goal: 'Six-note melodies with leaps, read once and played.',
+    guidance: [
+      'Every shape in the pool, including leaps. This is what music looks like.',
+      'Read the shape first, then the notes it is made of.',
+      'Do not learn it before playing it. Reading it once is the exercise.',
+    ],
+    watchFor:
+      'Memorising the run and playing from memory. That practises recall and is the opposite of sight reading.',
+  },
+  'perf-rh': {
+    ...base,
+    id: 'perf-rh',
+    contours: CONTOURS,
+    length: 6,
+    starts: stepRange(0, 4),
+    skips: true,
+    ladder: [12000, 10000, 8000],
+    runs: 12,
+    goal: 'The treble staff under a clock — the right hand on its own.',
+    guidance: [
+      'Treble only, so nothing is tested but reading the notes.',
+      'Anchor on the G line and count from there rather than the bottom.',
+      'Compare your time against the bass practice afterwards.',
+    ],
+    watchFor:
+      'Being fast inside the staff and slow past it. Ledger notes are in the pool for a reason.',
+  },
+  'perf-lh': {
+    ...base,
+    id: 'perf-lh',
+    clef: 'bass',
+    contours: CONTOURS,
+    length: 6,
+    starts: stepRange(0, 4),
+    skips: true,
+    ladder: [12000, 10000, 8000],
+    runs: 12,
+    goal: 'The bass staff under the same clock — where almost everybody is slower.',
+    guidance: [
+      'Identical to the treble practice with the clef changed.',
+      'Anchor on the F line the way you anchor on G in treble.',
+      'The gap between the two clefs is normal, measurable and worth closing.',
+    ],
+    watchFor:
+      'Converting bass to treble in your head. It gives the right note eventually and never becomes fast.',
+  },
+  'perf-together': {
+    ...base,
+    id: 'perf-together',
+    second: 'bass',
+    contours: ['up', 'down', 'wave'],
+    length: 5,
+    starts: stepRange(0, 4),
+    ladder: [18000, 15000, 12000],
+    runs: 10,
+    goal: 'Both staves at once, against a clock.',
+    guidance: [
+      'A note in each hand, sounding together, five times over.',
+      'Read the pair as one thing. Reading the top and then the bottom is two readings.',
+      'Slower than one staff, and that is expected.',
+    ],
+    watchFor:
+      'Reading the treble and letting the bass follow. Both staves are being read.',
+  },
+  'perf-rhythm': {
+    ...base,
+    id: 'perf-rhythm',
+    contours: ['up', 'down', 'wave'],
+    length: 6,
+    starts: stepRange(0, 4),
+    values: ['whole', 'half', 'quarter'],
+    metronome: true,
+    noStopping: true,
+    tempos: [50, 60, 70],
+    ladder: [],
+    runs: 10,
+    goal: 'Notes and their lengths together, against a click that does not wait.',
+    guidance: [
+      'Hollow heads are longer notes; the strip shows how many beats each lasts.',
+      'The next note is due when the last has had its beats, not when your finger is ready.',
+      'Half the information on a page is how long each note lasts.',
+    ],
+    watchFor:
+      'Playing everything as quarters because the pitches are right. That is half a reading.',
+  },
+  'perf-nostop': {
+    ...base,
+    id: 'perf-nostop',
+    contours: CONTOURS,
+    length: 8,
+    starts: stepRange(0, 4),
+    skips: true,
+    noStopping: true,
+    ladder: [16000, 13000, 10000],
+    runs: 10,
+    goal: 'Eight notes, and a wrong one does not stop the run.',
+    guidance: [
+      'A miss is recorded and the run moves on. There is no waiting.',
+      'Stopping to fix things is what makes reading unusable in performance.',
+      'The score is how many landed right, not whether it was tidy.',
+    ],
+    watchFor:
+      'Going back to correct yourself. The run has moved on and the correction costs the next note too.',
+  },
+  'perf-first-play': {
+    ...base,
+    id: 'perf-first-play',
+    contours: CONTOURS,
+    length: 8,
+    starts: stepRange(-2, 4),
+    skips: true,
+    noStopping: true,
+    ladder: [12000, 10000, 8000],
+    runs: 8,
+    goal: 'First play, no second chance — the tightest reading in the curriculum.',
+    guidance: [
+      'Eight notes with leaps and ledgers, no stopping, and eight seconds by the end.',
+      'You get one attempt at each run. That is what sight reading is.',
+      'Read the whole run before the first note rather than reading as you go.',
+    ],
+    watchFor:
+      'Starting before you have looked at the end of the run. The last two notes are where a first play falls apart.',
+  },
+};
+
 export const STAFF_RUN_DRILLS: Readonly<Record<string, StaffRunConfig>> = {
   ascending: directionRun('treble', 'up'),
   descending: directionRun('treble', 'down'),
@@ -440,6 +601,7 @@ export const STAFF_RUN_DRILLS: Readonly<Record<string, StaffRunConfig>> = {
   ),
   ...SIGHT_DRILLS,
   ...FLUENCY_DRILLS,
+  ...PERFORMANCE_READING,
 };
 
 export function getStaffRunDrill(id: string): StaffRunConfig {
