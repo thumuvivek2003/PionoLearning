@@ -2,11 +2,16 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Chip, Field, SegmentedControl, Toggle } from '@/components/ui';
 import type { PianoKey } from '@/features/piano';
 import {
+  BeatLamps,
   Counter,
   CounterRow,
   DrillPrompt,
   DrillShell,
   EMPTY_TIMING,
+  GuidedNote,
+  GuidedSound,
+  LEAD_IN_BEATS,
+  PlayWhere,
   RunCounters,
   StepStrip,
   WeakSpots,
@@ -16,12 +21,13 @@ import {
   percent,
   recordTiming,
   timingBias,
+  useGuidedRun,
   useMetronome,
   useScoreBook,
   useTimedRun,
   weakSpots,
 } from '@/features/practice-kit';
-import type { TimingTally } from '@/features/practice-kit';
+import type { GuidedTick, PlaySurface, TimingTally } from '@/features/practice-kit';
 import { useSettings } from '@/features/settings';
 import { instrument } from '@/lib/audio';
 import { cn } from '@/lib/cn';
@@ -60,6 +66,17 @@ export function PatternDrill({ config }: { config: PatternConfig }) {
   const [showNames, setShowNames] = useState(false);
   const { settings } = useSettings();
   const { book, record, clear } = useScoreBook();
+
+  /** Seeded from the app-wide preference; overridable for this one practice. */
+  const [surface, setSurface] = useState<PlaySurface>(
+    settings.externalKeyboard ? 'external' : 'screen',
+  );
+  useEffect(() => {
+    setSurface(settings.externalKeyboard ? 'external' : 'screen');
+  }, [settings.externalKeyboard]);
+  const guiding = surface === 'external';
+  /** Sound each note as it falls due, so a figure can be checked by ear. */
+  const [guideNotes, setGuideNotes] = useState(false);
 
   const [root, setRoot] = useState(config.roots[0] ?? 'C');
   const [index, setIndex] = useState(0);
@@ -168,6 +185,7 @@ export function PatternDrill({ config }: { config: PatternConfig }) {
   };
 
   const press = (key: PianoKey) => {
+    if (guiding) return;
     const wanted = notes[index];
     if (!wanted) return;
 
@@ -228,6 +246,69 @@ export function PatternDrill({ config }: { config: PatternConfig }) {
     if (config.roots.length > 1 || config.qualities.length > 1) finish();
   };
 
+  /**
+   * A figure of mixed note values, laid out as even slots.
+   *
+   * The click has to be fine enough to land on the shortest note in the figure,
+   * so the whole loop is measured in that unit and each note simply owns as
+   * many slots as it lasts. A half note holds its cue for two, a whole note for
+   * four, and the click carries on underneath — which is what reading a figure
+   * in time actually feels like.
+   */
+  const resolution = useMemo(() => {
+    const shortest = notes.reduce(
+      (least, event) => Math.min(least, event.right?.beats ?? event.left?.beats ?? 1),
+      1,
+    );
+    return shortest >= 1 ? 1 : Math.min(4, Math.round(1 / shortest));
+  }, [notes]);
+
+  const slotsPerPass = Math.max(1, Math.round(barBeats * resolution));
+
+  /** Which note each slot of a pass belongs to, so a held note keeps its cue. */
+  const slotOwner = useMemo(() => {
+    const owners = new Array<number>(slotsPerPass).fill(0);
+    notes.forEach((event, at) => {
+      const from = Math.round((dueAt[at] ?? 0) * resolution);
+      const span = Math.max(1, Math.round((event.right?.beats ?? event.left?.beats ?? 1) * resolution));
+      for (let slot = from; slot < from + span && slot < owners.length; slot += 1) owners[slot] = at;
+    });
+    return owners;
+  }, [dueAt, notes, resolution, slotsPerPass]);
+
+  /** The cue the guide last sounded, so a held note is not struck twice. */
+  const sounded = useRef(-1);
+
+  const handleTick = ({ counting, index: cue, onBeat: onClick, accented }: GuidedTick) => {
+    if (settings.soundEnabled) {
+      instrument.playMidis([CLICK_MIDI], onClick ? (accented ? 1.1 : 0.6) : 0.25);
+    }
+    if (counting) {
+      sounded.current = -1;
+      return;
+    }
+    if (cue === sounded.current) return;
+    sounded.current = cue;
+    const midis = notes[cue]?.midis;
+    if (guideNotes && settings.soundEnabled && midis) instrument.playMidis(midis, 0.85);
+  };
+
+  const guided = useGuidedRun({
+    length: slotsPerPass,
+    cueForSlot: (slot) => slotOwner[slot] ?? 0,
+    bpm: tempo,
+    subdivision: resolution,
+    onTick: handleTick,
+    // A pass boundary is the only place a new root or quality can arrive
+    // without cutting a figure in half.
+    onCycle: () => {
+      if (config.roots.length > 1 || config.qualities.length > 1) deal();
+    },
+  });
+
+  /** Which note the screen is on: the beat's in guided mode, the press's on screen. */
+  const cue = guiding ? guided.index : index;
+
   const restart = () => {
     setLoops(0);
     setClean(0);
@@ -256,7 +337,7 @@ export function PatternDrill({ config }: { config: PatternConfig }) {
 
   const strip = notes.map((event, at) => {
     const note = event.right ?? event.left;
-    if (at < index) return note?.name ?? '·';
+    if (at < cue) return note?.name ?? '·';
     return showCues ? String(note?.finger ?? '·') : '·';
   });
 
@@ -267,6 +348,11 @@ export function PatternDrill({ config }: { config: PatternConfig }) {
       watchFor={config.watchFor}
       aside={
         <>
+          <PlayWhere
+            value={surface}
+            onChange={setSurface}
+            hint="On my keyboard counts you in and moves the cue on the beat."
+          />
           {config.hands.length > 1 && (
             <Field label="Hand" hint="The numbering is the same; the order reverses.">
               <SegmentedControl
@@ -281,17 +367,47 @@ export function PatternDrill({ config }: { config: PatternConfig }) {
               />
             </Field>
           )}
-          {config.metronome && (
+          {(config.metronome || guiding) && (
+            <Field
+              label="Tempo"
+              hint={
+                guiding
+                  ? 'The figure moves at this speed.'
+                  : config.ladder
+                    ? 'The ladder moves this for you.'
+                    : 'Raise it for accuracy.'
+              }
+            >
+              <SegmentedControl
+                value={String(tempo)}
+                options={config.tempos.map((bpm) => ({ value: String(bpm), label: `${bpm}` }))}
+                onChange={(value) => setTempo(Number(value))}
+                block
+                ariaLabel="Tempo"
+              />
+            </Field>
+          )}
+          {guiding ? (
             <>
-              <Field label="Tempo" hint={config.ladder ? 'The ladder moves this for you.' : 'Raise it for accuracy.'}>
-                <SegmentedControl
-                  value={String(tempo)}
-                  options={config.tempos.map((bpm) => ({ value: String(bpm), label: `${bpm}` }))}
-                  onChange={(value) => setTempo(Number(value))}
-                  block
-                  ariaLabel="Tempo"
-                />
-              </Field>
+              {/* One transport: the click and the figure are the same run here. */}
+              <Button
+                variant={guided.running ? 'danger' : 'primary'}
+                icon={guided.running ? 'stop' : 'play'}
+                onClick={guided.toggle}
+                block
+              >
+                {guided.running ? 'Stop' : `Start — ${LEAD_IN_BEATS} beat count-in`}
+              </Button>
+              <GuidedSound />
+              <Toggle
+                checked={guideNotes}
+                onChange={setGuideNotes}
+                label="Play the notes too"
+                description="Hear each note as it falls due, to check yourself against. Off is the drill."
+              />
+            </>
+          ) : (
+            config.metronome && (
               <Button
                 variant={metronome.running ? 'danger' : 'primary'}
                 icon={metronome.running ? 'stop' : 'play'}
@@ -300,7 +416,7 @@ export function PatternDrill({ config }: { config: PatternConfig }) {
               >
                 {metronome.running ? 'Stop the click' : 'Start the click'}
               </Button>
-            </>
+            )
           )}
           <Toggle
             checked={showCues}
@@ -315,32 +431,73 @@ export function PatternDrill({ config }: { config: PatternConfig }) {
           <Button variant="secondary" icon="reset" onClick={restart} block>
             Start again
           </Button>
-          <RunCounters stats={stats} runsLabel="Figures" />
-          <CounterRow>
-            <Counter label="Loops" value={`${loops}`} hint={`clean run ${clean}/${config.loops}, best ${best}`} />
-            <Counter label="Evenness" value={percent(lastEven)} hint="between the notes" />
-          </CounterRow>
-          <CounterRow>
-            <Counter
-              label="The turn"
-              value={lurch === null ? '—' : `${lurch.toFixed(2)}×`}
-              hint={
-                lurch === null
-                  ? 'against the other notes'
-                  : lurch <= 1.15
-                    ? 'no lurch worth hearing'
-                    : 'the figure hesitates where it turns'
-              }
-            />
-            {config.metronome && (
-              <Counter
-                label="On the beat"
-                value={rate === null ? '—' : `${Math.round(rate * 100)}%`}
-                hint={timingBias(timing)}
-              />
-            )}
-          </CounterRow>
-          <WeakSpots spots={spots} emptyNote="Nothing weak yet — play a loop." onClear={clear} />
+          {guiding ? (
+            <>
+              <GuidedNote />
+              <CounterRow>
+                <Counter
+                  label="Passes"
+                  value={String(guided.cycles)}
+                  hint="times round the figure"
+                />
+                <Counter
+                  label="Clean loops"
+                  value={`${clean}/${config.loops}`}
+                  hint={config.ladder ? 'a full set moves the tempo up' : 'in a row, by your own ear'}
+                />
+              </CounterRow>
+              {/*
+                * The ladder is the part worth keeping away from the screen —
+                * parking at the fastest tempo you can actually play is the whole
+                * method. Nothing here can judge the loop, so you do.
+                */}
+              <Button
+                variant="success"
+                icon="check"
+                size="sm"
+                onClick={() => closeLoop(true)}
+                block
+              >
+                That loop was clean
+              </Button>
+              <Button variant="ghost" icon="x" size="sm" onClick={() => closeLoop(false)} block>
+                I stumbled
+              </Button>
+            </>
+          ) : (
+            <>
+              <RunCounters stats={stats} runsLabel="Figures" />
+              <CounterRow>
+                <Counter
+                  label="Loops"
+                  value={`${loops}`}
+                  hint={`clean run ${clean}/${config.loops}, best ${best}`}
+                />
+                <Counter label="Evenness" value={percent(lastEven)} hint="between the notes" />
+              </CounterRow>
+              <CounterRow>
+                <Counter
+                  label="The turn"
+                  value={lurch === null ? '—' : `${lurch.toFixed(2)}×`}
+                  hint={
+                    lurch === null
+                      ? 'against the other notes'
+                      : lurch <= 1.15
+                        ? 'no lurch worth hearing'
+                        : 'the figure hesitates where it turns'
+                  }
+                />
+                {config.metronome && (
+                  <Counter
+                    label="On the beat"
+                    value={rate === null ? '—' : `${Math.round(rate * 100)}%`}
+                    hint={timingBias(timing)}
+                  />
+                )}
+              </CounterRow>
+              <WeakSpots spots={spots} emptyNote="Nothing weak yet — play a loop." onClear={clear} />
+            </>
+          )}
         </>
       }
     >
@@ -349,27 +506,49 @@ export function PatternDrill({ config }: { config: PatternConfig }) {
           `${root} ${quality}`,
           figure?.line ?? '',
           config.hands.length > 1 ? (hand === 'right' ? 'RH' : 'LH') : null,
-          config.metronome ? `${tempo} BPM` : null,
+          config.metronome || guiding ? `${tempo} BPM` : null,
+          guiding ? 'on your keyboard' : null,
         ]
           .filter(Boolean)
           .join(' · ')}
         footer={
-          <>
-            {wrong !== null && <Chip tone="danger">Not that one — check the finger</Chip>}
-            {wrong === null && (
-              <Chip tone={isTurn(index) && index > 0 ? 'accent' : 'neutral'}>
-                {isTurn(index) && index > 0
-                  ? 'The turn — this is the one that lurches'
-                  : `note ${index + 1} of ${notes.length}`}
-              </Chip>
-            )}
-          </>
+          guiding ? (
+            <>
+              {guided.phase === 'idle' && <Chip>Hands ready, then press start</Chip>}
+              {guided.phase === 'counting' && <Chip tone="next">Count in — {guided.countIn}</Chip>}
+              {guided.phase === 'playing' && (
+                <Chip tone={isTurn(cue) && cue > 0 ? 'accent' : 'neutral'}>
+                  {isTurn(cue) && cue > 0
+                    ? 'The turn — this is the one that lurches'
+                    : `note ${cue + 1} of ${notes.length}`}
+                </Chip>
+              )}
+            </>
+          ) : (
+            <>
+              {wrong !== null && <Chip tone="danger">Not that one — check the finger</Chip>}
+              {wrong === null && (
+                <Chip tone={isTurn(index) && index > 0 ? 'accent' : 'neutral'}>
+                  {isTurn(index) && index > 0
+                    ? 'The turn — this is the one that lurches'
+                    : `note ${index + 1} of ${notes.length}`}
+                </Chip>
+              )}
+            </>
+          )
         }
       >
-        {showCues
-          ? ((notes[index]?.right ?? notes[index]?.left)?.finger ?? '·')
-          : ((notes[index]?.right ?? notes[index]?.left)?.degree ?? '·')}
+        {/* The count-in owns the prompt: it is the one thing read from the bench. */}
+        {guiding && guided.phase === 'counting'
+          ? guided.countIn
+          : guiding && guided.phase === 'idle'
+            ? '·'
+            : showCues
+              ? ((notes[cue]?.right ?? notes[cue]?.left)?.finger ?? '·')
+              : ((notes[cue]?.right ?? notes[cue]?.left)?.degree ?? '·')}
       </DrillPrompt>
+
+      {guiding && <BeatLamps beat={guided.beatInBar} />}
 
       <div className={styles.tones}>
         {notes.map((event, at) => {
@@ -379,7 +558,7 @@ export function PatternDrill({ config }: { config: PatternConfig }) {
               key={`${event.beat}-${at}`}
               className={cn(styles.tone, event.turn && styles.toneThird)}
             >
-              {at < index ? (note?.name ?? '·') : showCues ? String(note?.finger ?? '·') : '·'}
+              {at < cue ? (note?.name ?? '·') : showCues ? String(note?.finger ?? '·') : '·'}
               <span className={styles.toneDegree}>
                 {config.left && event.right && event.left ? 'both' : `${note?.beats ?? 1}b`}
               </span>
@@ -388,19 +567,33 @@ export function PatternDrill({ config }: { config: PatternConfig }) {
         })}
       </div>
 
-      <StepStrip items={strip} index={index} wrong={wrong !== null} label="The figure" />
+      <StepStrip
+        items={strip}
+        index={cue}
+        wrong={wrong !== null}
+        showProgress={!guiding || guided.phase !== 'idle'}
+        label="The figure"
+      />
 
       <div className={styles.board}>
+        {/*
+          * Away from the screen the board stops being an input and becomes the
+          * part you read from, so this is the one mode where it lights the note
+          * that is due rather than only the ones already played.
+          */}
         <PatternKeyboard
           layoutId={LAYOUT_ID}
-          done={played}
+          lit={guiding && guided.phase === 'playing' ? (notes[cue]?.midis ?? []) : undefined}
+          done={guiding ? [] : played}
           secondary={wrong === null ? undefined : [wrong]}
           showNames={showNames}
-          onKeyPress={press}
+          onKeyPress={guiding ? undefined : press}
           footerNote={
-            config.left
-              ? 'Both hands — every key of the moment before the next one'
-              : 'Play the figure in order, with the fingering shown'
+            guiding
+              ? 'Play this on your own keyboard — the figure moves on the beat'
+              : config.left
+                ? 'Both hands — every key of the moment before the next one'
+                : 'Play the figure in order, with the fingering shown'
           }
         />
       </div>

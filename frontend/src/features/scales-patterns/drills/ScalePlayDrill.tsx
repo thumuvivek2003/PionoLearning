@@ -5,11 +5,16 @@ import type { PianoKey } from '@/features/piano';
 import type { FingerNumber, Hand } from '@/features/finger-training';
 import { HandDiagram, handShort } from '@/features/finger-training';
 import {
+  BeatLamps,
   Counter,
   CounterRow,
   DrillPrompt,
   DrillShell,
   EMPTY_TIMING,
+  GuidedNote,
+  GuidedSound,
+  LEAD_IN_BEATS,
+  PlayWhere,
   RunCounters,
   StageRow,
   StepStrip,
@@ -21,12 +26,13 @@ import {
   percent,
   recordTiming,
   timingBias,
+  useGuidedRun,
   useMetronome,
   useScoreBook,
   useTimedRun,
   weakSpots,
 } from '@/features/practice-kit';
-import type { TimingTally } from '@/features/practice-kit';
+import type { GuidedTick, PlaySurface, TimingTally } from '@/features/practice-kit';
 import { useSettings } from '@/features/settings';
 import { instrument } from '@/lib/audio';
 import {
@@ -96,6 +102,23 @@ export function ScalePlayDrill({ config }: { config: ScalePlayConfig }) {
   const { settings } = useSettings();
   /** Clean runs asked for before the practice counts the stage as held. */
   const target = config.cleanTarget ?? 3;
+
+  /**
+   * Which instrument this practice is running on.
+   *
+   * Seeded from the app-wide preference but held locally, so someone at the
+   * piano can still drop one drill back to the screen — to check a fingering,
+   * say — without changing how every other practice behaves.
+   */
+  const [surface, setSurface] = useState<PlaySurface>(
+    settings.externalKeyboard ? 'external' : 'screen',
+  );
+  useEffect(() => {
+    setSurface(settings.externalKeyboard ? 'external' : 'screen');
+  }, [settings.externalKeyboard]);
+  const guiding = surface === 'external';
+  /** Sound each cue as it falls due, so a run can be checked by ear. */
+  const [guideNotes, setGuideNotes] = useState(false);
 
   /** The key this practice is running in — one of several, for the rotation. */
   const [keyIndex, setKeyIndex] = useState(0);
@@ -218,11 +241,48 @@ export function ScalePlayDrill({ config }: { config: ScalePlayConfig }) {
     return keys[position];
   };
 
-  const complete = order.length > 0 && index >= order.length;
+  /**
+   * What each slot of a guided run sounds like.
+   *
+   * Clicks are accented at the bar so the count stays findable away from the
+   * screen, and the notes between clicks get a quieter tick — at two or four
+   * notes per click the subdivision is the thing being learnt, so it has to be
+   * audible rather than merely implied.
+   *
+   * A plain function rather than a memoised one: the engine reads it afresh on
+   * every slot, so it always sees this render's hand, key and offset.
+   */
+  const handleTick = ({ counting, index: cue, onBeat: onClick, accented }: GuidedTick) => {
+    if (!settings.soundEnabled) return;
+    instrument.playMidis([CLICK_MIDI], onClick ? (accented ? 1.1 : 0.6) : 0.25);
+    if (counting || !guideNotes) return;
+    for (const entry of hands) {
+      const key = noteFor(entry, cue);
+      if (key) instrument.playMidis([key.midi], 0.85);
+    }
+  };
+
+  const guided = useGuidedRun({
+    length: order.length,
+    bpm: tempo,
+    subdivision,
+    onTick: handleTick,
+    // A pass boundary is the only honest place to move what a run is about, so
+    // the rotating practices advance there rather than mid-scale.
+    onCycle: () => {
+      if (config.segment === 'groups') setGroupAt((current) => (current + 1) % 3);
+      if (config.randomStart) setOffset(Math.floor(Math.random() * 7));
+    },
+  });
+
+  /** Which cue the screen is on: the beat's in guided mode, the press's on screen. */
+  const cue = guiding ? guided.index : index;
+  /** A guided run goes round rather than ending, so nothing is ever complete. */
+  const complete = !guiding && order.length > 0 && index >= order.length;
   const owed = hands;
 
   const press = (key: PianoKey) => {
-    if (complete) return;
+    if (guiding || complete) return;
 
     const pressedHand = hands.find((entry) => noteFor(entry, index)?.midi === key.midi);
     if (!pressedHand) {
@@ -320,10 +380,27 @@ export function ScalePlayDrill({ config }: { config: ScalePlayConfig }) {
   const rate = onBeatRate(timing);
   const first = hands[0] ?? 'right';
   const fingers = fingering.get(first) ?? [];
+  /** The notes due on this cue, for the board to light in guided mode. */
+  const cueMidis = guiding
+    ? hands.flatMap((entry) => {
+        const key = noteFor(entry, cue);
+        return key ? [key.midi] : [];
+      })
+    : [];
+  /** Cues already gone by this pass, so the board shows how far round it is. */
+  const passDone = guiding
+    ? order.slice(0, cue).flatMap((_position, at) =>
+        hands.flatMap((entry) => {
+          const key = noteFor(entry, at);
+          return key ? [key.midi] : [];
+        }),
+      )
+    : played;
+
   const strip = order.map((position, step) => {
     const finger = fingers[position];
     const label = finger ? String(finger) : '·';
-    return step < index ? label : crossings[step] ? `↷${label}` : label;
+    return step < cue ? label : crossings[step] ? `↷${label}` : label;
   });
 
   return (
@@ -333,6 +410,11 @@ export function ScalePlayDrill({ config }: { config: ScalePlayConfig }) {
       watchFor={config.watchFor}
       aside={
         <>
+          <PlayWhere
+            value={surface}
+            onChange={setSurface}
+            hint="On my keyboard counts you in and moves the cue on the beat."
+          />
           {!config.together && config.hands.length > 1 && (
             <Field label="Hand" hint="The two hands cross in different places.">
               <SegmentedControl value={hand} options={HANDS} onChange={setHand} block ariaLabel="Hand" />
@@ -377,31 +459,76 @@ export function ScalePlayDrill({ config }: { config: ScalePlayConfig }) {
             />
           </Field>
           )}
-          {config.metronome && (
+          {(config.metronome || guiding) && (
+            <Field
+              label="Tempo"
+              hint={guiding ? 'The cue moves at this speed.' : 'One note per click.'}
+            >
+              <SegmentedControl
+                value={String(tempo)}
+                options={config.tempos.map((bpm) => ({ value: String(bpm), label: `${bpm}` }))}
+                onChange={(value) => setTempo(Number(value))}
+                block
+                ariaLabel="Tempo"
+              />
+            </Field>
+          )}
+
+          {guiding ? (
             <>
-              <Field label="Tempo" hint="One note per click.">
-                <SegmentedControl
-                  value={String(tempo)}
-                  options={config.tempos.map((bpm) => ({ value: String(bpm), label: `${bpm}` }))}
-                  onChange={(value) => setTempo(Number(value))}
-                  block
-                  ariaLabel="Tempo"
-                />
-              </Field>
+              {/* One transport: the click and the cue are the same run here. */}
               <Button
-                variant={metronome.running ? 'danger' : 'primary'}
-                icon={metronome.running ? 'stop' : 'play'}
-                onClick={() => (metronome.running ? metronome.stop() : metronome.start())}
+                variant={guided.running ? 'danger' : 'primary'}
+                icon={guided.running ? 'stop' : 'play'}
+                onClick={guided.toggle}
                 block
               >
-                {metronome.running ? 'Stop the click' : 'Start the click'}
+                {guided.running ? 'Stop' : `Start — ${LEAD_IN_BEATS} beat count-in`}
+              </Button>
+              <GuidedSound />
+              <Toggle
+                checked={guideNotes}
+                onChange={setGuideNotes}
+                label="Play the notes too"
+                description="Hear each note as it falls due, to check yourself against. Off is the drill."
+              />
+              <GuidedNote />
+              {/*
+                * The ladder is the one thing worth keeping away from the screen,
+                * since parking at the fastest tempo you can actually play is the
+                * whole method. Nothing can judge the pass but you, so you say.
+                */}
+              <CounterRow>
+                <Counter label="Passes" value={String(guided.cycles)} hint="times round the scale" />
+                <Counter
+                  label="Clean runs"
+                  value={`${clean}/${target}`}
+                  hint={config.ladder ? 'a full set moves the tempo up' : 'in a row, by your own ear'}
+                />
+              </CounterRow>
+              <Button variant="success" icon="check" size="sm" onClick={() => settleRun(true)} block>
+                That pass was clean
+              </Button>
+              <Button variant="ghost" icon="x" size="sm" onClick={() => settleRun(false)} block>
+                I stumbled
               </Button>
             </>
-          )}
-          <Button variant="secondary" icon="reset" onClick={dealNow} block>
-            New run
-          </Button>
-          <RunCounters stats={stats} runsLabel="Scales" />
+          ) : (
+            <>
+              {config.metronome && (
+                <Button
+                  variant={metronome.running ? 'danger' : 'primary'}
+                  icon={metronome.running ? 'stop' : 'play'}
+                  onClick={() => (metronome.running ? metronome.stop() : metronome.start())}
+                  block
+                >
+                  {metronome.running ? 'Stop the click' : 'Start the click'}
+                </Button>
+              )}
+              <Button variant="secondary" icon="reset" onClick={dealNow} block>
+                New run
+              </Button>
+              <RunCounters stats={stats} runsLabel="Scales" />
           <CounterRow>
             <Counter
               label="Evenness"
@@ -446,9 +573,16 @@ export function ScalePlayDrill({ config }: { config: ScalePlayConfig }) {
                 hint={timingBias(timing)}
               />
             )}
-          </CounterRow>
+              </CounterRow>
+              <WeakSpots
+                spots={spots}
+                emptyNote="Nothing weak yet — play it through."
+                onClear={clear}
+              />
+            </>
+          )}
+
           <Toggle checked={showNames} onChange={setShowNames} label="Names on the keys" />
-          <WeakSpots spots={spots} emptyNote="Nothing weak yet — play it through." onClear={clear} />
         </>
       }
     >
@@ -461,36 +595,67 @@ export function ScalePlayDrill({ config }: { config: ScalePlayConfig }) {
               ? `group ${groupAt + 1} of 3`
               : null,
           config.randomStart ? `from degree ${degreeAt(offset)}` : null,
-          config.metronome ? `${tempo} BPM${subdivision > 1 ? ` · ${subdivision} per click` : ''}` : null,
+          config.metronome || guiding
+            ? `${tempo} BPM${subdivision > 1 ? ` · ${subdivision} per click` : ''}`
+            : null,
+          guiding ? 'on your keyboard' : null,
         ]
           .filter(Boolean)
           .join(' · ')}
         footer={
-          <>
-            {complete && (
-              <Chip tone="accent">
-                Scale complete
-                {lastEven === null ? '' : ` — ${percent(lastEven)} even`}
-              </Chip>
-            )}
-            {!complete && wrong !== null && <Chip tone="danger">Not that one — check the finger</Chip>}
-            {!complete && wrong === null && (
-              <Chip tone={crossings[index] ? 'accent' : 'neutral'}>
-                {crossings[index] ? 'Crossing here' : `Note ${index + 1} of ${order.length}`}
-              </Chip>
-            )}
-          </>
+          guiding ? (
+            <>
+              {guided.phase === 'idle' && <Chip>Hands ready, then press start</Chip>}
+              {guided.phase === 'counting' && (
+                <Chip tone="next">Count in — {guided.countIn}</Chip>
+              )}
+              {guided.phase === 'playing' && (
+                <Chip tone={crossings[cue] ? 'accent' : 'neutral'}>
+                  {crossings[cue] ? 'Crossing here' : `Note ${cue + 1} of ${order.length}`}
+                </Chip>
+              )}
+            </>
+          ) : (
+            <>
+              {complete && (
+                <Chip tone="accent">
+                  Scale complete
+                  {lastEven === null ? '' : ` — ${percent(lastEven)} even`}
+                </Chip>
+              )}
+              {!complete && wrong !== null && (
+                <Chip tone="danger">Not that one — check the finger</Chip>
+              )}
+              {!complete && wrong === null && (
+                <Chip tone={crossings[index] ? 'accent' : 'neutral'}>
+                  {crossings[index] ? 'Crossing here' : `Note ${index + 1} of ${order.length}`}
+                </Chip>
+              )}
+            </>
+          )
         }
       >
-        {complete ? '✓' : (fingers[positionAt(index)] ?? '·')}
+        {/*
+          * The count-in takes the prompt over: it is the one moment the screen
+          * has to be read from the bench, with hands already on the keys.
+          */}
+        {guiding && guided.phase === 'counting'
+          ? guided.countIn
+          : guiding && guided.phase === 'idle'
+            ? '·'
+            : complete
+              ? '✓'
+              : (fingers[positionAt(cue)] ?? '·')}
       </DrillPrompt>
+
+      {guiding && <BeatLamps beat={guided.beatInBar} />}
 
       <StageRow>
         {hands.map((entry) => (
           <HandDiagram
             key={entry}
             hand={entry}
-            highlight={complete ? null : ((fingering.get(entry)?.[positionAt(index)] ?? null) as FingerNumber | null)}
+            highlight={complete ? null : ((fingering.get(entry)?.[positionAt(cue)] ?? null) as FingerNumber | null)}
             showNumbers
             size={config.together ? 160 : 190}
           />
@@ -499,19 +664,31 @@ export function ScalePlayDrill({ config }: { config: ScalePlayConfig }) {
 
       <StepStrip
         items={strip}
-        index={complete ? -1 : index}
+        index={complete ? -1 : cue}
+        showProgress={!guiding || guided.phase !== 'idle'}
         wrong={wrong !== null}
         label="The scale"
       />
 
       <div className={styles.board}>
+        {/*
+          * Guided mode is the one place this board shows the note that is due.
+          * Everywhere else that would be giving the answer away, but away from
+          * the screen there is nothing else to read: no press to mark, so the
+          * board stops being an input and becomes the part you play from.
+          */}
         <ScaleKeyboard
           layoutId={LAYOUT_ID}
-          done={played}
+          lit={guiding && guided.phase === 'playing' ? cueMidis : undefined}
+          done={guiding ? passDone : played}
           secondary={wrong === null ? undefined : [wrong]}
           showNames={showNames}
-          onKeyPress={press}
-          footerNote="Play the scale with the fingering shown"
+          onKeyPress={guiding ? undefined : press}
+          footerNote={
+            guiding
+              ? 'Play this on your own keyboard — the cue moves on the beat'
+              : 'Play the scale with the fingering shown'
+          }
         />
       </div>
 

@@ -6,6 +6,15 @@ export interface AppSettings {
   accent: AccentColor;
   /** Play the item through the built-in synth when it appears. */
   soundEnabled: boolean;
+  /**
+   * Practise on a real instrument rather than by clicking the on-screen keys.
+   *
+   * Drills that support it stop waiting for a keypress and conduct instead —
+   * count-in, click, and a cue that moves on when the next note is due. Set
+   * here because it describes the room you practise in, not one drill: someone
+   * sitting at a piano is sitting at it for every practice.
+   */
+  externalKeyboard: boolean;
   /** Print note names on the keys. Turn off for a harder read. */
   showNoteNames: boolean;
   /**
@@ -44,6 +53,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   theme: 'dark',
   accent: 'violet',
   soundEnabled: false,
+  externalKeyboard: false,
   showNoteNames: true,
   highlightAllOctaves: true,
   showNextItem: true,

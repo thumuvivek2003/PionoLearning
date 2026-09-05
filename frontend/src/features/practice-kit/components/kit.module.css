@@ -508,3 +508,78 @@
   min-width: 42px;
   text-align: right;
 }
+
+/* ---------------- guided (external instrument) mode ---------------- */
+
+/*
+ * What the drill can no longer tell you, said where the counters used to be.
+ * Muted rather than a warning: leaving the screen is a step forward in the
+ * practice, not a problem to fix.
+ */
+.guidedNote {
+  margin: 0;
+  padding: var(--sp-3);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--r-sm);
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+  color: var(--text-muted);
+  background: var(--bg-inset);
+}
+
+/*
+ * The count-in, big enough to catch from the bench with your hands already on
+ * the keys — the one moment the screen has to be readable at a glance.
+ */
+.countIn {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-strong);
+}
+
+/* The beat, drawn as four lamps so a bar is visible as well as audible. */
+.beatLamps {
+  display: flex;
+  gap: var(--sp-2);
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.beatLamp {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--r-full);
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border);
+  transition: background var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+
+.beatLampOn {
+  background: var(--accent-strong);
+  border-color: transparent;
+  transform: scale(1.35);
+}
+
+.beatLampBar {
+  background: var(--next);
+}
+
+/* The missing-click nudge — a prompt to fix something, so it reads as one. */
+.guidedWarn {
+  display: grid;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border: 1px solid var(--warning);
+  border-radius: var(--r-sm);
+  background: var(--bg-inset);
+}
+
+.guidedWarnText {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--text-muted);
+}

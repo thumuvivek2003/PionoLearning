@@ -2,10 +2,12 @@
  * Shared kit for practice screens.
  *
  * Everything here is drill-agnostic: the frame, the prompt, the pills, the
- * counters and the two engines (a prompt→answer quiz and a paced sequence).
- * A bucket's own feature folder holds only what is specific to it — a hand
- * diagram, a keyboard — which keeps the buckets independent of each other.
+ * counters and the three engines — a prompt→answer quiz, a paced sequence, and
+ * a guided run for practising on a real instrument. A bucket's own feature
+ * folder holds only what is specific to it — a hand diagram, a keyboard — which
+ * keeps the buckets independent of each other.
  */
+export { BeatLamps } from './components/BeatLamps';
 export { Choice, ChoicePills, ChoiceRow } from './components/Choices';
 export { PracticeClock } from './components/PracticeClock';
 export {
@@ -23,6 +25,8 @@ export {
   formatSeconds,
 } from './components/Counters';
 export { DrillPrompt, DrillShell, StageRow } from './components/DrillShell';
+export { GuidedNote, GuidedSound, PlayWhere } from './components/PlayWhere';
+export type { PlaySurface } from './components/PlayWhere';
 export { StepStrip } from './components/StepStrip';
 export { TimerBar } from './components/TimerBar';
 export { WeakSpots } from './components/WeakSpots';
@@ -55,6 +59,8 @@ export { ALLOWANCE_OPTIONS, useAnswerDeadline } from './hooks/useAnswerDeadline'
 export { useSprint } from './hooks/useSprint';
 export type { SprintStatus } from './hooks/useSprint';
 export { useMetronome } from './hooks/useMetronome';
+export { useGuidedRun } from './hooks/useGuidedRun';
+export type { GuidedPhase, GuidedTick } from './hooks/useGuidedRun';
 export { useScoreBook } from './hooks/useScoreBook';
 export { useTimedRun } from './hooks/useTimedRun';
 export type { RunStats } from './hooks/useTimedRun';

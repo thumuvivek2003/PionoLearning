@@ -439,6 +439,8 @@ export function ScaleQuizDrill({ config }: { config: ScaleQuizConfig }) {
               ? 'How far apart are the lit keys?'
               : question.task === 'degree'
               ? `Find degree ${question.degree} of ${shape?.label ?? config.root}`
+            : question.task === 'membership'
+              ? `Is this note in ${selfName}?`
             : question.task === 'position'
               ? `Which degree of ${shape?.label ?? config.root} is this?`
             : question.task === 'neighbour'

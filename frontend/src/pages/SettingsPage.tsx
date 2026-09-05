@@ -126,6 +126,15 @@ export function SettingsPage() {
 
         <Card title="Keyboard">
           <div className={styles.stack}>
+            <Toggle
+              label="I play on a real keyboard"
+              description="Drills that support it count you in and follow the beat instead of waiting for you to click. Each drill can still be switched back on its own screen."
+              checked={settings.externalKeyboard}
+              onChange={(value) => update('externalKeyboard', value)}
+            />
+
+            <div className={styles.divider} />
+
             <Field label="Layout" hint="61 keys matches most home keyboards.">
               <Select
                 leadingIcon="keyboard"

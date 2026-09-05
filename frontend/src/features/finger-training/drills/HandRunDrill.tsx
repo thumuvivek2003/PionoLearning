@@ -3,11 +3,16 @@ import { Button, Chip, Field, ProgressRing, SegmentedControl, Toggle } from '@/c
 import { getKeyboardLayout, whiteStep } from '@/features/piano';
 import type { KeyboardLayout, PianoKey } from '@/features/piano';
 import {
+  BeatLamps,
   ChoicePills,
   Counter,
   CounterRow,
   DrillPrompt,
   DrillShell,
+  GuidedNote,
+  GuidedSound,
+  LEAD_IN_BEATS,
+  PlayWhere,
   RunCounters,
   StageRow,
   StepStrip,
@@ -16,12 +21,12 @@ import {
   formatMs,
   evenness,
   percent,
+  useGuidedRun,
   useScoreBook,
   useTimedRun,
-  usePacedSequence,
   weakSpots,
 } from '@/features/practice-kit';
-import type { PacedStep } from '@/features/practice-kit';
+import type { GuidedTick, PlaySurface } from '@/features/practice-kit';
 import { getStrategy } from '@/features/randomizer';
 import { useSettings } from '@/features/settings';
 import { instrument } from '@/lib/audio';
@@ -59,13 +64,11 @@ const DIRECTIONS = [
   { value: 'down', label: 'Descending' },
 ];
 
-const MODES = [
-  { value: 'play', label: 'Play here' },
-  { value: 'follow', label: 'Follow' },
-];
-
 /** Slow on purpose — every reference in this level says so. */
 const TEMPOS: readonly number[] = [40, 50, 60, 80];
+
+/** The click, high enough to sit above whatever is being played. */
+const CLICK_MIDI = 84;
 
 /** A run placed on the board, with the keys resolved. */
 interface Placed {
@@ -120,7 +123,6 @@ function resolveSegments(
  * whose entire point is not rushing.
  */
 export function HandRunDrill({ config }: { config: HandRunConfig }) {
-  const [mode, setMode] = useState<string>('play');
   const [hand, setHand] = useState<Hand>('right');
   const [descending, setDescending] = useState(false);
   const [bpm, setBpm] = useState(40);
@@ -133,6 +135,23 @@ export function HandRunDrill({ config }: { config: HandRunConfig }) {
   const [rung, setRung] = useState(0);
   const [rungNote, setRungNote] = useState<string | null>(null);
   const { settings } = useSettings();
+
+  /**
+   * Which instrument this run is being played on.
+   *
+   * This drill has always offered a follow-along mode; it now runs on the shared
+   * guided engine, so it counts in and keeps an audible beat like every other
+   * practice rather than silently advancing a highlight.
+   */
+  const [surface, setSurface] = useState<PlaySurface>(
+    settings.externalKeyboard ? 'external' : 'screen',
+  );
+  useEffect(() => {
+    setSurface(settings.externalKeyboard ? 'external' : 'screen');
+  }, [settings.externalKeyboard]);
+  const guiding = surface === 'external';
+  /** Sound each note as it falls due, so a run can be checked by ear. */
+  const [guideNotes, setGuideNotes] = useState(false);
 
   const layout = useMemo<KeyboardLayout>(() => getKeyboardLayout(LAYOUT_ID), []);
   const { book, record, clear } = useScoreBook();
@@ -219,7 +238,7 @@ export function HandRunDrill({ config }: { config: HandRunConfig }) {
 
   useEffect(() => {
     dealNow();
-  }, [dealNow, descending, hand, mode]);
+  }, [dealNow, descending, hand, guiding]);
 
   const steps = placed?.steps ?? [];
   const keys = placed?.keys ?? [];
@@ -227,14 +246,19 @@ export function HandRunDrill({ config }: { config: HandRunConfig }) {
   const expectedStep = steps[index];
   const complete = keys.length > 0 && index >= keys.length;
 
-  const paced = usePacedSequence(
-    useMemo<readonly PacedStep<number>[]>(
-      () => keys.map((_, position) => ({ value: position, ms: (60 / bpm) * 1000 })),
-      [bpm, keys],
-    ),
-    { loop: true },
-  );
-  const cued = mode === 'follow' && paced.isRunning ? (paced.current ?? null) : null;
+  const guided = useGuidedRun({
+    length: keys.length,
+    bpm,
+    onTick: ({ counting, index: at, accented }: GuidedTick) => {
+      if (!settings.soundEnabled) return;
+      instrument.playMidis([CLICK_MIDI], accented ? 1.1 : 0.6);
+      if (counting || !guideNotes) return;
+      const midi = keys[at]?.midi;
+      if (midi !== undefined) instrument.playMidis([midi], 0.85);
+    },
+  });
+  /** The step the beat is cueing, or null while the run is not moving. */
+  const cued = guiding && guided.phase === 'playing' ? guided.index : null;
 
   /** What a step is filed under: the shift it made, or where the run started. */
   const scoreKeyFor = useCallback(
@@ -253,7 +277,7 @@ export function HandRunDrill({ config }: { config: HandRunConfig }) {
   const minGapMs = stage?.minGapMs ?? config.minGapMs;
 
   const press = (key: PianoKey) => {
-    if (mode !== 'play' || complete || !expected || !expectedStep) return;
+    if (guiding || complete || !expected || !expectedStep) return;
 
     const now = performance.now();
     const since = stepAt.current === null ? Infinity : now - stepAt.current;
@@ -357,9 +381,11 @@ export function HandRunDrill({ config }: { config: HandRunConfig }) {
       watchFor={config.watchFor}
       aside={
         <>
-          <Field label="Mode" hint="Follow paces the run for your own keyboard.">
-            <SegmentedControl value={mode} options={MODES} onChange={setMode} block ariaLabel="Mode" />
-          </Field>
+          <PlayWhere
+            value={surface}
+            onChange={setSurface}
+            hint="On my keyboard counts you in and paces the run for you."
+          />
           <Field label="Hand" hint="The left hand mirrors the movement rather than copying it.">
             <SegmentedControl value={hand} options={HANDS} onChange={setHand} block ariaLabel="Hand" />
           </Field>
@@ -388,21 +414,30 @@ export function HandRunDrill({ config }: { config: HandRunConfig }) {
               />
             </Field>
           )}
-          {mode === 'follow' ? (
+          {guiding ? (
             <>
               <Field label="Tempo" hint="One note per beat.">
                 <ChoicePills options={TEMPOS} value={bpm} onChange={setBpm} />
               </Field>
               <Button
-                variant={paced.isRunning ? 'danger' : 'primary'}
-                icon={paced.isRunning ? 'stop' : 'play'}
-                onClick={paced.isRunning ? paced.stop : paced.start}
+                variant={guided.running ? 'danger' : 'primary'}
+                icon={guided.running ? 'stop' : 'play'}
+                onClick={guided.toggle}
                 block
               >
-                {paced.isRunning ? 'Stop' : 'Start'}
+                {guided.running ? 'Stop' : `Start — ${LEAD_IN_BEATS} beat count-in`}
               </Button>
+              <GuidedSound />
+              <Toggle
+                checked={guideNotes}
+                onChange={setGuideNotes}
+                label="Play the notes too"
+                description="Hear each note as it falls due, to check yourself against."
+              />
+              <GuidedNote />
               <CounterRow>
-                <Counter label="Passes" value={String(paced.cycles)} />
+                <Counter label="Passes" value={String(guided.cycles)} hint="times round the run" />
+                <Counter label="Tempo" value={`${bpm}`} hint="BPM" />
               </CounterRow>
             </>
           ) : (
@@ -453,14 +488,14 @@ export function HandRunDrill({ config }: { config: HandRunConfig }) {
         ].join(' · ')}
         footer={
           <>
-            {mode === 'play' && complete && (
+            {!guiding && complete && (
               <Chip tone="accent">
                 {rungNote ?? 'Run complete'}
                 {meanMove === null ? '' : ` — move ${formatMs(meanMove)}`}
               </Chip>
             )}
-            {mode === 'play' && !complete && note && <Chip tone="danger">{note}</Chip>}
-            {mode === 'play' && !complete && !note && (
+            {!guiding && !complete && note && <Chip tone="danger">{note}</Chip>}
+            {!guiding && !complete && !note && (
               <Chip tone={expectedStep?.move ? 'accent' : 'neutral'}>
                 {expectedStep?.move
                   ? config.kind === 'cross'
@@ -469,31 +504,43 @@ export function HandRunDrill({ config }: { config: HandRunConfig }) {
                   : `Step ${index + 1} of ${keys.length}`}
               </Chip>
             )}
-            {mode === 'follow' && (
-              <Chip tone={paced.isRunning ? 'accent' : 'neutral'}>
-                {paced.isRunning ? `${bpm} BPM` : 'Press start, play along'}
+            {guiding && guided.phase === 'idle' && <Chip>Press start, play along</Chip>}
+            {guiding && guided.phase === 'counting' && (
+              <Chip tone="next">Count in — {guided.countIn}</Chip>
+            )}
+            {guiding && guided.phase === 'playing' && (
+              <Chip tone={steps[cued ?? 0]?.move ? 'accent' : 'neutral'}>
+                {steps[cued ?? 0]?.move
+                  ? config.kind === 'cross'
+                    ? 'Cross here'
+                    : 'Move the hand'
+                  : `Step ${(cued ?? 0) + 1} of ${keys.length} · ${bpm} BPM`}
               </Chip>
             )}
           </>
         }
       >
-        {mode === 'follow'
-          ? (steps[cued ?? 0]?.finger ?? '·')
-          : (expectedStep?.finger ?? (complete ? '✓' : '·'))}
+        {guiding && guided.phase === 'counting'
+          ? guided.countIn
+          : guiding
+            ? (steps[cued ?? 0]?.finger ?? '·')
+            : (expectedStep?.finger ?? (complete ? '✓' : '·'))}
       </DrillPrompt>
+
+      {guiding && <BeatLamps beat={guided.beatInBar} />}
 
       <StageRow>
         <HandDiagram
           hand={hand}
           highlight={
-            mode === 'follow' ? (steps[cued ?? 0]?.finger ?? null) : (expectedStep?.finger ?? null)
+            guiding ? (steps[cued ?? 0]?.finger ?? null) : (expectedStep?.finger ?? null)
           }
           showNumbers
           size={190}
         />
-        {mode === 'follow' && (
+        {guiding && (
           <ProgressRing
-            progress={paced.isRunning ? paced.progress : 0}
+            progress={guided.phase === 'playing' ? ((cued ?? 0) + 1) / Math.max(1, keys.length) : 0}
             value={String(steps[cued ?? 0]?.finger ?? '·')}
             unit={`${bpm} BPM`}
             size={104}
@@ -503,8 +550,8 @@ export function HandRunDrill({ config }: { config: HandRunConfig }) {
 
       <StepStrip
         items={labels}
-        index={mode === 'follow' ? paced.index : complete ? -1 : index}
-        showProgress={mode === 'follow' ? paced.isRunning : true}
+        index={guiding ? (cued ?? 0) : complete ? -1 : index}
+        showProgress={guiding ? guided.phase === 'playing' : true}
         wrong={wrong !== null}
         label="The run"
       />
@@ -512,10 +559,10 @@ export function HandRunDrill({ config }: { config: HandRunConfig }) {
       <div className={styles.board}>
         <HandKeyboard
           layoutId={LAYOUT_ID}
-          done={mode === 'play' ? landed : undefined}
+          done={!guiding ? landed : undefined}
           positions={markers}
           lit={
-            mode === 'follow' && cued !== null
+            guiding && cued !== null
               ? [keys[cued]?.midi].filter((midi): midi is number => midi !== undefined)
               : index === 0 && keys[0]
                 ? [keys[0].midi]
@@ -523,13 +570,13 @@ export function HandRunDrill({ config }: { config: HandRunConfig }) {
           }
           wrong={wrong}
           showNames={showNames}
-          onKeyPress={mode === 'play' ? press : undefined}
+          onKeyPress={!guiding ? press : undefined}
           footerNote={
-            mode === 'play'
+            !guiding
               ? expectedStep?.move
                 ? 'Move, land, then carry on'
                 : 'Play the run in order'
-              : 'Play along on your own keyboard'
+              : 'Play along on your own keyboard — the cue moves on the beat'
           }
         />
       </div>

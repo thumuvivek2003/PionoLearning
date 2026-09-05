@@ -2,11 +2,16 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Chip, Field, SegmentedControl, Toggle } from '@/components/ui';
 import type { PianoKey } from '@/features/piano';
 import {
+  BeatLamps,
   Counter,
   CounterRow,
   DrillPrompt,
   DrillShell,
   EMPTY_TIMING,
+  GuidedNote,
+  GuidedSound,
+  LEAD_IN_BEATS,
+  PlayWhere,
   RunCounters,
   StepStrip,
   TimerBar,
@@ -16,12 +21,13 @@ import {
   recordTiming,
   timingBias,
   useAnswerDeadline,
+  useGuidedRun,
   useMetronome,
   useScoreBook,
   useTimedRun,
   weakSpots,
 } from '@/features/practice-kit';
-import type { TimingTally } from '@/features/practice-kit';
+import type { GuidedTick, PlaySurface, TimingTally } from '@/features/practice-kit';
 import { useSettings } from '@/features/settings';
 import { instrument } from '@/lib/audio';
 import type { Clef, Step } from '../reading.types';
@@ -60,6 +66,17 @@ export function StaffRunDrill({ config }: { config: StaffRunConfig }) {
   const [tempo, setTempo] = useState(config.tempos[0] ?? 60);
   const { settings } = useSettings();
   const { book, record, clear } = useScoreBook();
+
+  /** Seeded from the app-wide preference; overridable for this one practice. */
+  const [surface, setSurface] = useState<PlaySurface>(
+    settings.externalKeyboard ? 'external' : 'screen',
+  );
+  useEffect(() => {
+    setSurface(settings.externalKeyboard ? 'external' : 'screen');
+  }, [settings.externalKeyboard]);
+  const guiding = surface === 'external';
+  /** Sound each note as it falls due, so a read can be checked by ear. */
+  const [guideNotes, setGuideNotes] = useState(false);
 
   const [start, setStart] = useState<Step>(config.starts[0] ?? 0);
   const [contour, setContour] = useState<Contour>(config.contours[0] ?? 'up');
@@ -112,7 +129,8 @@ export function StaffRunDrill({ config }: { config: StaffRunConfig }) {
   );
 
   const [pressed, setPressed] = useState<readonly number[]>([]);
-  const complete = index >= steps.length;
+  /** A guided read loops, so nothing is ever complete while it runs. */
+  const complete = !guiding && index >= steps.length;
 
   const deal = useCallback(() => {
     setStart((current) => {
@@ -156,7 +174,8 @@ export function StaffRunDrill({ config }: { config: StaffRunConfig }) {
 
   const allowance = allowanceAt(config, runs);
   const deadline = useAnswerDeadline({
-    ms: config.metronome ? 0 : allowance,
+    // Away from the screen there is no press to be late, so no allowance either.
+    ms: config.metronome || guiding ? 0 : allowance,
     active: !complete,
     resetKey: `${start}:${contour}:${runs}`,
     onExpire: () => close(true),
@@ -181,6 +200,7 @@ export function StaffRunDrill({ config }: { config: StaffRunConfig }) {
   };
 
   const press = (key: PianoKey) => {
+    if (guiding) return;
     if (complete) return;
     const wanted = wantedAt(index);
     const note = upper[index];
@@ -240,21 +260,85 @@ export function StaffRunDrill({ config }: { config: StaffRunConfig }) {
     dealNow();
   };
 
+  /**
+   * The run laid out as even slots, fine enough for its shortest note value.
+   *
+   * A read is the case this matters most for: half and whole notes are exactly
+   * what a beginner rushes, and a cue that holds for the right number of clicks
+   * teaches the value in a way a note-per-click cue cannot.
+   */
+  const resolution = useMemo(() => {
+    const shortest = values.reduce(
+      (least, value) => Math.min(least, VALUE_BEATS[value] ?? 1),
+      1,
+    );
+    return shortest >= 1 ? 1 : Math.min(4, Math.round(1 / shortest));
+  }, [values]);
+
+  const slotsPerPass = Math.max(
+    1,
+    Math.round(values.reduce((sum, value) => sum + (VALUE_BEATS[value] ?? 1), 0) * resolution),
+  );
+
+  /** Which note each slot belongs to, so a long note keeps its cue. */
+  const slotOwner = useMemo(() => {
+    const owners = new Array<number>(slotsPerPass).fill(0);
+    values.forEach((value, at) => {
+      const from = Math.round((dueAt[at] ?? 0) * resolution);
+      const span = Math.max(1, Math.round((VALUE_BEATS[value] ?? 1) * resolution));
+      for (let slot = from; slot < from + span && slot < owners.length; slot += 1) owners[slot] = at;
+    });
+    return owners;
+  }, [dueAt, resolution, slotsPerPass, values]);
+
+  /** The cue the guide last sounded, so a held note is not struck twice. */
+  const sounded = useRef(-1);
+
+  const handleTick = ({ counting, index: at, onBeat: onClick, accented }: GuidedTick) => {
+    if (settings.soundEnabled) {
+      instrument.playMidis([CLICK_MIDI], onClick ? (accented ? 1.1 : 0.6) : 0.25);
+    }
+    if (counting) {
+      sounded.current = -1;
+      return;
+    }
+    if (at === sounded.current) return;
+    sounded.current = at;
+    if (guideNotes && settings.soundEnabled) instrument.playMidis(wantedAt(at), 0.85);
+  };
+
+  const guided = useGuidedRun({
+    length: slotsPerPass,
+    cueForSlot: (slot) => slotOwner[slot] ?? 0,
+    bpm: tempo,
+    subdivision: resolution,
+    onTick: handleTick,
+    // A new run can only arrive between passes, never mid-phrase.
+    onCycle: () => deal(),
+  });
+
+  /** Which note the screen is on: the beat's in guided mode, the press's on screen. */
+  const cue = guiding ? guided.index : index;
+
   const spots = weakSpots(book, { targetMs: TARGET_MS });
   const rate = onBeatRate(timing);
 
+  /*
+   * The staff is the cue in guided mode: it marks the note that is due, which
+   * is what makes reading away from the screen possible at all.
+   */
   const marksFor = (notes: readonly { step: Step; letter: string }[]): readonly StaffMark[] =>
     notes.map((note, at) => ({
       step: note.step,
       hollow: values[at] !== 'quarter',
       tone: missed.includes(at)
         ? 'danger'
-        : at < index
+        : at < cue
           ? 'success'
-          : at === index && !complete
+          : at === cue && !complete
             ? 'accent'
             : 'muted',
-      label: at < index || showNames ? note.letter : undefined,
+      label: at < cue || showNames ? note.letter : undefined,
     }));
 
   const signature = useMemo(() => {
@@ -276,6 +360,11 @@ export function StaffRunDrill({ config }: { config: StaffRunConfig }) {
       watchFor={config.watchFor}
       aside={
         <>
+          <PlayWhere
+            value={surface}
+            onChange={setSurface}
+            hint="On my keyboard counts you in and moves the cue along the staff."
+          />
           {config.id === 'sight-hands-separately' && (
             <Field label="Staff" hint="Alternates on its own; this forces one.">
               <SegmentedControl
@@ -290,17 +379,45 @@ export function StaffRunDrill({ config }: { config: StaffRunConfig }) {
               />
             </Field>
           )}
-          {config.metronome && (
+          {(config.metronome || guiding) && (
+            <Field
+              label="Tempo"
+              hint={
+                guiding
+                  ? 'The staff moves at this speed.'
+                  : 'One note per beat, and it does not wait.'
+              }
+            >
+              <SegmentedControl
+                value={String(tempo)}
+                options={config.tempos.map((bpm) => ({ value: String(bpm), label: `${bpm}` }))}
+                onChange={(value) => setTempo(Number(value))}
+                block
+                ariaLabel="Tempo"
+              />
+            </Field>
+          )}
+          {guiding ? (
             <>
-              <Field label="Tempo" hint="One note per beat, and it does not wait.">
-                <SegmentedControl
-                  value={String(tempo)}
-                  options={config.tempos.map((bpm) => ({ value: String(bpm), label: `${bpm}` }))}
-                  onChange={(value) => setTempo(Number(value))}
-                  block
-                  ariaLabel="Tempo"
-                />
-              </Field>
+              {/* One transport: the click and the read are the same run here. */}
+              <Button
+                variant={guided.running ? 'danger' : 'primary'}
+                icon={guided.running ? 'stop' : 'play'}
+                onClick={guided.toggle}
+                block
+              >
+                {guided.running ? 'Stop' : `Start — ${LEAD_IN_BEATS} beat count-in`}
+              </Button>
+              <GuidedSound />
+              <Toggle
+                checked={guideNotes}
+                onChange={setGuideNotes}
+                label="Play the notes too"
+                description="Hear each note as it falls due, to check your reading against."
+              />
+            </>
+          ) : (
+            config.metronome && (
               <Button
                 variant={metronome.running ? 'danger' : 'primary'}
                 icon={metronome.running ? 'stop' : 'play'}
@@ -309,7 +426,7 @@ export function StaffRunDrill({ config }: { config: StaffRunConfig }) {
               >
                 {metronome.running ? 'Stop the click' : 'Start the click'}
               </Button>
-            </>
+            )
           )}
           <Toggle
             checked={showNames}
@@ -317,30 +434,49 @@ export function StaffRunDrill({ config }: { config: StaffRunConfig }) {
             label="Letters under the notes"
             description="Support while a run is unfamiliar. Off is the drill."
           />
-          <Button variant="secondary" icon="reset" onClick={dealNow} block>
-            New run
-          </Button>
-          <Button variant="secondary" icon="reset" onClick={restart} block>
-            Start again
-          </Button>
-          <RunCounters stats={stats} runsLabel="Runs" />
-          <CounterRow>
-            <Counter label="Notes right" value={`${right}`} hint="across the session" />
-            <Counter
-              label={config.metronome ? 'On the beat' : 'Allowance'}
-              value={
-                config.metronome
-                  ? rate === null
-                    ? '—'
-                    : `${Math.round(rate * 100)}%`
-                  : allowance === 0
-                    ? '—'
-                    : `${(allowance / 1000).toFixed(0)}s`
-              }
-              hint={config.metronome ? timingBias(timing) : 'for the whole run'}
-            />
-          </CounterRow>
-          <WeakSpots spots={spots} emptyNote="Nothing weak yet — read a few runs." onClear={clear} />
+          {guiding ? (
+            <>
+              <GuidedNote>
+                Nothing can be measured from here — the click holds the tempo and the staff keeps
+                your place. Whether you read it right is between you and your ears.
+              </GuidedNote>
+              <CounterRow>
+                <Counter label="Passes" value={String(guided.cycles)} hint="runs read through" />
+                <Counter label="Tempo" value={`${tempo}`} hint="BPM" />
+              </CounterRow>
+            </>
+          ) : (
+            <>
+              <Button variant="secondary" icon="reset" onClick={dealNow} block>
+                New run
+              </Button>
+              <Button variant="secondary" icon="reset" onClick={restart} block>
+                Start again
+              </Button>
+              <RunCounters stats={stats} runsLabel="Runs" />
+              <CounterRow>
+                <Counter label="Notes right" value={`${right}`} hint="across the session" />
+                <Counter
+                  label={config.metronome ? 'On the beat' : 'Allowance'}
+                  value={
+                    config.metronome
+                      ? rate === null
+                        ? '—'
+                        : `${Math.round(rate * 100)}%`
+                      : allowance === 0
+                        ? '—'
+                        : `${(allowance / 1000).toFixed(0)}s`
+                  }
+                  hint={config.metronome ? timingBias(timing) : 'for the whole run'}
+                />
+              </CounterRow>
+              <WeakSpots
+                spots={spots}
+                emptyNote="Nothing weak yet — read a few runs."
+                onClear={clear}
+              />
+            </>
+          )}
         </>
       }
     >
@@ -349,11 +485,19 @@ export function StaffRunDrill({ config }: { config: StaffRunConfig }) {
           config.second ? 'both staves' : `${clefName(clef)} clef`,
           CONTOUR_NAME[contour],
           config.key ? `${config.key} major` : null,
-          complete ? 'run complete' : `note ${index + 1} of ${steps.length}`,
+          complete ? 'run complete' : `note ${cue + 1} of ${steps.length}`,
+          guiding ? `${tempo} BPM · on your keyboard` : null,
         ]
           .filter(Boolean)
           .join(' · ')}
         footer={
+          guiding ? (
+            <>
+              {guided.phase === 'idle' && <Chip>Read the shape, then press start</Chip>}
+              {guided.phase === 'counting' && <Chip tone="next">Count in — {guided.countIn}</Chip>}
+              {guided.phase === 'playing' && <Chip>{values[cue] ?? 'quarter'} note</Chip>}
+            </>
+          ) : (
           <>
             {complete && (
               <Chip tone={missed.length === 0 ? 'accent' : 'neutral'}>
@@ -374,17 +518,28 @@ export function StaffRunDrill({ config }: { config: StaffRunConfig }) {
               </Chip>
             )}
           </>
+          )
         }
       >
-        {complete ? '✓' : (upper[index]?.name ?? '?')}
+        {/* The count-in owns the prompt: it is the one thing read from the bench. */}
+        {guiding && guided.phase === 'counting'
+          ? guided.countIn
+          : guiding && guided.phase === 'idle'
+            ? '·'
+            : complete
+              ? '✓'
+              : (upper[cue]?.name ?? '?')}
       </DrillPrompt>
+
+      {guiding && <BeatLamps beat={guided.beatInBar} />}
 
       <StaffSystem staves={staves} signature={signature} label="the run" />
 
       {config.values.length > 1 && (
         <StepStrip
           items={values.map((value) => `${VALUE_BEATS[value]}`)}
-          index={complete ? -1 : index}
+          index={complete ? -1 : cue}
+          showProgress={!guiding || guided.phase !== 'idle'}
           label="Beats per note"
         />
       )}
@@ -398,8 +553,14 @@ export function StaffRunDrill({ config }: { config: StaffRunConfig }) {
           layoutId={LAYOUT_ID}
           secondary={wrong === null ? undefined : [wrong]}
           showNames={showNames}
-          onKeyPress={press}
-          footerNote={config.second ? 'Both notes, in either order' : 'Play the run left to right'}
+          onKeyPress={guiding ? undefined : press}
+          footerNote={
+            guiding
+              ? 'Read the staff and play it on your own keyboard'
+              : config.second
+                ? 'Both notes, in either order'
+                : 'Play the run left to right'
+          }
         />
       </div>
 
